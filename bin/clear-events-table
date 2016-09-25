@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+database/clear-events-table.sh
