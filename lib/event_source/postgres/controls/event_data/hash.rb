@@ -1,4 +1,4 @@
-module EventStream
+module EventSource
   module Postgres
     module Controls
       module EventData
@@ -10,7 +10,7 @@ module EventStream
           end
 
           def self.example
-            EventStream::Postgres::EventData::Hash[data]
+            EventSource::Postgres::EventData::Hash[data]
           end
 
           module JSON

@@ -13,13 +13,13 @@ ENV['LOG_OPTIONAL'] ||= 'on'
 puts RUBY_DESCRIPTION
 
 require_relative '../init.rb'
-require 'event_stream/postgres/controls'
-controls = EventStream::Postgres::Controls
+require 'event_source/postgres/controls'
+controls = EventSource::Postgres::Controls
 
 require 'test_bench'; TestBench.activate
 
 Telemetry::Logger::AdHoc.activate
 require 'pp'
 
-include EventStream
-include EventStream::Postgres
+include EventSource
+include EventSource::Postgres

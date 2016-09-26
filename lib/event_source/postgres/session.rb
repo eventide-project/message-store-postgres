@@ -1,4 +1,4 @@
-module EventStream
+module EventSource
   module Postgres
     class Session
       def self.settings

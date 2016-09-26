@@ -1,4 +1,4 @@
-module EventStream
+module EventSource
   module Postgres
     class Put
       attr_reader :stream_name

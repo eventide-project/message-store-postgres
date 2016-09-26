@@ -1,4 +1,4 @@
-module EventStream
+module EventSource
   module Postgres
     module Controls
       module Put
@@ -8,7 +8,7 @@ module EventStream
           event ||= EventData::Write.example
 
           instances.times do
-            EventStream::Postgres::Put.(stream_name, event)
+            EventSource::Postgres::Put.(stream_name, event)
           end
 
           stream_name

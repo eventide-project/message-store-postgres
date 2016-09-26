@@ -1,6 +1,6 @@
 require_relative '../automated_init'
 
-controls = EventStream::Postgres::Controls
+controls = EventSource::Postgres::Controls
 
 context "Expected Version" do
   context "Expected version does not match the stream version" do
