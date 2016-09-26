@@ -1,8 +1,8 @@
 # -*- encoding: utf-8 -*-
 Gem::Specification.new do |s|
-  s.name = 'event_stream-postgres'
+  s.name = 'event_source-postgres'
   s.version = '0.0.0.0'
-  s.summary = 'Event stream client for PostgreSQL'
+  s.summary = 'Event source client for PostgreSQL'
   s.description = ' '
 
   s.authors = ['The Eventide Project']

@@ -1,4 +1,4 @@
-module EventStream
+module EventSource
   module Postgres
     module Controls
       module EventData
@@ -16,7 +16,7 @@ module EventStream
             data ||= EventData.data
             metadata ||= EventData::Metadata.data
 
-            event_data = EventStream::Postgres::EventData::Write.build
+            event_data = EventSource::Postgres::EventData::Write.build
 
             event_data.type = type
             event_data.data = data

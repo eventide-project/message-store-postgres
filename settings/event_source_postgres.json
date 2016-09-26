@@ -1,9 +1,9 @@
 {
-  "dbname": "eventstream",
+  "dbname": "eventsource",
   "host": "localhost",
   "hostaddr": "127.0.0.1",
   "port": 5432,
-  "user": "eventstream",
+  "user": "eventsource",
   "password": null,
   "connect_timeout": null,
   "options": null,

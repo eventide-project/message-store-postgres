@@ -1,4 +1,4 @@
-module EventStream
+module EventSource
   module Postgres
     class Settings < ::Settings
       def self.instance
@@ -6,7 +6,7 @@ module EventStream
       end
 
       def self.data_source
-        'settings/event_stream_postgres.json'
+        'settings/event_source_postgres.json'
       end
 
       def self.names

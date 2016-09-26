@@ -9,16 +9,18 @@ echo "Installing Database"
 echo "= = ="
 echo
 
+default_name=eventsource
+
 if [ -z ${DATABASE_USER+x} ]; then
   echo "(DATABASE_USER is not set)"
-  user=eventstream
+  user=$default_name
 else
   user=$DATABASE_USER
 fi
 
 if [ -z ${DATABASE_NAME+x} ]; then
   echo "(DATABASE_NAME is not set)"
-  database=eventstream
+  database=$default_name
 else
   database=$DATABASE_NAME
 fi

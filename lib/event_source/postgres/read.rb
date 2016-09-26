@@ -1,4 +1,4 @@
-module EventStream
+module EventSource
   module Postgres
     class Read
       class Error < RuntimeError; end

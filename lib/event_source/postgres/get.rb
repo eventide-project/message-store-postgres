@@ -1,4 +1,4 @@
-module EventStream
+module EventSource
   module Postgres
     class Get
       initializer :stream_name, :category, :batch_size, :precedence

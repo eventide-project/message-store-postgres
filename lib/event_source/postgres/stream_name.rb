@@ -1,4 +1,4 @@
-module EventStream
+module EventSource
   module Postgres
     module StreamName
       extend self

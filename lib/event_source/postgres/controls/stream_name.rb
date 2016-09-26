@@ -1,4 +1,4 @@
-module EventStream
+module EventSource
   module Postgres
     module Controls
       module StreamName
