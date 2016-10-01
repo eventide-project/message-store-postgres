@@ -1,27 +1,19 @@
 set -e
 
-if [ -z ${LIBRARIES_DIR+x} ]; then
-  echo "LIBRARIES_DIR must be set to the libraries directory path... exiting"
+if [ -z ${LIBRARIES_HOME+x} ]; then
+  echo "LIBRARIES_HOME must be set to the libraries directory path... exiting"
   exit 1
 fi
 
-if [ ! -d "$LIBRARIES_DIR" ]; then
-  echo "$LIBRARIES_DIR does not exit... exiting"
+if [ ! -d "$LIBRARIES_HOME" ]; then
+  echo "$LIBRARIES_HOME does not exist... exiting"
   exit 1
 fi
-
-# function make_directories {
-#   directories=("$@")
-
-#   for directory in "${directories[@]}"; do
-#     make_directory $directory
-#   done
-# }
 
 function make_directory {
   directory=$1
 
-  lib_directory="$LIBRARIES_DIR/$directory"
+  lib_directory="$LIBRARIES_HOME/$directory"
 
   if [ ! -d "$lib_directory" ]; then
     echo "- making directory $lib_directory"
@@ -33,7 +25,7 @@ function remove_lib_symlinks {
   name=$1
   directory=$2
 
-  dest="$LIBRARIES_DIR"
+  dest="$LIBRARIES_HOME"
   if [ ! -z "$directory" ]; then
     dest="$dest/$directory"
   fi
@@ -57,8 +49,8 @@ function symlink_lib {
 
   remove_lib_symlinks $name $directory
 
-  src="$(PWD)/lib"
-  dest="$LIBRARIES_DIR"
+  src="$(pwd)/lib"
+  dest="$LIBRARIES_HOME"
   if [ ! -z "$directory" ]; then
     src="$src/$directory"
     dest="$dest/$directory"
