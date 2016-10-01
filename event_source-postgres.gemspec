@@ -15,17 +15,16 @@ Gem::Specification.new do |s|
   s.platform = Gem::Platform::RUBY
   s.required_ruby_version = '>= 2.2.3'
 
-  s.executables = ['install-event-stream-database', 'uninstall-event-stream-database']
+  s.executables = ['install-event-source-database', 'uninstall-event-source-database']
   s.bindir = 'bin'
+
+  s.add_runtime_dependency 'event_source'
 
   s.add_runtime_dependency 'telemetry'
   s.add_runtime_dependency 'telemetry-logger'
-  s.add_runtime_dependency 'casing'
-  s.add_runtime_dependency 'schema'
-  s.add_runtime_dependency 'initializer'
-  s.add_runtime_dependency 'serialize'
   s.add_runtime_dependency 'settings'
   s.add_runtime_dependency 'async_invocation'
+
   s.add_runtime_dependency 'controls'
 
   s.add_runtime_dependency 'pg'
