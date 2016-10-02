@@ -2,5 +2,5 @@ require_relative 'test_init'
 
 TestBench::Runner.(
   'automated/**/*.rb',
-  exclude_pattern: %r{/^skip_|(?:_init\.rb|\.sketch\.rb|_sketch\.rb|sketch\.rb|\.skip\.rb|_tests\.rb)\z}
+  exclude_pattern: %r{\/_|sketch|(_init\.rb|_tests\.rb)\z}
 ) or exit 1
