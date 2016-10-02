@@ -129,8 +129,6 @@ module EventSource
             record :timed_out
           end
 
-          Data = Struct.new :milliseconds
-
           def self.sink
             Sink.new
           end
