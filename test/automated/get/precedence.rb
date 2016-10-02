@@ -1,10 +1,10 @@
 require_relative '../automated_init'
 
-controls = EventSource::Postgres::Controls
+Controls = EventSource::Postgres::Controls
 
 context "Get" do
   context "Precedence" do
-    stream_name = controls::Put.(instances: 3)
+    stream_name = Controls::Put.(instances: 3)
 
     context "Ascending" do
       events = Get.(stream_name: stream_name, precedence: :asc)

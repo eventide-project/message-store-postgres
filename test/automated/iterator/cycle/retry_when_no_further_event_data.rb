@@ -1,6 +1,6 @@
 require_relative '../../automated_init'
 
-controls = EventSource::Postgres::Controls
+Controls = EventSource::Postgres::Controls
 
 context "Iterator" do
   context "Cycle" do

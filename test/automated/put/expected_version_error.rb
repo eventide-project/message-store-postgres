@@ -1,11 +1,11 @@
 require_relative '../automated_init'
 
-controls = EventSource::Postgres::Controls
+Controls = EventSource::Postgres::Controls
 
 context "Expected Version" do
   context "Expected version does not match the stream version" do
-    stream_name = controls::StreamName.example
-    write_event = controls::EventData::Write.example
+    stream_name = Controls::StreamName.example
+    write_event = Controls::EventData::Write.example
 
     stream_position = Put.(stream_name, write_event)
 

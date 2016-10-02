@@ -1,10 +1,10 @@
 require_relative '../automated_init'
 
-controls = EventSource::Postgres::Controls
+Controls = EventSource::Postgres::Controls
 
 context "Stream Version Increases with Subsequent Writes" do
-  stream_name = controls::StreamName.example
-  write_event = controls::EventData::Write.example
+  stream_name = Controls::StreamName.example
+  write_event = Controls::EventData::Write.example
 
   stream_position_1 = Put.(stream_name, write_event)
   stream_position_2 = Put.(stream_name, write_event)

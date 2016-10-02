@@ -1,10 +1,10 @@
 require_relative '../automated_init'
 
-controls = EventSource::Postgres::Controls
+Controls = EventSource::Postgres::Controls
 
 context "Get" do
   context "No Events" do
-    stream_name = controls::StreamName.example
+    stream_name = Controls::StreamName.example
 
     batch = Get.(stream_name: stream_name)
 

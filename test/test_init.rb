@@ -14,7 +14,6 @@ puts RUBY_DESCRIPTION
 
 require_relative '../init.rb'
 require 'event_source/postgres/controls'
-controls = EventSource::Postgres::Controls
 
 require 'test_bench'; TestBench.activate
 

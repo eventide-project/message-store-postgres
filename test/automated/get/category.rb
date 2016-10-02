@@ -1,12 +1,12 @@
 require_relative '../automated_init'
 
-controls = EventSource::Postgres::Controls
+Controls = EventSource::Postgres::Controls
 
 context "Get" do
   context "Category" do
-    category = controls::Category.example
+    category = Controls::Category.example
 
-    controls::Put.(instances: 2, category: category)
+    Controls::Put.(instances: 2, category: category)
 
     events = Get.(category: category)
 
