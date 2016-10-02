@@ -1,7 +1,5 @@
 require_relative '../../automated_init'
 
-Controls = EventSource::Postgres::Controls
-
 context "Put" do
   context "No Stream" do
     context "Existing Stream" do

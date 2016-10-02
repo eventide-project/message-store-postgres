@@ -1,7 +1,5 @@
 require_relative '../automated_init'
 
-Controls = EventSource::Postgres::Controls
-
 context "Iterator" do
   context "No further event data" do
     stream_name = Controls::Put.(instances: 2)

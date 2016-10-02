@@ -1,7 +1,5 @@
 require_relative '../automated_init'
 
-Controls = EventSource::Postgres::Controls
-
 context "Put" do
   context "Category as Stream Name" do
     category = Controls::Category.example

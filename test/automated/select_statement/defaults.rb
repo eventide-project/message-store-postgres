@@ -1,7 +1,5 @@
 require_relative '../automated_init'
 
-Controls = EventSource::Postgres::Controls
-
 context "Select Statement" do
   context "Defaults" do
     stream = Controls::Stream.example

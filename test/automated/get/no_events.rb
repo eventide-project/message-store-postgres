@@ -1,7 +1,5 @@
 require_relative '../automated_init'
 
-Controls = EventSource::Postgres::Controls
-
 context "Get" do
   context "No Events" do
     stream_name = Controls::StreamName.example
