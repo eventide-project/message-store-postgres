@@ -22,6 +22,7 @@ Gem::Specification.new do |s|
 
   s.add_runtime_dependency 'telemetry'
   s.add_runtime_dependency 'telemetry-logger'
+  s.add_runtime_dependency 'cycle'
   s.add_runtime_dependency 'settings'
   s.add_runtime_dependency 'async_invocation'
 
