@@ -7,7 +7,7 @@ Gem::Specification.new do |s|
 
   s.authors = ['The Eventide Project']
   s.email = 'opensource@eventide-project.org'
-  s.homepage = 'https://github.com/eventide-project/event-stream-postgres'
+  s.homepage = 'https://github.com/eventide-project/event-source-postgres'
   s.licenses = ['MIT']
 
   s.require_paths = ['lib']
