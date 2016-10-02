@@ -1,14 +1,10 @@
 require 'pg'
 
-require 'casing'
-require 'clock'
-require 'dependency'; Dependency.activate
-require 'schema'
-require 'initializer'; Initializer.activate
-require 'serialize'
-require 'settings'; Settings.activate
-require 'telemetry'
+require 'event_source'
+
 require 'telemetry/logger'
+require 'telemetry'
+require 'settings'; Settings.activate
 require 'async_invocation'
 
 require 'event_source/postgres/no_stream'
