@@ -1,9 +1,7 @@
 require_relative '../automated_init'
 
-controls = EventSource::Postgres::Controls
-
 context "Read" do
-  stream_name = controls::Put.(instances: 2)
+  stream_name = Controls::Put.(instances: 2)
 
   batch = []
 

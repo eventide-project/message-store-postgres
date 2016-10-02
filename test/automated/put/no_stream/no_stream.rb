@@ -1,12 +1,10 @@
 require_relative '../../automated_init'
 
-controls = EventSource::Postgres::Controls
-
 context "Put" do
   context "No Stream" do
     context "For a stream that doesn't exist" do
-      stream_name = controls::StreamName.example
-      write_event = controls::EventData::Write.example
+      stream_name = Controls::StreamName.example
+      write_event = Controls::EventData::Write.example
 
       stream_position = Put.(stream_name, write_event)
 

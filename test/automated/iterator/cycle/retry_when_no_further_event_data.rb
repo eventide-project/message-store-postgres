@@ -1,7 +1,5 @@
 require_relative '../../automated_init'
 
-controls = EventSource::Postgres::Controls
-
 context "Iterator" do
   context "Cycle" do
     context "Retry when no further event data" do

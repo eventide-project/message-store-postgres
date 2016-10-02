@@ -1,11 +1,9 @@
 require_relative '../automated_init'
 
-controls = EventSource::Postgres::Controls
-
 context "Put" do
   context "Category as Stream Name" do
-    category = controls::Category.example
-    write_event = controls::EventData::Write.example
+    category = Controls::Category.example
+    write_event = Controls::EventData::Write.example
 
     Put.(category, write_event)
 

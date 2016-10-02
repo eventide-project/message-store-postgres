@@ -1,5 +1,3 @@
-require 'controls'
-
 require 'event_source/controls'
 
 require 'event_source/postgres/controls/category'

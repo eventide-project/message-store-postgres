@@ -1,10 +1,8 @@
 require_relative '../automated_init'
 
-controls = EventSource::Postgres::Controls
-
 context "Select Statement" do
   context "Category Query" do
-    stream = controls::Stream::Category.example
+    stream = Controls::Stream::Category.example
 
     select_statement = Get::SelectStatement.build stream
 
