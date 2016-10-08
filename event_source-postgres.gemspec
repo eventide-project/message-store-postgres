@@ -20,8 +20,6 @@ Gem::Specification.new do |s|
 
   s.add_runtime_dependency 'event_source'
 
-  s.add_runtime_dependency 'telemetry'
-  s.add_runtime_dependency 'telemetry-logger'
   s.add_runtime_dependency 'log'
   s.add_runtime_dependency 'cycle'
   s.add_runtime_dependency 'settings'

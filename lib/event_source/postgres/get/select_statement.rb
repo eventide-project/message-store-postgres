@@ -2,9 +2,9 @@ module EventSource
   module Postgres
     class Get
       class SelectStatement
-        initializer :stream, w(:offset), w(:batch_size), w(:precedence)
+        include Log::Dependency
 
-        dependency :logger, Telemetry::Logger
+        initializer :stream, w(:offset), w(:batch_size), w(:precedence)
 
         def offset
           @offset ||= Defaults.offset
@@ -27,17 +27,11 @@ module EventSource
         end
 
         def self.build(stream, offset: nil, batch_size: nil, precedence: nil)
-          new(stream, offset, batch_size, precedence).tap do |instance|
-            instance.configure
-          end
-        end
-
-        def configure
-          Telemetry::Logger.configure self
+          new(stream, offset, batch_size, precedence)
         end
 
         def sql
-          logger.opt_trace "Composing select statement (Stream: #{stream_name}, Type: #{stream_type}, Stream Position: #{offset}, Batch Size: #{batch_size}, Precedence: #{precedence})"
+          logger.trace "Composing select statement (Stream: #{stream_name}, Type: #{stream_type}, Stream Position: #{offset}, Batch Size: #{batch_size}, Precedence: #{precedence})"
 
           statement = <<-SQL
             SELECT
@@ -61,8 +55,8 @@ module EventSource
             ;
           SQL
 
-          logger.opt_debug "Composed select statement (Stream: #{stream_name}, Type: #{stream_type}, Stream Position: #{offset}, Batch Size: #{batch_size}, Precedence: #{precedence})"
-          logger.opt_data "Statement: #{statement}"
+          logger.debug "Composed select statement (Stream: #{stream_name}, Type: #{stream_type}, Stream Position: #{offset}, Batch Size: #{batch_size}, Precedence: #{precedence})"
+          logger.data "Statement: #{statement}"
 
           statement
         end

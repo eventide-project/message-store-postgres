@@ -3,7 +3,7 @@ require 'pg'
 require 'event_source'
 require 'cycle'
 
-require 'telemetry/logger'
+require 'log'
 require 'telemetry'
 require 'settings'; Settings.activate
 require 'async_invocation'

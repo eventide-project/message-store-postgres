@@ -1,10 +1,11 @@
 module EventSource
   module Postgres
     class Put
+      include Log::Dependency
+
       attr_reader :stream_name
 
       dependency :session, Session
-      dependency :logger, Telemetry::Logger
 
       def initialize(stream_name)
         @stream_name = stream_name
@@ -18,7 +19,6 @@ module EventSource
 
       def configure(session: nil)
         Session.configure(self, session: session)
-        Telemetry::Logger.configure(self)
       end
 
       def self.call(stream_name, write_event, expected_version: nil, session: nil)
@@ -27,14 +27,14 @@ module EventSource
       end
 
       def call(write_event, expected_version: nil)
-        logger.opt_trace "Putting event data (Stream Name: #{stream_name}, Type: #{write_event.type}, Expected Version: #{expected_version.inspect})"
+        logger.trace "Putting event data (Stream Name: #{stream_name}, Type: #{write_event.type}, Expected Version: #{expected_version.inspect})"
 
         type, data, metadata = destructure_event(write_event)
         expected_version = canonize_expected_version(expected_version)
 
         stream_position = insert_event(type, data, metadata, expected_version)
 
-        logger.opt_debug "Put event data (Stream Name: #{stream_name}, Type: #{write_event.type}, Expected Version: #{expected_version.inspect})"
+        logger.debug "Put event data (Stream Name: #{stream_name}, Type: #{write_event.type}, Expected Version: #{expected_version.inspect})"
 
         stream_position
       end
@@ -44,8 +44,8 @@ module EventSource
         data = write_event.data
         metadata = write_event.metadata
 
-        logger.opt_data "Data: #{data.inspect}"
-        logger.opt_data "Metadata: #{metadata.inspect}"
+        logger.data "Data: #{data.inspect}"
+        logger.data "Metadata: #{metadata.inspect}"
 
         return type, data, metadata
       end
@@ -53,9 +53,9 @@ module EventSource
       def canonize_expected_version(expected_version)
         return expected_version unless expected_version == NoStream.name
 
-        logger.opt_trace "Canonizing expected version (Expected Version: #{expected_version})"
+        logger.trace "Canonizing expected version (Expected Version: #{expected_version})"
         expected_version = NoStream.version
-        logger.opt_debug "Canonized expected version (Expected Version: #{expected_version})"
+        logger.debug "Canonized expected version (Expected Version: #{expected_version})"
         expected_version
       end
 
@@ -67,7 +67,7 @@ module EventSource
       end
 
       def execute_query(type, serialized_data, serialized_metadata, expected_version)
-        logger.opt_trace "Executing insert (Stream Name: #{stream_name}, Type: #{type}, Expected Version: #{expected_version.inspect})"
+        logger.trace "Executing insert (Stream Name: #{stream_name}, Type: #{type}, Expected Version: #{expected_version.inspect})"
 
         sql_args = [
           stream_name,
@@ -83,7 +83,7 @@ module EventSource
           raise_error e
         end
 
-        logger.opt_debug "Executed insert (Stream Name: #{stream_name}, Type: #{type}, Expected Version: #{expected_version.inspect})"
+        logger.debug "Executed insert (Stream Name: #{stream_name}, Type: #{type}, Expected Version: #{expected_version.inspect})"
 
         records
       end
@@ -95,7 +95,7 @@ module EventSource
       def serialized_data(data)
         serializable_data = EventData::Hash[data]
         serialized_data = Serialize::Write.(serializable_data, :json)
-        logger.opt_data "Serialized Data: #{serialized_data.inspect}"
+        logger.data "Serialized Data: #{serialized_data.inspect}"
         serialized_data
       end
 
@@ -105,7 +105,7 @@ module EventSource
         unless metadata.nil?
           serialized_metadata = Serialize::Write.(serializable_metadata, :json)
         end
-        logger.opt_data "Serialized Metadata: #{serialized_metadata.inspect}"
+        logger.data "Serialized Metadata: #{serialized_metadata.inspect}"
         serialized_metadata
       end
 

@@ -3,16 +3,16 @@ module EventSource
     class Read
       class Error < RuntimeError; end
 
+      include Log::Dependency
+
       initializer :stream_name, :category, :stream_position, :batch_size, :precedence
 
       dependency :session, Session
       dependency :iterator, Iterator
-      dependency :logger, Telemetry::Logger
 
       def self.build(stream_name: nil, category: nil, stream_position: nil, batch_size: nil, precedence: nil, delay_milliseconds: nil, timeout_milliseconds: nil, cycle: nil, session: nil)
         new(stream_name, category, stream_position, batch_size, precedence).tap do |instance|
           Iterator.configure instance, stream_name: stream_name, category: category, stream_position: stream_position, batch_size: batch_size, precedence: precedence, delay_milliseconds: delay_milliseconds, timeout_milliseconds: timeout_milliseconds, cycle: cycle, session: session
-          Telemetry::Logger.configure instance
         end
       end
 
@@ -40,7 +40,7 @@ module EventSource
       end
 
       def enumerate_event_data(&action)
-        logger.opt_trace "Reading event data (Stream Name: #{stream_name.inspect}, Category: #{category.inspect}, Stream Position: #{stream_position.inspect}, Batch Size: #{batch_size.inspect}, Precedence: #{precedence.inspect})"
+        logger.trace "Reading event data (Stream Name: #{stream_name.inspect}, Category: #{category.inspect}, Stream Position: #{stream_position.inspect}, Batch Size: #{batch_size.inspect}, Precedence: #{precedence.inspect})"
 
         event_data = nil
 
@@ -52,7 +52,7 @@ module EventSource
           action.(event_data)
         end
 
-        logger.opt_debug "Finished reading event data (Stream Name: #{stream_name.inspect}, Category: #{category.inspect}, Stream Position: #{stream_position.inspect}, Batch Size: #{batch_size.inspect}, Precedence: #{precedence.inspect})"
+        logger.debug "Finished reading event data (Stream Name: #{stream_name.inspect}, Category: #{category.inspect}, Stream Position: #{stream_position.inspect}, Batch Size: #{batch_size.inspect}, Precedence: #{precedence.inspect})"
       end
     end
   end

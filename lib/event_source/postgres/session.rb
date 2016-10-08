@@ -1,6 +1,8 @@
 module EventSource
   module Postgres
     class Session
+      include Log::Dependency
+
       def self.settings
         Settings.names
       end
@@ -11,12 +13,8 @@ module EventSource
 
       attr_accessor :connection
 
-      dependency :logger, Telemetry::Logger
-
       def self.build(connection: nil, settings: nil)
         new.tap do |instance|
-          Telemetry::Logger.configure instance
-
           settings ||= Settings.instance
 
           settings.set(instance)
@@ -90,7 +88,7 @@ module EventSource
       end
 
       def self.logger
-        @logger ||= Telemetry::Logger.get self
+        @logger ||= Log.get self
       end
 
       module LogText
