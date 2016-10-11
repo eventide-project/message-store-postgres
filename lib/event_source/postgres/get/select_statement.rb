@@ -31,7 +31,7 @@ module EventSource
         end
 
         def sql
-          logger.trace "Composing select statement (Stream: #{stream_name}, Type: #{stream_type}, Stream Position: #{offset}, Batch Size: #{batch_size}, Precedence: #{precedence})"
+          logger.trace "Composing select statement (Stream: #{stream_name}, Type: #{stream_type}, Stream Position: #{offset}, Batch Size: #{batch_size}, Precedence: #{precedence})", tag: :sql
 
           statement = <<-SQL
             SELECT
@@ -55,8 +55,8 @@ module EventSource
             ;
           SQL
 
-          logger.debug "Composed select statement (Stream: #{stream_name}, Type: #{stream_type}, Stream Position: #{offset}, Batch Size: #{batch_size}, Precedence: #{precedence})"
-          logger.data "Statement: #{statement}"
+          logger.debug "Composed select statement (Stream: #{stream_name}, Type: #{stream_type}, Stream Position: #{offset}, Batch Size: #{batch_size}, Precedence: #{precedence})", tag: :sql
+          logger.data "Statement: #{statement}", tag: :sql
 
           statement
         end
