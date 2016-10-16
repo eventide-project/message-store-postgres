@@ -56,7 +56,7 @@ module EventSource
           SQL
 
           logger.debug "Composed select statement (Stream: #{stream_name}, Type: #{stream_type}, Stream Position: #{offset}, Batch Size: #{batch_size}, Precedence: #{precedence})", tag: :sql
-          logger.data "Statement: #{statement}", tag: :sql
+          logger.debug "Statement: #{statement}", tags: [:data, :sql]
 
           statement
         end
