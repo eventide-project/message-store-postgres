@@ -22,16 +22,16 @@ module EventSource
 
       initializer :stream, a(:stream_position, 0), :batch_size, :precedence
 
-      def self.build(stream, stream_position: nil, batch_size: nil, precedence: nil, delay_milliseconds: nil, timeout_milliseconds: nil, cycle: nil, session: nil)
+      def self.build(stream, stream_position: nil, batch_size: nil, precedence: nil, cycle: nil, session: nil)
         new(stream, stream_position, batch_size, precedence).tap do |instance|
           Get.configure instance, stream, batch_size: batch_size, precedence: precedence, session: session
-          Cycle.configure instance, delay_milliseconds: delay_milliseconds, timeout_milliseconds: timeout_milliseconds, cycle: cycle
+          Cycle.configure instance, cycle: cycle
         end
       end
 
-      def self.configure(receiver, stream,  attr_name: nil, stream_position: nil, batch_size: nil, precedence: nil, delay_milliseconds: nil, timeout_milliseconds: nil, cycle: nil, session: nil)
+      def self.configure(receiver, stream,  attr_name: nil, stream_position: nil, batch_size: nil, precedence: nil, cycle: nil, session: nil)
         attr_name ||= :iterator
-        instance = build(stream, stream_position: stream_position, batch_size: batch_size, precedence: precedence, delay_milliseconds: delay_milliseconds, timeout_milliseconds: timeout_milliseconds, cycle: cycle, session: session)
+        instance = build(stream, stream_position: stream_position, batch_size: batch_size, precedence: precedence, cycle: cycle, session: session)
         receiver.public_send "#{attr_name}=", instance
       end
 
