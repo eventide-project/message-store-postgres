@@ -29,25 +29,25 @@ module EventSource
       end
 
       def call(stream_position: nil)
-        logger.trace "Getting event data (Stream Position: #{stream_position.inspect}, Stream Name: #{stream.name}, Batch Size: #{batch_size.inspect}, Precedence: #{precedence.inspect})"
+        logger.trace "Getting event data (Stream Position: #{stream_position.inspect}, Stream Name: #{stream.name}, Category: #{stream.category?}, Batch Size: #{batch_size.inspect}, Precedence: #{precedence.inspect})"
 
         records = get_records(stream, stream_position)
 
         events = convert(records)
 
-        logger.debug "Finished getting event data (Count: #{events.length}, Stream Position: #{stream_position.inspect}, Stream: #{stream.name}, Batch Size: #{batch_size.inspect}, Precedence: #{precedence.inspect})"
+        logger.debug "Finished getting event data (Count: #{events.length}, Stream Position: #{stream_position.inspect}, Stream Name: #{stream.name}, Category: #{stream.category?}, Batch Size: #{batch_size.inspect}, Precedence: #{precedence.inspect})"
 
         events
       end
 
       def get_records(stream, stream_position)
-        logger.trace "Getting records (Stream: #{stream.name}, Stream Position: #{stream_position.inspect}, Batch Size: #{batch_size.inspect}, Precedence: #{precedence.inspect})"
+        logger.trace "Getting records (Stream: #{stream.name}, Category: #{stream.category?}, Stream Position: #{stream_position.inspect}, Batch Size: #{batch_size.inspect}, Precedence: #{precedence.inspect})"
 
         select_statement = SelectStatement.build(stream, offset: stream_position, batch_size: batch_size, precedence: precedence)
 
         records = session.connection.exec(select_statement.sql)
 
-        logger.debug "Finished getting records (Count: #{records.ntuples}, Stream: #{stream.name}, Stream Position: #{stream_position.inspect}, Batch Size: #{batch_size.inspect}, Precedence: #{precedence.inspect})"
+        logger.debug "Finished getting records (Count: #{records.ntuples}, Stream: #{stream.name}, Category: #{stream.category?}, Stream Position: #{stream_position.inspect}, Batch Size: #{batch_size.inspect}, Precedence: #{precedence.inspect})"
 
         records
       end
