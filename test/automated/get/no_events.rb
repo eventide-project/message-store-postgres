@@ -2,9 +2,9 @@ require_relative '../automated_init'
 
 context "Get" do
   context "No Events" do
-    stream_name = Controls::StreamName.example
+    stream = Controls::Stream.example
 
-    batch = Get.(stream_name: stream_name)
+    batch = Get.(stream)
 
     test "Empty array" do
       assert(batch == [])

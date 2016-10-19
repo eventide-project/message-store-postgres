@@ -5,25 +5,26 @@ module EventSource
 
       include Log::Dependency
 
-      initializer :stream_name, :category, :stream_position, :batch_size, :precedence
+      initializer :stream, :stream_position, :batch_size, :precedence
 
       dependency :session, Session
       dependency :iterator, Iterator
 
-      def self.build(stream_name: nil, category: nil, stream_position: nil, batch_size: nil, precedence: nil, delay_milliseconds: nil, timeout_milliseconds: nil, cycle: nil, session: nil)
-        new(stream_name, category, stream_position, batch_size, precedence).tap do |instance|
-          Iterator.configure instance, stream_name: stream_name, category: category, stream_position: stream_position, batch_size: batch_size, precedence: precedence, delay_milliseconds: delay_milliseconds, timeout_milliseconds: timeout_milliseconds, cycle: cycle, session: session
+      def self.build(stream_name, stream_position: nil, batch_size: nil, precedence: nil, delay_milliseconds: nil, timeout_milliseconds: nil, cycle: nil, session: nil)
+        stream = Stream.new(stream_name)
+        new(stream, stream_position, batch_size, precedence).tap do |instance|
+          Iterator.configure instance, stream, stream_position: stream_position, batch_size: batch_size, precedence: precedence, delay_milliseconds: delay_milliseconds, timeout_milliseconds: timeout_milliseconds, cycle: cycle, session: session
         end
       end
 
-      def self.call(stream_name: nil, category: nil, stream_position: nil, batch_size: nil, precedence: nil, delay_milliseconds: nil, timeout_milliseconds: nil, cycle: nil, session: nil, &action)
-        instance = build(stream_name: stream_name, category: category, stream_position: stream_position, batch_size: batch_size, precedence: precedence, delay_milliseconds: delay_milliseconds, timeout_milliseconds: timeout_milliseconds, cycle: cycle, session: session)
+      def self.call(stream_name, stream_position: nil, batch_size: nil, precedence: nil, delay_milliseconds: nil, timeout_milliseconds: nil, cycle: nil, session: nil, &action)
+        instance = build(stream_name, stream_position: stream_position, batch_size: batch_size, precedence: precedence, delay_milliseconds: delay_milliseconds, timeout_milliseconds: timeout_milliseconds, cycle: cycle, session: session)
         instance.(&action)
       end
 
-      def self.configure(receiver, attr_name: nil, stream_name: nil, category: nil, stream_position: nil, batch_size: nil, precedence: nil, delay_milliseconds: nil, timeout_milliseconds: nil, cycle: nil, session: nil)
+      def self.configure(receiver, stream_name, attr_name: nil, stream_position: nil, batch_size: nil, precedence: nil, delay_milliseconds: nil, timeout_milliseconds: nil, cycle: nil, session: nil)
         attr_name ||= :reader
-        instance = build(stream_name: stream_name, category: category, stream_position: stream_position, batch_size: batch_size, precedence: precedence, delay_milliseconds: delay_milliseconds, timeout_milliseconds: timeout_milliseconds, cycle: cycle, session: session)
+        instance = build(stream_name, stream_position: stream_position, batch_size: batch_size, precedence: precedence, delay_milliseconds: delay_milliseconds, timeout_milliseconds: timeout_milliseconds, cycle: cycle, session: session)
         receiver.public_send "#{attr_name}=", instance
       end
 

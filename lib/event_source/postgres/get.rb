@@ -3,24 +3,24 @@ module EventSource
     class Get
       include Log::Dependency
 
-      initializer :stream_name, :category, :batch_size, :precedence
+      initializer :stream, :batch_size, :precedence
 
       dependency :session, Session
 
-      def self.build(stream_name: nil, category: nil, stream_position: nil, batch_size: nil, precedence: nil, session: nil)
-        new(stream_name, category, batch_size, precedence).tap do |instance|
+      def self.build(stream, batch_size: nil, precedence: nil, session: nil)
+        new(stream, batch_size, precedence).tap do |instance|
           instance.configure(session: session)
         end
       end
 
-      def self.configure(receiver, attr_name: nil, stream_name: nil, category: nil, stream_position: nil, batch_size: nil, precedence: nil, session: nil)
+      def self.configure(receiver, stream, attr_name: nil, stream_position: nil, batch_size: nil, precedence: nil, session: nil)
         attr_name ||= :get
-        instance = build(stream_name: stream_name, category: category, batch_size: batch_size, precedence: precedence, session: session)
+        instance = build(stream, batch_size: batch_size, precedence: precedence, session: session)
         receiver.public_send "#{attr_name}=", instance
       end
 
-      def self.call(stream_name: nil, category: nil, stream_position: nil, batch_size: nil, precedence: nil, session: nil)
-        instance = build(stream_name: stream_name, category: category, batch_size: batch_size, precedence: precedence, session: session)
+      def self.call(stream, stream_position: nil, batch_size: nil, precedence: nil, session: nil)
+        instance = build(stream, batch_size: batch_size, precedence: precedence, session: session)
         instance.(stream_position: stream_position)
       end
 
@@ -29,9 +29,8 @@ module EventSource
       end
 
       def call(stream_position: nil)
-        logger.trace "Getting event data (Stream Position: #{stream_position.inspect}, Stream Name: #{stream_name.inspect}, Category: #{category.inspect}, Batch Size: #{batch_size.inspect}, Precedence: #{precedence.inspect})"
+        logger.trace "Getting event data (Stream Position: #{stream_position.inspect}, Stream Name: #{stream.name}, Batch Size: #{batch_size.inspect}, Precedence: #{precedence.inspect})"
 
-        stream = Stream.build stream_name: stream_name, category: category
         records = get_records(stream, stream_position)
 
         events = convert(records)

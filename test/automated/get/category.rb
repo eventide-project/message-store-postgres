@@ -4,9 +4,9 @@ context "Get" do
   context "Category" do
     category = Controls::Category.example
 
-    Controls::Put.(instances: 2, category: category)
+    stream = Controls::Put.(instances: 2, category: category)
 
-    events = Get.(category: category)
+    events = Get.(stream)
 
     test "Number of events retrieved is the number written to the category" do
       number_of_events = events.length
