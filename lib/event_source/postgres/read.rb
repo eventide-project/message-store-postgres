@@ -12,8 +12,13 @@ module EventSource
 
       def self.build(stream_name, stream_position: nil, batch_size: nil, precedence: nil, delay_milliseconds: nil, timeout_milliseconds: nil, cycle: nil, session: nil)
         stream = Stream.new(stream_name)
+
+        if cycle.nil?
+          cycle = Cycle.build(delay_milliseconds: delay_milliseconds, timeout_milliseconds: timeout_milliseconds)
+        end
+
         new(stream, stream_position, batch_size, precedence).tap do |instance|
-          Iterator.configure instance, stream, stream_position: stream_position, batch_size: batch_size, precedence: precedence, delay_milliseconds: delay_milliseconds, timeout_milliseconds: timeout_milliseconds, cycle: cycle, session: session
+          Iterator.configure instance, stream, stream_position: stream_position, batch_size: batch_size, precedence: precedence, cycle: cycle, session: session
         end
       end
 
