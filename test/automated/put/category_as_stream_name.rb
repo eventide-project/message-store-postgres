@@ -7,7 +7,9 @@ context "Put" do
 
     Put.(category, write_event)
 
-    read_event = Get.(stream_name: category).first
+    stream = Stream.new(category)
+
+    read_event = Get.(stream).first
 
     test "Got the event that was written" do
       assert(read_event.stream_name == category)
