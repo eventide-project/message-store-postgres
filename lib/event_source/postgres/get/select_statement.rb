@@ -62,7 +62,7 @@ module EventSource
         end
 
         def where_clause_field
-          if stream.type == :stream
+          unless stream.category?
             'stream_name'
           else
             'category(stream_name)'
