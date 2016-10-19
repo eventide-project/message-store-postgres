@@ -28,6 +28,7 @@ module EventSource
 
       def call(write_event, expected_version: nil)
         logger.trace "Putting event data (Stream Name: #{stream_name}, Type: #{write_event.type}, Expected Version: #{expected_version.inspect})"
+        logger.trace write_event.inspect, tags: [:data, :event_data]
 
         type, data, metadata = destructure_event(write_event)
         expected_version = canonize_expected_version(expected_version)
@@ -44,8 +45,8 @@ module EventSource
         data = write_event.data
         metadata = write_event.metadata
 
-        logger.debug "Data: #{data.inspect}", tag: :data
-        logger.debug "Metadata: #{metadata.inspect}", tag: :data
+        logger.debug "Data: #{data.inspect}",  tags: [:data, :event_data]
+        logger.debug "Metadata: #{metadata.inspect}", tags: [:data, :event_data]
 
         return type, data, metadata
       end
@@ -95,7 +96,7 @@ module EventSource
       def serialized_data(data)
         serializable_data = EventData::Hash[data]
         serialized_data = Serialize::Write.(serializable_data, :json)
-        logger.debug "Serialized Data: #{serialized_data.inspect}", tag: :data
+        logger.debug "Serialized Data: #{serialized_data.inspect}", tags: [:data, :serialize]
         serialized_data
       end
 
@@ -105,7 +106,7 @@ module EventSource
         unless metadata.nil?
           serialized_metadata = Serialize::Write.(serializable_metadata, :json)
         end
-        logger.debug "Serialized Metadata: #{serialized_metadata.inspect}", tag: :data
+        logger.debug "Serialized Metadata: #{serialized_metadata.inspect}", tags: [:data, :serialize]
         serialized_metadata
       end
 
@@ -121,7 +122,7 @@ module EventSource
         error_message = pg_error.message
         if error_message.include? 'Wrong expected version'
           error_message.gsub!('ERROR:', '').strip!
-          raise Write::ExpectedVersionError, error_message
+          raise ExpectedVersionError, error_message
         end
         raise pg_error
       end

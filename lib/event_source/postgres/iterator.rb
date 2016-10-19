@@ -43,7 +43,7 @@ module EventSource
         event_data = batch[batch_position]
 
         logger.debug "Finished getting next event data (Batch Length: #{batch.nil? ? '<none>' : batch.length}, Batch Position: #{batch_position}, Stream Offset: #{stream_offset})"
-        logger.debug "Event Data: #{event_data.inspect}", tag: :data
+        logger.debug "Event Data: #{event_data.inspect}",  tags: [:data, :event_data]
 
         advance_positions
 
@@ -78,8 +78,8 @@ module EventSource
         self.batch_position = 0
 
         logger.debug "Reset batch"
-        logger.debug "Batch: #{batch.inspect}", tag: :data
-        logger.debug "Batch Position: #{batch_position.inspect}", tag: :data
+        logger.debug "Batch: #{batch.inspect}", tags: [:data, :batch]
+        logger.debug "Batch Position: #{batch_position.inspect}", tags: [:data, :batch]
       end
 
       def get_batch
