@@ -3,13 +3,9 @@ module EventSource
     class Put
       include Log::Dependency
 
-      attr_reader :stream_name
-
       dependency :session, Session
 
-      def initialize(stream_name)
-        @stream_name = stream_name
-      end
+      initializer :stream_name
 
       def self.build(stream_name, session: nil)
         new(stream_name).tap do |instance|
