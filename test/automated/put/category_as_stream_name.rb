@@ -11,7 +11,7 @@ context "Put" do
 
     read_event = Get.(stream).first
 
-    test "Got the event that was written" do
+    test "Writes the category name as the stream name" do
       assert(read_event.stream_name == category)
     end
   end
