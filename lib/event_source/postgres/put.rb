@@ -6,7 +6,7 @@ module EventSource
       dependency :session, Session
 
       def partition
-        @partition ||= Defaults::Partition.name
+        @partition ||= Defaults.partition
       end
       attr_writer :partition
 
@@ -134,10 +134,8 @@ module EventSource
       end
 
       module Defaults
-        module Partition
-          def self.name
-            'events'
-          end
+        def self.partition
+          Partition::Defaults.name
         end
       end
     end
