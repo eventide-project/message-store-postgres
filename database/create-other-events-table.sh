@@ -5,7 +5,7 @@ set -e
 clear
 
 echo
-echo "Clearing Events Table"
+echo "Creating other_events Table"
 echo "= = ="
 echo
 
@@ -17,7 +17,6 @@ if [ -z ${DATABASE_USER+x} ]; then
 else
   user=$DATABASE_USER
 fi
-echo "Database user is: $user"
 
 if [ -z ${DATABASE_NAME+x} ]; then
   echo "(DATABASE_NAME is not set)"
@@ -25,18 +24,7 @@ if [ -z ${DATABASE_NAME+x} ]; then
 else
   database=$DATABASE_NAME
 fi
-echo "Database name is: $database"
-
-default_table_name=events
-
-if [ -z ${TABLE_NAME+x} ]; then
-  echo "(TABLE_NAME is not set)"
-  table=$default_table_name
-else
-  table=$TABLE_NAME
-fi
-echo "Table name is: $table"
 
 echo
 
-psql $database -c "TRUNCATE $table RESTART IDENTITY;"
+psql $database -f database/tables/other-events-table.sql
