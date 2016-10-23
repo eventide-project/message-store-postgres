@@ -5,10 +5,16 @@ module EventSource
 
       dependency :session, Session
 
+      def partition
+        @partition ||= Defaults::Partition.name
+      end
+      attr_writer :partition
+
       initializer :stream_name
 
-      def self.build(stream_name, session: nil)
+      def self.build(stream_name, partition: nil, session: nil)
         new(stream_name).tap do |instance|
+          instance.partition = partition
           instance.configure(session: session)
         end
       end
@@ -17,8 +23,11 @@ module EventSource
         Session.configure(self, session: session)
       end
 
-      def self.call(stream_name, write_event, expected_version: nil, session: nil)
-        instance = build(stream_name, session: session)
+      ## TODO
+      # def self.configure
+
+      def self.call(stream_name, write_event, expected_version: nil, partition: nil, session: nil)
+        instance = build(stream_name, partition: partition, session: session)
         instance.(write_event, expected_version: expected_version)
       end
 
@@ -70,7 +79,7 @@ module EventSource
           stream_name,
           type,
           serialized_data,
-          'events',
+          partition,
           serialized_metadata,
           expected_version
         ]
@@ -122,6 +131,14 @@ module EventSource
           raise ExpectedVersionError, error_message
         end
         raise pg_error
+      end
+
+      module Defaults
+        module Partition
+          def self.name
+            'events'
+          end
+        end
       end
     end
   end
