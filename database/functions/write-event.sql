@@ -12,7 +12,6 @@ DECLARE
   stream_version int;
   stream_position int;
   category varchar;
-  -- _partition varchar;
 BEGIN
   stream_version := stream_version(_stream_name);
 
