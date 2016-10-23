@@ -2,6 +2,7 @@ CREATE OR REPLACE FUNCTION write_event(
   _stream_name varchar,
   _type varchar,
   _data jsonb,
+  _partition varchar DEFAULT NULL,
   _metadata jsonb DEFAULT NULL,
   _expected_version int DEFAULT NULL
 )
@@ -11,7 +12,7 @@ DECLARE
   stream_version int;
   stream_position int;
   category varchar;
-  _partition varchar;
+  -- _partition varchar;
 BEGIN
   stream_version := stream_version(_stream_name);
 

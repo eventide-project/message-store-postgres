@@ -74,6 +74,7 @@ module EventSource
           stream_name,
           type,
           serialized_data,
+          'events',
           serialized_metadata,
           expected_version
         ]
@@ -90,7 +91,7 @@ module EventSource
       end
 
       def statement
-        "SELECT write_event($1::varchar, $2::varchar, $3::jsonb, $4::jsonb, $5::int);"
+        "SELECT write_event($1::varchar, $2::varchar, $3::jsonb, $4::varchar, $5::jsonb, $6::int);"
       end
 
       def serialized_data(data)
