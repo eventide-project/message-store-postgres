@@ -61,6 +61,7 @@ function create-database {
 
 function create-tables {
   psql $database -f database/tables/events-table.sql
+  psql $database -f database/tables/other-events-table.sql
 }
 
 function create-functions {

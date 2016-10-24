@@ -27,10 +27,16 @@ else
 fi
 echo "Database name is: $database"
 
+default_table_name=events
+
+if [ -z ${TABLE_NAME+x} ]; then
+  echo "(TABLE_NAME is not set)"
+  table=$default_table_name
+else
+  table=$TABLE_NAME
+fi
+echo "Table name is: $table"
+
 echo
 
-function select-all-events {
-  psql $database -c "SELECT * FROM events"
-}
-
-select-all-events
+psql $database -c "SELECT * FROM $table"

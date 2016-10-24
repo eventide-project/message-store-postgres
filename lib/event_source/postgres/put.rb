@@ -3,16 +3,18 @@ module EventSource
     class Put
       include Log::Dependency
 
-      attr_reader :stream_name
-
       dependency :session, Session
 
-      def initialize(stream_name)
-        @stream_name = stream_name
+      def partition
+        @partition ||= Defaults.partition
       end
+      attr_writer :partition
 
-      def self.build(stream_name, session: nil)
+      initializer :stream_name
+
+      def self.build(stream_name, partition: nil, session: nil)
         new(stream_name).tap do |instance|
+          instance.partition = partition
           instance.configure(session: session)
         end
       end
@@ -21,8 +23,11 @@ module EventSource
         Session.configure(self, session: session)
       end
 
-      def self.call(stream_name, write_event, expected_version: nil, session: nil)
-        instance = build(stream_name, session: session)
+      ## TODO
+      # def self.configure
+
+      def self.call(stream_name, write_event, expected_version: nil, partition: nil, session: nil)
+        instance = build(stream_name, partition: partition, session: session)
         instance.(write_event, expected_version: expected_version)
       end
 
@@ -74,6 +79,7 @@ module EventSource
           stream_name,
           type,
           serialized_data,
+          partition,
           serialized_metadata,
           expected_version
         ]
@@ -90,7 +96,7 @@ module EventSource
       end
 
       def statement
-        "SELECT write_event($1::varchar, $2::varchar, $3::jsonb, $4::jsonb, $5::int);"
+        "SELECT write_event($1::varchar, $2::varchar, $3::jsonb, $4::varchar, $5::jsonb, $6::int);"
       end
 
       def serialized_data(data)
@@ -125,6 +131,12 @@ module EventSource
           raise ExpectedVersionError, error_message
         end
         raise pg_error
+      end
+
+      module Defaults
+        def self.partition
+          Partition::Defaults.name
+        end
       end
     end
   end

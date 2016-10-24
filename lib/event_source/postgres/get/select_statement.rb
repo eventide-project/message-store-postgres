@@ -4,7 +4,7 @@ module EventSource
       class SelectStatement
         include Log::Dependency
 
-        initializer :stream, w(:offset), w(:batch_size), w(:precedence)
+        initializer :stream, w(:offset), w(:batch_size), w(:precedence), w(:partition)
 
         def offset
           @offset ||= Defaults.offset
@@ -18,6 +18,10 @@ module EventSource
           @precedence ||= Defaults.precedence
         end
 
+        def partition
+          @partition ||= Defaults.partition
+        end
+
         def stream_name
           stream.name
         end
@@ -26,12 +30,12 @@ module EventSource
           stream.type
         end
 
-        def self.build(stream, offset: nil, batch_size: nil, precedence: nil)
-          new(stream, offset, batch_size, precedence)
+        def self.build(stream, offset: nil, batch_size: nil, partition: nil, precedence: nil)
+          new(stream, offset, batch_size, precedence, partition)
         end
 
         def sql
-          logger.trace "Composing select statement (Stream: #{stream_name}, Category: #{stream.category?}, Type: #{stream_type}, Stream Position: #{offset}, Batch Size: #{batch_size}, Precedence: #{precedence})", tag: :sql
+          logger.trace "Composing select statement (Stream: #{stream_name}, Category: #{stream.category?}, Type: #{stream_type}, Stream Position: #{offset}, Batch Size: #{batch_size}, Precedence: #{precedence}, Partition: #{partition})", tag: :sql
 
           statement = <<-SQL
             SELECT
@@ -43,7 +47,7 @@ module EventSource
               metadata::varchar,
               created_time::timestamp
             FROM
-              events
+              #{partition}
             WHERE
               #{where_clause_field} = '#{stream_name}'
             ORDER BY
@@ -55,7 +59,7 @@ module EventSource
             ;
           SQL
 
-          logger.debug "Composed select statement (Stream: #{stream_name}, Category: #{stream.category?}, Type: #{stream_type}, Stream Position: #{offset}, Batch Size: #{batch_size}, Precedence: #{precedence})", tag: :sql
+          logger.debug "Composed select statement (Stream: #{stream_name}, Category: #{stream.category?}, Type: #{stream_type}, Stream Position: #{offset}, Batch Size: #{batch_size}, Precedence: #{precedence}, Partition: #{partition.inspect})", tag: :sql
           logger.debug "Statement: #{statement}", tags: [:data, :sql]
 
           statement
@@ -80,6 +84,10 @@ module EventSource
 
           def self.precedence
             :asc
+          end
+
+          def self.partition
+            Partition::Defaults.name
           end
         end
       end
