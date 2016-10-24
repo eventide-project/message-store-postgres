@@ -21,8 +21,11 @@ module EventSource
         Session.configure(self, session: session)
       end
 
-      ## TODO
-      # def self.configure
+      def self.configure(receiver, partition: nil, session: nil, attr_name: nil)
+        attr_name ||= :put
+        instance = build(partition: partition, session: session)
+        receiver.public_send "#{attr_name}=", instance
+      end
 
       def self.call(write_event, stream_name, expected_version: nil, partition: nil, session: nil)
         instance = build(partition: partition, session: session)
@@ -39,6 +42,7 @@ module EventSource
         position = insert_event(stream_name, type, data, metadata, expected_version)
 
         logger.debug "Put event data (Stream Name: #{stream_name}, Type: #{write_event.type}, Expected Version: #{expected_version.inspect})"
+        logger.debug write_event.inspect, tags: [:data, :event_data]
 
         position
       end
