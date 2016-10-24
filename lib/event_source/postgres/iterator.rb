@@ -20,18 +20,19 @@ module EventSource
       dependency :get, Get
       dependency :cycle, Cycle
 
-      initializer :stream, a(:stream_position, 0), :batch_size, :precedence
+      ## TODO remove a() with default
+      initializer :stream, a(:stream_position, 0), :batch_size, :precedence, :partition
 
-      def self.build(stream, stream_position: nil, batch_size: nil, precedence: nil, cycle: nil, session: nil)
-        new(stream, stream_position, batch_size, precedence).tap do |instance|
-          Get.configure instance, stream, batch_size: batch_size, precedence: precedence, session: session
+      def self.build(stream, stream_position: nil, batch_size: nil, precedence: nil, partition: nil, cycle: nil, session: nil)
+        new(stream, stream_position, batch_size, precedence, partition).tap do |instance|
+          Get.configure instance, stream, batch_size: batch_size, precedence: precedence, partition: partition, session: session
           Cycle.configure instance, cycle: cycle
         end
       end
 
-      def self.configure(receiver, stream,  attr_name: nil, stream_position: nil, batch_size: nil, precedence: nil, cycle: nil, session: nil)
+      def self.configure(receiver, stream, attr_name: nil, stream_position: nil, batch_size: nil, precedence: nil, partition: nil, cycle: nil, session: nil)
         attr_name ||= :iterator
-        instance = build(stream, stream_position: stream_position, batch_size: batch_size, precedence: precedence, cycle: cycle, session: session)
+        instance = build(stream, stream_position: stream_position, batch_size: batch_size, precedence: precedence, partition: partition, cycle: cycle, session: session)
         receiver.public_send "#{attr_name}=", instance
       end
 
