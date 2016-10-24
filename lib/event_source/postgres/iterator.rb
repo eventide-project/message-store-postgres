@@ -5,13 +5,12 @@ module EventSource
 
       include Log::Dependency
 
+      dependency :get, Get
+      dependency :cycle, Cycle
+
       attr_accessor :batch
       attr_writer :batch_position
       attr_writer :stream_offset
-
-      def stream_position
-        @stream_position ||= 0
-      end
 
       def batch_position
         @batch_position ||= 0
@@ -21,13 +20,10 @@ module EventSource
         @stream_offset ||= (stream_position || 0)
       end
 
-      dependency :get, Get
-      dependency :cycle, Cycle
-
-      initializer :stream, :stream_position, :batch_size, :precedence, :partition
+      initializer :stream_position
 
       def self.build(stream, stream_position: nil, batch_size: nil, precedence: nil, partition: nil, cycle: nil, session: nil)
-        new(stream, stream_position, batch_size, precedence, partition).tap do |instance|
+        new(stream_position).tap do |instance|
           Get.configure instance, stream, batch_size: batch_size, precedence: precedence, partition: partition, session: session
           Cycle.configure instance, cycle: cycle
         end

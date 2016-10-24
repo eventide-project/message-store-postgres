@@ -5,7 +5,7 @@ module EventSource
 
       include Log::Dependency
 
-      initializer :stream, :stream_position, :batch_size, :precedence, :partition
+      initializer :stream
 
       dependency :session, Session
       dependency :iterator, Iterator
@@ -17,7 +17,7 @@ module EventSource
           cycle = Cycle.build(delay_milliseconds: delay_milliseconds, timeout_milliseconds: timeout_milliseconds)
         end
 
-        new(stream, stream_position, batch_size, precedence, partition).tap do |instance|
+        new(stream).tap do |instance|
           Iterator.configure instance, stream, stream_position: stream_position, batch_size: batch_size, precedence: precedence, partition: partition, cycle: cycle, session: session
         end
       end
@@ -46,7 +46,7 @@ module EventSource
       end
 
       def enumerate_event_data(&action)
-        logger.trace "Reading event data (Stream Name: #{stream.name}, Category: #{stream.category?}, Stream Position: #{stream_position.inspect}, Batch Size: #{batch_size.inspect}, Precedence: #{precedence.inspect}, Partition: #{partition.inspect})"
+        logger.trace "Reading (Stream Name: #{stream.name}, Category: #{stream.category?})"
 
         event_data = nil
 
@@ -58,7 +58,7 @@ module EventSource
           action.(event_data)
         end
 
-        logger.debug "Finished reading event data (Stream Name: #{stream.name}, Category: #{stream.category?}, Stream Position: #{stream_position.inspect}, Batch Size: #{batch_size.inspect}, Precedence: #{precedence.inspect}, Partition: #{partition.inspect})"
+        logger.debug "Finished reading (Stream Name: #{stream.name}, Category: #{stream.category?})"
       end
     end
   end
