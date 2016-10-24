@@ -85,7 +85,7 @@ module EventSource
         ]
 
         begin
-          records = session.connection.exec_params(statement, sql_args)
+          records = session.connection.exec_params(self.class.statement, sql_args)
         rescue PG::RaiseException => e
           raise_error e
         end
@@ -95,8 +95,8 @@ module EventSource
         records
       end
 
-      def statement
-        "SELECT write_event($1::varchar, $2::varchar, $3::jsonb, $4::varchar, $5::jsonb, $6::int);"
+      def self.statement
+        @statement ||= "SELECT write_event($1::varchar, $2::varchar, $3::jsonb, $4::varchar, $5::jsonb, $6::int);"
       end
 
       def serialized_data(data)
