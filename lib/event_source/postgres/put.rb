@@ -38,11 +38,11 @@ module EventSource
         type, data, metadata = destructure_event(write_event)
         expected_version = canonize_expected_version(expected_version)
 
-        stream_position = insert_event(type, data, metadata, expected_version)
+        position = insert_event(type, data, metadata, expected_version)
 
         logger.debug "Put event data (Stream Name: #{stream_name}, Type: #{write_event.type}, Expected Version: #{expected_version.inspect})"
 
-        stream_position
+        position
       end
 
       def destructure_event(write_event)
@@ -69,7 +69,7 @@ module EventSource
         serialized_data = serialized_data(data)
         serialized_metadata = serialized_metadata(metadata)
         records = execute_query(type, serialized_data, serialized_metadata, expected_version)
-        stream_position(records)
+        position(records)
       end
 
       def execute_query(type, serialized_data, serialized_metadata, expected_version)
@@ -116,12 +116,12 @@ module EventSource
         serialized_metadata
       end
 
-      def stream_position(records)
-        stream_position = nil
+      def position(records)
+        position = nil
         unless records[0].nil?
-          stream_position = records[0].values[0]
+          position = records[0].values[0]
         end
-        stream_position
+        position
       end
 
       def raise_error(pg_error)

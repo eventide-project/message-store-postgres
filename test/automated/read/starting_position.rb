@@ -6,7 +6,7 @@ context "Read" do
 
     batch = []
 
-    Read.(stream.name, stream_position: 1, batch_size: 1) do |event_data|
+    Read.(stream.name, position: 1, batch_size: 1) do |event_data|
       batch << event_data
     end
 

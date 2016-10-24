@@ -7,7 +7,7 @@ context "Get" do
     context "Ascending" do
       events = Get.(stream, precedence: :asc)
 
-      first_event_postition = events.first.stream_position
+      first_event_postition = events.first.position
 
       test "First event written is first in the list of results" do
         assert(first_event_postition == 0)
@@ -17,7 +17,7 @@ context "Get" do
     context "Descending" do
       events = Get.(stream, precedence: :desc)
 
-      first_event_postition = events.first.stream_position
+      first_event_postition = events.first.position
 
       test "Last event written is first in the list of results" do
         assert(first_event_postition == 2)

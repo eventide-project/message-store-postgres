@@ -10,7 +10,7 @@ RETURNS int
 AS $$
 DECLARE
   stream_version int;
-  stream_position int;
+  position int;
   category varchar;
 BEGIN
   stream_version := stream_version(_stream_name);
@@ -29,11 +29,11 @@ BEGIN
     end if;
   end if;
 
-  stream_position := stream_version + 1;
+  position := stream_version + 1;
 
   EXECUTE format('insert into %I ('
       '"stream_name", '
-      '"stream_position", '
+      '"position", '
       '"type", '
       '"data", '
       '"metadata"'
@@ -48,12 +48,12 @@ BEGIN
     _partition)
     USING
       _stream_name,
-      stream_position,
+      position,
       _type,
       _data,
       _metadata
     ;
 
-  return stream_position;
+  return position;
 END;
 $$ LANGUAGE plpgsql;
