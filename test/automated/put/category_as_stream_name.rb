@@ -5,7 +5,7 @@ context "Put" do
     category = Controls::Category.example
     write_event = Controls::EventData::Write.example
 
-    Put.(category, write_event)
+    Put.(write_event, category)
 
     stream = Stream.new(category)
 

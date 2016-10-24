@@ -9,7 +9,7 @@ module EventSource
           partition ||= Postgres::Partition::Defaults.name
 
           instances.times do
-            EventSource::Postgres::Put.(stream_name, event, partition: partition)
+            EventSource::Postgres::Put.(event, stream_name, partition: partition)
           end
 
           EventSource::Stream.new(stream_name)

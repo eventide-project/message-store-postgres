@@ -24,7 +24,7 @@ module EventSource
       ## TODO
       # def self.configure
 
-      def self.call(stream_name, write_event, expected_version: nil, partition: nil, session: nil)
+      def self.call(write_event, stream_name, expected_version: nil, partition: nil, session: nil)
         instance = build(partition: partition, session: session)
         instance.(write_event, stream_name, expected_version: expected_version)
       end
