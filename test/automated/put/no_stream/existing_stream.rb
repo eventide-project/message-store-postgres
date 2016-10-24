@@ -8,9 +8,9 @@ context "Put" do
       write_event_1 = Controls::EventData::Write.example(data: {:some_attribute => 'first'})
       write_event_2 = Controls::EventData::Write.example(data: {:some_attribute => 'second'})
 
-      Put.(stream_name, write_event_1)
+      Put.(write_event_1, stream_name)
 
-      erroneous = proc { Put.(stream_name, write_event_2, expected_version: NoStream.name) }
+      erroneous = proc { Put.(write_event_2, stream_name, expected_version: NoStream.name) }
 
       test "Is an error" do
         assert erroneous do
