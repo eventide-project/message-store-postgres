@@ -5,7 +5,7 @@ context "Write Event Data" do
 
   write_event = Controls::EventData::Write.example
 
-  position = Put.(stream_name, write_event)
+  position = Put.(write_event, stream_name)
 
   test "Result is stream version" do
     refute(position.nil?)

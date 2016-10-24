@@ -10,10 +10,8 @@ module EventSource
       end
       attr_writer :partition
 
-      initializer :stream_name
-
-      def self.build(stream_name, partition: nil, session: nil)
-        new(stream_name).tap do |instance|
+      def self.build(partition: nil, session: nil)
+        new.tap do |instance|
           instance.partition = partition
           instance.configure(session: session)
         end
@@ -26,19 +24,19 @@ module EventSource
       ## TODO
       # def self.configure
 
-      def self.call(stream_name, write_event, expected_version: nil, partition: nil, session: nil)
-        instance = build(stream_name, partition: partition, session: session)
-        instance.(write_event, expected_version: expected_version)
+      def self.call(write_event, stream_name, expected_version: nil, partition: nil, session: nil)
+        instance = build(partition: partition, session: session)
+        instance.(write_event, stream_name, expected_version: expected_version)
       end
 
-      def call(write_event, expected_version: nil)
+      def call(write_event, stream_name, expected_version: nil)
         logger.trace "Putting event data (Stream Name: #{stream_name}, Type: #{write_event.type}, Expected Version: #{expected_version.inspect})"
         logger.trace write_event.inspect, tags: [:data, :event_data]
 
         type, data, metadata = destructure_event(write_event)
         expected_version = canonize_expected_version(expected_version)
 
-        position = insert_event(type, data, metadata, expected_version)
+        position = insert_event(stream_name, type, data, metadata, expected_version)
 
         logger.debug "Put event data (Stream Name: #{stream_name}, Type: #{write_event.type}, Expected Version: #{expected_version.inspect})"
 
@@ -65,14 +63,14 @@ module EventSource
         expected_version
       end
 
-      def insert_event(type, data, metadata, expected_version)
+      def insert_event(stream_name, type, data, metadata, expected_version)
         serialized_data = serialized_data(data)
         serialized_metadata = serialized_metadata(metadata)
-        records = execute_query(type, serialized_data, serialized_metadata, expected_version)
+        records = execute_query(stream_name, type, serialized_data, serialized_metadata, expected_version)
         position(records)
       end
 
-      def execute_query(type, serialized_data, serialized_metadata, expected_version)
+      def execute_query(stream_name, type, serialized_data, serialized_metadata, expected_version)
         logger.trace "Executing insert (Stream Name: #{stream_name}, Type: #{type}, Expected Version: #{expected_version.inspect})"
 
         sql_args = [
@@ -85,7 +83,7 @@ module EventSource
         ]
 
         begin
-          records = session.connection.exec_params(statement, sql_args)
+          records = session.connection.exec_params(self.class.statement, sql_args)
         rescue PG::RaiseException => e
           raise_error e
         end
@@ -95,8 +93,8 @@ module EventSource
         records
       end
 
-      def statement
-        "SELECT write_event($1::varchar, $2::varchar, $3::jsonb, $4::varchar, $5::jsonb, $6::int);"
+      def self.statement
+        @statement ||= "SELECT write_event($1::varchar, $2::varchar, $3::jsonb, $4::varchar, $5::jsonb, $6::int);"
       end
 
       def serialized_data(data)

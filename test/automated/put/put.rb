@@ -4,7 +4,7 @@ context "Put and Get" do
   stream = Controls::Stream.example
   write_event = Controls::EventData::Write.example
 
-  written_position = Put.(stream.name, write_event)
+  written_position = Put.(write_event, stream.name)
 
   read_event = Get.(stream, position: written_position).first
 
