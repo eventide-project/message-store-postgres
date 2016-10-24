@@ -47,7 +47,7 @@ module EventSource
               metadata::varchar,
               created_time::timestamp
             FROM
-              events
+              #{partition}
             WHERE
               #{where_clause_field} = '#{stream_name}'
             ORDER BY
