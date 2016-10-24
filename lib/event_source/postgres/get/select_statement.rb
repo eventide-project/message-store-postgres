@@ -40,7 +40,7 @@ module EventSource
           statement = <<-SQL
             SELECT
               stream_name::varchar,
-              stream_position::int,
+              position::int,
               type::varchar,
               global_position::bigint,
               data::varchar,

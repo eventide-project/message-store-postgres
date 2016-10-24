@@ -4,7 +4,7 @@
 DROP TABLE IF EXISTS "public"."other_events";
 CREATE TABLE "public"."other_events" (
   "stream_name" varchar(255) NOT NULL COLLATE "default",
-  "stream_position" int4 NOT NULL,
+  "position" int4 NOT NULL,
   "type" varchar(255) NOT NULL COLLATE "default",
   "global_position" bigserial NOT NULL ,
   "data" jsonb NOT NULL,

@@ -17,21 +17,21 @@ module EventSource
       end
 
       def stream_offset
-        @stream_offset ||= (stream_position || 0)
+        @stream_offset ||= (position || 0)
       end
 
-      initializer :stream_position
+      initializer :position
 
-      def self.build(stream, stream_position: nil, batch_size: nil, precedence: nil, partition: nil, cycle: nil, session: nil)
-        new(stream_position).tap do |instance|
+      def self.build(stream, position: nil, batch_size: nil, precedence: nil, partition: nil, cycle: nil, session: nil)
+        new(position).tap do |instance|
           Get.configure instance, stream, batch_size: batch_size, precedence: precedence, partition: partition, session: session
           Cycle.configure instance, cycle: cycle
         end
       end
 
-      def self.configure(receiver, stream, attr_name: nil, stream_position: nil, batch_size: nil, precedence: nil, partition: nil, cycle: nil, session: nil)
+      def self.configure(receiver, stream, attr_name: nil, position: nil, batch_size: nil, precedence: nil, partition: nil, cycle: nil, session: nil)
         attr_name ||= :iterator
-        instance = build(stream, stream_position: stream_position, batch_size: batch_size, precedence: precedence, partition: partition, cycle: cycle, session: session)
+        instance = build(stream, position: position, batch_size: batch_size, precedence: precedence, partition: partition, cycle: cycle, session: session)
         receiver.public_send "#{attr_name}=", instance
       end
 
@@ -87,7 +87,7 @@ module EventSource
 
         batch = nil
         cycle.() do
-          batch = get.(stream_position: stream_offset)
+          batch = get.(position: stream_offset)
         end
 
         logger.debug "Finished getting batch (Count: #{batch.length})"
