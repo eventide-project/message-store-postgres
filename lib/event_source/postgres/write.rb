@@ -22,13 +22,13 @@ module EventSource
 
       def call(event_data, stream_name, expected_version: nil)
         logger.trace { "Writing event data (Stream Name: #{stream_name}, Expected Version: #{expected_version.inspect})" }
-        logger.trace(tags: [:data, :event_data]) { event_data.inspect }
+        logger.trace(tags: [:data, :event_data]) { event_data.pretty_inspect }
 
         batch = Array(event_data)
         position = write_batch(batch, stream_name, expected_version: expected_version)
 
         logger.debug { "Wrote event data (Stream Name: #{stream_name}, Expected Version: #{expected_version.inspect})" }
-        logger.debug(tags: [:data, :event_data]) { event_data.inspect }
+        logger.debug(tags: [:data, :event_data]) { event_data.pretty_inspect }
 
         position
       end
@@ -50,11 +50,11 @@ module EventSource
 
       def write(event_data, stream_name, expected_version: nil)
         logger.trace { "Writing event data (Stream Name: #{stream_name}, Type: #{event_data.type}, Expected Version: #{expected_version.inspect})" }
-        logger.trace(tags: [:data, :event_data]) { event_data.inspect }
+        logger.trace(tags: [:data, :event_data]) { event_data.pretty_inspect }
 
         put.(event_data, stream_name, expected_version: expected_version).tap do
           logger.debug { "Wrote event data (Stream Name: #{stream_name}, Type: #{event_data.type}, Expected Version: #{expected_version.inspect})" }
-          logger.debug(tags: [:data, :event_data]) { event_data.inspect }
+          logger.debug(tags: [:data, :event_data]) { event_data.pretty_inspect }
         end
       end
     end
