@@ -34,7 +34,7 @@ module EventSource
 
       def call(write_event, stream_name, expected_version: nil)
         logger.trace { "Putting event data (Stream Name: #{stream_name}, Type: #{write_event.type}, Expected Version: #{expected_version.inspect})" }
-        logger.trace(tags: [:data, :event_data]) { write_event.inspect }
+        logger.trace(tags: [:data, :event_data]) { write_event.pretty_inspect }
 
         type, data, metadata = destructure_event(write_event)
         expected_version = canonize_expected_version(expected_version)
@@ -42,7 +42,7 @@ module EventSource
         position = insert_event(stream_name, type, data, metadata, expected_version)
 
         logger.debug { "Put event data (Stream Name: #{stream_name}, Type: #{write_event.type}, Expected Version: #{expected_version.inspect})" }
-        logger.debug(tags: [:data, :event_data]) { write_event.inspect }
+        logger.debug(tags: [:data, :event_data]) { write_event.pretty_inspect }
 
         position
       end
@@ -52,8 +52,8 @@ module EventSource
         data = write_event.data
         metadata = write_event.metadata
 
-        logger.debug(tags: [:data, :event_data]) { "Data: #{data.inspect}" }
-        logger.debug(tags: [:data, :event_data]) { "Metadata: #{metadata.inspect}" }
+        logger.debug(tags: [:data, :event_data]) { "Data: #{data.pretty_inspect}" }
+        logger.debug(tags: [:data, :event_data]) { "Metadata: #{metadata.pretty_inspect}" }
 
         return type, data, metadata
       end
