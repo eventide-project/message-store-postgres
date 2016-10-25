@@ -15,41 +15,48 @@ module EventSource
         Put.configure(self, partition: partition, session: session)
       end
 
-      def self.call(subject, stream_name, expected_version: nil, partition: nil, session: nil)
+      def self.call(event_data, stream_name, expected_version: nil, partition: nil, session: nil)
         instance = build(partition: partition, session: session)
-        instance.(subject, stream_name, expected_version: expected_version)
+        instance.(event_data, stream_name, expected_version: expected_version)
       end
 
-      def call(subject, stream_name, expected_version: nil)
-        logger.trace "Writing #{subject.class.subject} (Stream Name: #{stream_name}, Type: #{subject.type}, Expected Version: #{expected_version.inspect})"
-        logger.trace subject.inspect, tags: [:data, :event_data]
+      def call(event_data, stream_name, expected_version: nil)
+        logger.trace "Writing event data (Stream Name: #{stream_name}, Expected Version: #{expected_version.inspect})"
+        logger.trace event_data.inspect, tags: [:data, :event_data]
 
-        write_event_data = transform(subject)
-
-        position = put.(write_event_data, stream_name, expected_version: expected_version)
-
-        logger.debug "Wrote #{subject.class.subject} (Stream Name: #{stream_name}, Type: #{subject.type}, Expected Version: #{expected_version.inspect})"
-        logger.debug write_event_data.inspect
-
-        return position
-      end
-
-      def transform(subject)
-        if subject.is_a? EventData
-          return subject
+        if event_data.is_a? Array
+          position = write_batch(event_data, stream_name, expected_version: expected_version)
+        else
+          position = write(event_data, stream_name, expected_version: expected_version)
         end
 
-        logger.trace "Converting #{subject.class.message_type} to event data", tag: :transform
-        logger.trace subject.inspect, tags: [:transform, :data, :message]
+        logger.debug "Wrote event data (Stream Name: #{stream_name}, Expected Version: #{expected_version.inspect})"
+        logger.debug event_data.inspect
 
-        ## TODO
-        # run conversion on message
-        write_event_data = subject
+        position
+      end
 
-        logger.debug "Converted #{subject.class.message_type} to event data", tag: :transform
-        logger.debug write_event_data.inspect, tags: [:transform, :data, :event_data]
+      def write_batch(batch, stream_name, expected_version: nil)
+        logger.trace "Writing batch (Stream Name: #{stream_name}, Number of Events: #{batch.length}, Expected Version: #{expected_version.inspect})"
 
-        subject
+        last_position = nil
+        batch.each do |event_data|
+          last_position = write(event_data, stream_name, expected_version: expected_version)
+        end
+
+        logger.debug "Wrote batch (Stream Name: #{stream_name}, Number of Events: #{batch.length}, Expected Version: #{expected_version.inspect})"
+
+        last_position
+      end
+
+      def write(event_data, stream_name, expected_version: nil)
+        logger.trace "Writing event data (Stream Name: #{stream_name}, Type: #{event_data.type}, Expected Version: #{expected_version.inspect})"
+        logger.trace event_data.inspect, tags: [:data, :event_data]
+
+        put.(event_data, stream_name, expected_version: expected_version).tap do
+          logger.debug "Wrote event data (Stream Name: #{stream_name}, Type: #{event_data.type}, Expected Version: #{expected_version.inspect})"
+          logger.debug event_data.inspect, tags: [:data, :event_data]
+        end
       end
     end
   end
