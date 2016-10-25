@@ -35,27 +35,27 @@ module EventSource
         logger.trace "Connecting to database"
 
         if connection.nil?
-          logger.debug "No connection. A new one will be built."
+          logger.debug { "No connection. A new one will be built." }
           connection = build_connection(instance)
         else
-          logger.debug "Reusing existing connection"
+          logger.debug { "Reusing existing connection" }
         end
 
         instance.connection = connection
 
-        logger.debug "Connected to database"
+        logger.debug { "Connected to database" }
 
         connection
       end
 
       def self.build_connection(instance)
         settings = instance.settings
-        logger.trace "Building new connection to database (Settings: #{LogText.settings(settings).inspect})"
+        logger.trace { "Building new connection to database (Settings: #{LogText.settings(settings).inspect})" }
 
         connection = PG::Connection.open(settings)
         connection.type_map_for_results = PG::BasicTypeMapForResults.new(connection)
 
-        logger.trace "Built new connection to database (Settings: #{LogText.settings(settings).inspect})"
+        logger.trace { "Built new connection to database (Settings: #{LogText.settings(settings).inspect})" }
 
         connection
       end

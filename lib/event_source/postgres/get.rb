@@ -29,31 +29,31 @@ module EventSource
       end
 
       def call(position: nil)
-        logger.trace "Getting event data (Position: #{position.inspect}, Stream Name: #{stream.name}, Category: #{stream.category?}, Batch Size: #{batch_size.inspect}, Precedence: #{precedence.inspect}, Partition: #{partition.inspect})"
+        logger.trace { "Getting event data (Position: #{position.inspect}, Stream Name: #{stream.name}, Category: #{stream.category?}, Batch Size: #{batch_size.inspect}, Precedence: #{precedence.inspect}, Partition: #{partition.inspect})" }
 
         records = get_records(stream, position)
 
         events = convert(records)
 
-        logger.debug "Finished getting event data (Count: #{events.length}, Position: #{position.inspect}, Stream Name: #{stream.name}, Category: #{stream.category?}, Batch Size: #{batch_size.inspect}, Precedence: #{precedence.inspect}, Partition: #{partition.inspect})"
+        logger.debug { "Finished getting event data (Count: #{events.length}, Position: #{position.inspect}, Stream Name: #{stream.name}, Category: #{stream.category?}, Batch Size: #{batch_size.inspect}, Precedence: #{precedence.inspect}, Partition: #{partition.inspect})" }
 
         events
       end
 
       def get_records(stream, position)
-        logger.trace "Getting records (Stream: #{stream.name}, Category: #{stream.category?}, Position: #{position.inspect}, Batch Size: #{batch_size.inspect}, Precedence: #{precedence.inspect}, Partition: #{partition.inspect})"
+        logger.trace { "Getting records (Stream: #{stream.name}, Category: #{stream.category?}, Position: #{position.inspect}, Batch Size: #{batch_size.inspect}, Precedence: #{precedence.inspect}, Partition: #{partition.inspect})" }
 
         select_statement = SelectStatement.build(stream, offset: position, batch_size: batch_size, precedence: precedence, partition: partition)
 
         records = session.connection.exec(select_statement.sql)
 
-        logger.debug "Finished getting records (Count: #{records.ntuples}, Stream: #{stream.name}, Category: #{stream.category?}, Position: #{position.inspect}, Batch Size: #{batch_size.inspect}, Precedence: #{precedence.inspect}, Partition: #{partition.inspect})"
+        logger.debug { "Finished getting records (Count: #{records.ntuples}, Stream: #{stream.name}, Category: #{stream.category?}, Position: #{position.inspect}, Batch Size: #{batch_size.inspect}, Precedence: #{precedence.inspect}, Partition: #{partition.inspect})" }
 
         records
       end
 
       def convert(records)
-        logger.trace "Converting records to event data (Records Count: #{records.ntuples})"
+        logger.trace { "Converting records to event data (Records Count: #{records.ntuples})" }
 
         events = records.map do |record|
           record['data'] = Deserialize.data(record['data'])
@@ -63,7 +63,7 @@ module EventSource
           EventData::Read.build record
         end
 
-        logger.debug "Converted records to event data (Event Data Count: #{events.length})"
+        logger.debug { "Converted records to event data (Event Data Count: #{events.length})" }
 
         events
       end
