@@ -1,3 +1,5 @@
 require_relative '../test_init'
 
-Read.(stream_name: 'some_stream', batch_size: 1, delay_milliseconds: 200) { |event_data| }
+stream_name = Controls::StreamName.example
+
+Read.(stream_name, batch_size: 1, delay_milliseconds: 200) { |event_data| }
