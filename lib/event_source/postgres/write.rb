@@ -24,11 +24,8 @@ module EventSource
         logger.trace "Writing event data (Stream Name: #{stream_name}, Expected Version: #{expected_version.inspect})"
         logger.trace event_data.inspect, tags: [:data, :event_data]
 
-        if event_data.is_a? Array
-          position = write_batch(event_data, stream_name, expected_version: expected_version)
-        else
-          position = write(event_data, stream_name, expected_version: expected_version)
-        end
+        batch = Array(event_data)
+        position = write_batch(batch, stream_name, expected_version: expected_version)
 
         logger.debug "Wrote event data (Stream Name: #{stream_name}, Expected Version: #{expected_version.inspect})"
         logger.debug event_data.inspect
