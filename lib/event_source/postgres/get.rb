@@ -58,7 +58,7 @@ module EventSource
         events = records.map do |record|
           record['data'] = Deserialize.data(record['data'])
           record['metadata'] = Deserialize.metadata(record['metadata'])
-          record['created_time'] = Time.utc_coerced(record['created_time'])
+          record['recorded_time'] = Time.utc_coerced(record['recorded_time'])
 
           EventData::Read.build record
         end

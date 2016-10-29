@@ -33,8 +33,8 @@ context "Put and Get" do
       assert(read_event.global_position.is_a? Numeric)
     end
 
-    test "Created Time" do
-      assert(read_event.created_time.is_a? Time)
+    test "Recorded Time" do
+      assert(read_event.recorded_time.is_a? Time)
     end
   end
 end
