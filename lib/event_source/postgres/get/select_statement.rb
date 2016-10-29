@@ -45,7 +45,7 @@ module EventSource
               global_position::bigint,
               data::varchar,
               metadata::varchar,
-              created_time::timestamp
+              recorded_time::timestamp
             FROM
               #{partition}
             WHERE
