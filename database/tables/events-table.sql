@@ -9,7 +9,7 @@ CREATE TABLE "public"."events" (
   "global_position" bigserial NOT NULL ,
   "data" jsonb NOT NULL,
   "metadata" jsonb,
-  "recorded_time" TIMESTAMP WITHOUT TIME ZONE DEFAULT (now() AT TIME ZONE 'utc') NOT NULL
+  "time" TIMESTAMP WITHOUT TIME ZONE DEFAULT (now() AT TIME ZONE 'utc') NOT NULL
 )
 WITH (OIDS=FALSE);
 

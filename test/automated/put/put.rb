@@ -34,7 +34,7 @@ context "Put and Get" do
     end
 
     test "Recorded Time" do
-      assert(read_event.recorded_time.is_a? Time)
+      assert(read_event.time.is_a? Time)
     end
   end
 end
