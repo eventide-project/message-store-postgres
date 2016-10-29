@@ -9,23 +9,32 @@ context "Put and Get" do
   read_event = Get.(stream, position: written_position).first
 
   context "Got the event that was written" do
+    test "Type" do
+      assert(read_event.type == write_event.type)
+    end
+
     test "Data" do
-      # assert(read_event.data == Controls::EventData::Write.data)
+      assert(read_event.data == write_event.data)
+    end
+
+    test "Metadata" do
+      assert(read_event.metadata == write_event.metadata)
+    end
+
+    test "Stream Name" do
+      assert(read_event.stream_name == stream.name)
     end
 
     test "Position" do
       assert(read_event.position == written_position)
     end
+
+    test "Global Position" do
+      assert(read_event.global_position.is_a? Numeric)
+    end
+
+    test "Created Time" do
+      assert(read_event.created_time.is_a? Time)
+    end
   end
 end
-
-__END__
-
-@created_time=2016-10-29 03:10:44 UTC,
- @data={:some_attribute=>"some value"},
- @global_position=1332,
- @metadata={:some_meta_attribute=>"some meta value"},
- @position=0,
- @stream_name=
-  "test3e44aba36b15ba24330689a33e403711XX-8236f048-7c04-46de-92b2-ed0fbf7a8a06",
- @type="SomeType">
