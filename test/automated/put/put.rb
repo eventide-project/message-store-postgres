@@ -8,7 +8,33 @@ context "Put and Get" do
 
   read_event = Get.(stream, position: written_position).first
 
-  test "Got the event that was written" do
-    assert(read_event.position == written_position)
+  context "Got the event that was written" do
+    test "Type" do
+      assert(read_event.type == write_event.type)
+    end
+
+    test "Data" do
+      assert(read_event.data == write_event.data)
+    end
+
+    test "Metadata" do
+      assert(read_event.metadata == write_event.metadata)
+    end
+
+    test "Stream Name" do
+      assert(read_event.stream_name == stream.name)
+    end
+
+    test "Position" do
+      assert(read_event.position == written_position)
+    end
+
+    test "Global Position" do
+      assert(read_event.global_position.is_a? Numeric)
+    end
+
+    test "Created Time" do
+      assert(read_event.created_time.is_a? Time)
+    end
   end
 end
