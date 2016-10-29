@@ -70,14 +70,14 @@ module EventSource
 
       module Deserialize
         def self.data(serialized_data)
-          Serialize::Read.(serialized_data, EventData::Hash, :json)
+          Transform::Read.(serialized_data, EventData::Hash, :json)
         end
 
         def self.metadata(serialized_metadata)
           if serialized_metadata.nil?
             nil
           else
-            Serialize::Read.(serialized_metadata, EventData::Hash, :json)
+            Transform::Read.(serialized_metadata, EventData::Hash, :json)
           end
         end
       end
