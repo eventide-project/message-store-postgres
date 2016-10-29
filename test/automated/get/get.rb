@@ -6,7 +6,7 @@ context "Put and Get" do
 
   written_position = Put.(write_event, stream.name)
 
-  read_event = Get.(stream, position: written_position)[0]
+  read_event = Get.(stream, position: written_position).first
 
   test "Got the event that was written" do
     assert(read_event.position == written_position)
