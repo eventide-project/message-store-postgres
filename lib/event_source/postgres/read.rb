@@ -7,7 +7,6 @@ module EventSource
 
       initializer :stream
 
-      dependency :session, Session
       dependency :iterator, Iterator
 
       def self.build(stream_name, position: nil, batch_size: nil, precedence: nil, partition: nil, delay_milliseconds: nil, timeout_milliseconds: nil, cycle: nil, session: nil)
