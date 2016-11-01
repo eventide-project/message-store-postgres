@@ -20,5 +20,4 @@ require 'event_source/postgres/write'
 
 require 'event_source/postgres/get/select_statement'
 require 'event_source/postgres/get'
-require 'event_source/postgres/iterator'
 require 'event_source/postgres/read'
