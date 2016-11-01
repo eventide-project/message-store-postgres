@@ -5,9 +5,9 @@ module EventSource
 
       include Log::Dependency
 
-      dependency :get, Get
       dependency :cycle, Cycle
 
+      attr_accessor :position
       attr_accessor :batch
       attr_writer :batch_position
       attr_writer :stream_offset
@@ -20,18 +20,18 @@ module EventSource
         @stream_offset ||= (position || 0)
       end
 
-      initializer :position
+      initializer :get
 
-      def self.build(stream, position: nil, batch_size: nil, precedence: nil, partition: nil, cycle: nil, session: nil)
-        new(position).tap do |instance|
-          Get.configure instance, stream, batch_size: batch_size, precedence: precedence, partition: partition, session: session
+      def self.build(get, position: nil, cycle: nil)
+        new(get).tap do |instance|
+          instance.position = position
           Cycle.configure instance, cycle: cycle
         end
       end
 
-      def self.configure(receiver, stream, attr_name: nil, position: nil, batch_size: nil, precedence: nil, partition: nil, cycle: nil, session: nil)
+      def self.configure(receiver, get, attr_name: nil, position: nil, cycle: nil)
         attr_name ||= :iterator
-        instance = build(stream, position: position, batch_size: batch_size, precedence: precedence, partition: partition, cycle: cycle, session: session)
+        instance = build(get, position: position, cycle: cycle)
         receiver.public_send "#{attr_name}=", instance
       end
 

@@ -4,7 +4,9 @@ context "Iterator" do
   context "No further event data" do
     stream = Controls::Put.(instances: 2)
 
-    iterator = Iterator.build(stream)
+    get = Get.build(stream)
+
+    iterator = Iterator.build(get)
 
     2.times { iterator.next }
 
