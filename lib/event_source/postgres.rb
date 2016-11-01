@@ -6,7 +6,6 @@ require 'cycle'
 require 'log'
 require 'telemetry'
 require 'settings'; Settings.activate
-require 'async_invocation'
 
 require 'event_source/postgres/log'
 

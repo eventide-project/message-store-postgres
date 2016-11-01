@@ -19,11 +19,9 @@ Gem::Specification.new do |s|
   s.bindir = 'bin'
 
   s.add_runtime_dependency 'event_source'
-
   s.add_runtime_dependency 'log'
   s.add_runtime_dependency 'cycle'
   s.add_runtime_dependency 'settings'
-  s.add_runtime_dependency 'async_invocation'
 
   s.add_runtime_dependency 'pg'
 
