@@ -77,7 +77,7 @@ module EventSource
       def execute_query(stream_name, type, serialized_data, serialized_metadata, expected_version)
         logger.trace { "Executing insert (Stream Name: #{stream_name}, Type: #{type}, Expected Version: #{expected_version.inspect})" }
 
-        sql_args = [
+        params = [
           stream_name,
           type,
           serialized_data,
@@ -87,7 +87,7 @@ module EventSource
         ]
 
         begin
-          records = session.connection.exec_params(self.class.statement, sql_args)
+          records = session.execute(self.class.statement, params)
         rescue PG::RaiseException => e
           raise_error e
         end

@@ -87,6 +87,14 @@ module EventSource
         settings
       end
 
+      def execute(statement, params=nil)
+        if params.nil?
+          connection.exec(statement)
+        else
+          connection.exec_params(statement, params)
+        end
+      end
+
       def self.logger
         @logger ||= Log.get self
       end
