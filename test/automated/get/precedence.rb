@@ -2,10 +2,10 @@ require_relative '../automated_init'
 
 context "Get" do
   context "Precedence" do
-    stream = Controls::Put.(instances: 3)
+    stream_name = Controls::Put.(instances: 3)
 
     context "Ascending" do
-      events = Get.(stream, precedence: :asc)
+      events = Get.(stream_name, precedence: :asc)
 
       first_event_postition = events.first.position
 
@@ -15,7 +15,7 @@ context "Get" do
     end
 
     context "Descending" do
-      events = Get.(stream, precedence: :desc)
+      events = Get.(stream_name, precedence: :desc)
 
       first_event_postition = events.first.position
 

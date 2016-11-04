@@ -12,7 +12,7 @@ module EventSource
             EventSource::Postgres::Put.(event, stream_name, partition: partition)
           end
 
-          EventSource::Stream.new(stream_name)
+          stream_name
         end
       end
     end

@@ -7,20 +7,21 @@ module EventSource
 
       dependency :session, Session
 
-      def self.build(stream, batch_size: nil, precedence: nil, partition: nil, session: nil)
+      def self.build(stream_name, batch_size: nil, precedence: nil, partition: nil, session: nil)
+        stream = Stream.new(stream_name)
         new(stream, batch_size, precedence, partition).tap do |instance|
           instance.configure(session: session)
         end
       end
 
-      def self.configure(receiver, stream, attr_name: nil, position: nil, batch_size: nil, precedence: nil, partition: nil, session: nil)
+      def self.configure(receiver, stream_name, attr_name: nil, position: nil, batch_size: nil, precedence: nil, partition: nil, session: nil)
         attr_name ||= :get
-        instance = build(stream, batch_size: batch_size, precedence: precedence, partition: partition, session: session)
+        instance = build(stream_name, batch_size: batch_size, precedence: precedence, partition: partition, session: session)
         receiver.public_send "#{attr_name}=", instance
       end
 
-      def self.call(stream, position: nil, batch_size: nil, precedence: nil, partition: nil, session: nil)
-        instance = build(stream, batch_size: batch_size, precedence: precedence, partition: partition, session: session)
+      def self.call(stream_name, position: nil, batch_size: nil, precedence: nil, partition: nil, session: nil)
+        instance = build(stream_name, batch_size: batch_size, precedence: precedence, partition: partition, session: session)
         instance.(position: position)
       end
 

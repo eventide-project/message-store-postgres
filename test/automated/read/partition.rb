@@ -3,11 +3,11 @@ require_relative '../automated_init'
 context "Read" do
   partition = Controls::Partition.example
 
-  stream = Controls::Put.(instances: 2, partition: partition)
+  stream_name = Controls::Put.(instances: 2, partition: partition)
 
   batch = []
 
-  Read.(stream.name, partition: partition, batch_size: 1) do |event_data|
+  Read.(stream_name, partition: partition, batch_size: 1) do |event_data|
     batch << event_data
   end
 

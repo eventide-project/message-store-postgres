@@ -1,12 +1,12 @@
 require_relative '../automated_init'
 
 context "Put and Get" do
-  stream = Controls::Stream.example
+  stream_name = Controls::StreamName.example
   write_event = Controls::EventData::Write.example
 
-  written_position = Put.(write_event, stream.name)
+  written_position = Put.(write_event, stream_name)
 
-  read_event = Get.(stream, position: written_position).first
+  read_event = Get.(stream_name, position: written_position).first
 
   context "Got the event that was written" do
     test "Type" do
@@ -22,7 +22,7 @@ context "Put and Get" do
     end
 
     test "Stream Name" do
-      assert(read_event.stream_name == stream.name)
+      assert(read_event.stream_name == stream_name)
     end
 
     test "Position" do
