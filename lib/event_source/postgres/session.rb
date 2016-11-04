@@ -95,6 +95,10 @@ module EventSource
         end
       end
 
+      def transaction(&blk)
+        connection.transaction(&blk)
+      end
+
       def self.logger
         @logger ||= Log.get self
       end
