@@ -39,12 +39,10 @@ module EventSource
         type, data, metadata = destructure_event(write_event)
         expected_version = canonize_expected_version(expected_version)
 
-        position = insert_event(stream_name, type, data, metadata, expected_version)
-
-        logger.debug { "Put event data (Stream Name: #{stream_name}, Type: #{write_event.type}, Expected Version: #{expected_version.inspect})" }
-        logger.debug(tags: [:data, :event_data]) { write_event.pretty_inspect }
-
-        position
+        insert_event(stream_name, type, data, metadata, expected_version).tap do
+          logger.info { "Put event data (Position: #{position}, Stream Name: #{stream_name}, Type: #{write_event.type}, Expected Version: #{expected_version.inspect})" }
+          logger.info(tags: [:data, :event_data]) { write_event.pretty_inspect }
+        end
       end
 
       def destructure_event(write_event)

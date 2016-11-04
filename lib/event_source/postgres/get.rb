@@ -36,7 +36,8 @@ module EventSource
 
         events = convert(records)
 
-        logger.debug { "Finished getting event data (Count: #{events.length}, Position: #{position.inspect}, Stream Name: #{stream.name}, Category: #{stream.category?}, Batch Size: #{batch_size.inspect}, Precedence: #{precedence.inspect}, Partition: #{partition.inspect})" }
+        logger.info { "Finished getting event data (Count: #{events.length}, Position: #{position.inspect}, Stream Name: #{stream.name}, Category: #{stream.category?}, Batch Size: #{batch_size.inspect}, Precedence: #{precedence.inspect}, Partition: #{partition.inspect})" }
+        logger.info(tags: [:data, :event_data]) { events.pretty_inspect }
 
         events
       end
