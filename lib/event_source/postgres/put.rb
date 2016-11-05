@@ -37,7 +37,7 @@ module EventSource
         logger.trace(tags: [:data, :event_data]) { write_event.pretty_inspect }
 
         type, data, metadata = destructure_event(write_event)
-        expected_version = canonize_expected_version(expected_version)
+        expected_version = ExpectedVersion.canonize(expected_version)
 
         insert_event(stream_name, type, data, metadata, expected_version).tap do |position|
           logger.info { "Put event data (Position: #{position}, Stream Name: #{stream_name}, Type: #{write_event.type}, Expected Version: #{expected_version.inspect})" }
@@ -58,11 +58,7 @@ module EventSource
 
       def canonize_expected_version(expected_version)
         return expected_version unless expected_version == NoStream.name
-
-        logger.trace { "Canonizing expected version (Expected Version: #{expected_version})" }
-        expected_version = NoStream.version
-        logger.debug { "Canonized expected version (Expected Version: #{expected_version})" }
-        expected_version
+        NoStream.version
       end
 
       def insert_event(stream_name, type, data, metadata, expected_version)
