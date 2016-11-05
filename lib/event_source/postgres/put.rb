@@ -56,11 +56,6 @@ module EventSource
         return type, data, metadata
       end
 
-      def canonize_expected_version(expected_version)
-        return expected_version unless expected_version == NoStream.name
-        NoStream.version
-      end
-
       def insert_event(stream_name, type, data, metadata, expected_version)
         serialized_data = serialized_data(data)
         serialized_metadata = serialized_metadata(metadata)
@@ -124,7 +119,7 @@ module EventSource
         error_message = pg_error.message
         if error_message.include? 'Wrong expected version'
           error_message.gsub!('ERROR:', '').strip!
-          raise ExpectedVersionError, error_message
+          raise ExpectedVersion::Error, error_message
         end
         raise pg_error
       end

@@ -14,7 +14,7 @@ context "Put" do
 
       test "Is an error" do
         assert erroneous do
-          raises_error? Write::ExpectedVersionError
+          raises_error? ExpectedVersion::Error
         end
       end
     end
