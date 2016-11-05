@@ -119,6 +119,7 @@ module EventSource
         error_message = pg_error.message
         if error_message.include? 'Wrong expected version'
           error_message.gsub!('ERROR:', '').strip!
+          logger.error { error_message }
           raise ExpectedVersion::Error, error_message
         end
         raise pg_error
