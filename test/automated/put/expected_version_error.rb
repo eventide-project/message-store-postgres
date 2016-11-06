@@ -14,5 +14,13 @@ context "Expected Version" do
         raises_error? EventSource::ExpectedVersion::Error
       end
     end
+
+    context "Event" do
+      read_event = Get.(stream_name, position: incorrect_stream_version, batch_size: 1).first
+
+      test "Is not written" do
+        assert(read_event.nil?)
+      end
+    end
   end
 end
