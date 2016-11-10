@@ -15,9 +15,6 @@ Gem::Specification.new do |s|
   s.platform = Gem::Platform::RUBY
   s.required_ruby_version = '>= 2.2.3'
 
-  s.executables = ['install-event-source-database', 'uninstall-event-source-database']
-  s.bindir = 'bin'
-
   s.add_runtime_dependency 'event_source'
   s.add_runtime_dependency 'log'
   s.add_runtime_dependency 'cycle'
