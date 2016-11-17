@@ -3,8 +3,8 @@ module EventSource
     class Write
       include EventSource::Write
 
-      def configure(partition: nil, session: nil)
-        Put.configure(self, partition: partition, session: session)
+      def configure(session: nil)
+        Put.configure(self, session: session)
       end
     end
   end
