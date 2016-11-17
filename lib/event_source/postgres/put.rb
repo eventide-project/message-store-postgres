@@ -5,14 +5,8 @@ module EventSource
 
       dependency :session, Session
 
-      def partition
-        @partition ||= Defaults.partition
-      end
-      attr_writer :partition
-
-      def self.build(partition: nil, session: nil)
+      def self.build(session: nil)
         new.tap do |instance|
-          instance.partition = partition
           instance.configure(session: session)
         end
       end
@@ -21,26 +15,26 @@ module EventSource
         Session.configure(self, session: session)
       end
 
-      def self.configure(receiver, partition: nil, session: nil, attr_name: nil)
+      def self.configure(receiver, session: nil, attr_name: nil)
         attr_name ||= :put
-        instance = build(partition: partition, session: session)
+        instance = build(session: session)
         receiver.public_send "#{attr_name}=", instance
       end
 
       def self.call(write_event, stream_name, expected_version: nil, partition: nil, session: nil)
-        instance = build(partition: partition, session: session)
-        instance.(write_event, stream_name, expected_version: expected_version)
+        instance = build(session: session)
+        instance.(write_event, stream_name, expected_version: expected_version, partition: partition)
       end
 
-      def call(write_event, stream_name, expected_version: nil)
-        logger.trace { "Putting event data (Stream Name: #{stream_name}, Type: #{write_event.type}, Expected Version: #{expected_version.inspect})" }
+      def call(write_event, stream_name, expected_version: nil, partition: nil)
+        logger.trace { "Putting event data (Stream Name: #{stream_name}, Type: #{write_event.type}, Expected Version: #{expected_version.inspect}, Partition: #{partition.inspect})" }
         logger.trace(tags: [:data, :event_data]) { write_event.pretty_inspect }
 
         type, data, metadata = destructure_event(write_event)
         expected_version = ExpectedVersion.canonize(expected_version)
 
-        insert_event(stream_name, type, data, metadata, expected_version).tap do |position|
-          logger.info { "Put event data (Position: #{position}, Stream Name: #{stream_name}, Type: #{write_event.type}, Expected Version: #{expected_version.inspect})" }
+        insert_event(stream_name, type, data, metadata, expected_version, partition).tap do |position|
+          logger.info { "Put event data (Position: #{position}, Stream Name: #{stream_name}, Type: #{write_event.type}, Expected Version: #{expected_version.inspect}, Partition: #{partition.inspect})" }
           logger.info(tags: [:data, :event_data]) { write_event.pretty_inspect }
         end
       end
@@ -56,15 +50,15 @@ module EventSource
         return type, data, metadata
       end
 
-      def insert_event(stream_name, type, data, metadata, expected_version)
+      def insert_event(stream_name, type, data, metadata, expected_version, partition)
         serialized_data = serialized_data(data)
         serialized_metadata = serialized_metadata(metadata)
-        records = execute_query(stream_name, type, serialized_data, serialized_metadata, expected_version)
+        records = execute_query(stream_name, type, serialized_data, serialized_metadata, expected_version, partition)
         position(records)
       end
 
-      def execute_query(stream_name, type, serialized_data, serialized_metadata, expected_version)
-        logger.trace { "Executing insert (Stream Name: #{stream_name}, Type: #{type}, Expected Version: #{expected_version.inspect})" }
+      def execute_query(stream_name, type, serialized_data, serialized_metadata, expected_version, partition)
+        logger.trace { "Executing insert (Stream Name: #{stream_name}, Type: #{type}, Expected Version: #{expected_version.inspect}, Partition: #{partition.inspect})" }
 
         params = [
           stream_name,
@@ -81,7 +75,7 @@ module EventSource
           raise_error e
         end
 
-        logger.debug { "Executed insert (Stream Name: #{stream_name}, Type: #{type}, Expected Version: #{expected_version.inspect})" }
+        logger.debug { "Executed insert (Stream Name: #{stream_name}, Type: #{type}, Expected Version: #{expected_version.inspect}, Partition: #{partition.inspect})" }
 
         records
       end
