@@ -4,8 +4,8 @@ context "Put" do
   context "Expected Version" do
     context "Does not match the stream version" do
       stream_name = Controls::StreamName.example
-      write_event = Controls::EventData::Write.example
 
+      write_event = Controls::EventData::Write.example
       position = Put.(write_event, stream_name)
 
       incorrect_stream_version = position  + 1

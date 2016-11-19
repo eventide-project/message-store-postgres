@@ -6,7 +6,7 @@ context "Write" do
       stream_name = Controls::StreamName.example
       partition = Controls::Partition.example
 
-      write_event = Controls::EventData::Write.example(data: { attribute: 'some_value' })
+      write_event = Controls::EventData::Write.example
 
       position = Write.(write_event, stream_name, partition: partition)
 
