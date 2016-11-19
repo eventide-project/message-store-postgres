@@ -5,8 +5,8 @@ context "Write" do
     context "Partition" do
       stream_name = Controls::StreamName.example
 
-      write_event_1 = Controls::EventData::Write.example(data: { attribute: 'value_1' })
-      write_event_2 = Controls::EventData::Write.example(data: { attribute: 'value_2' })
+      write_event_1 = Controls::EventData::Write.example
+      write_event_2 = Controls::EventData::Write.example
 
       batch = [write_event_1, write_event_2]
 
