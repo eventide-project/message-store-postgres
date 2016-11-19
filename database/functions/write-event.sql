@@ -13,11 +13,11 @@ DECLARE
   position int;
   category varchar;
 BEGIN
-  stream_version := stream_version(_stream_name);
-
   if _partition is null then
     _partition := 'events';
   end if;
+
+  stream_version := stream_version(_stream_name, _partition);
 
   if stream_version is null then
     stream_version := -1;

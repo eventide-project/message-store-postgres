@@ -12,7 +12,11 @@ context "Write" do
 
       partition = Controls::Partition.example
 
-      Write.(batch, stream_name, partition: partition)
+      last_written_position = Write.(batch, stream_name, partition: partition)
+
+      test "Last written position" do
+        assert(last_written_position == 1)
+      end
 
       context "Individual Events are Written" do
         2.times do |i|
