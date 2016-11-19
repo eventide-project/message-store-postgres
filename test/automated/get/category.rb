@@ -8,8 +8,9 @@ context "Get" do
 
     events = Get.(stream_name)
 
+    number_of_events = events.length
+
     test "Number of events retrieved is the number written to the category" do
-      number_of_events = events.length
       assert(number_of_events == 2)
     end
   end

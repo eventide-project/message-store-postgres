@@ -3,7 +3,7 @@ require_relative '../../automated_init'
 context "Put" do
   context "Expected Version" do
     context "Does not match the stream version" do
-      stream_name = Controls::StreamName.example(category: 'testPutExpectedVersion')
+      stream_name = Controls::StreamName.example
       write_event = Controls::EventData::Write.example
 
       position = Put.(write_event, stream_name)

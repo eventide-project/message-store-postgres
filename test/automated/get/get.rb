@@ -4,9 +4,9 @@ context "Put and Get" do
   stream_name = Controls::StreamName.example
   write_event = Controls::EventData::Write.example
 
-  written_position = Put.(write_event, stream_name)
+  position = Put.(write_event, stream_name)
 
-  read_event = Get.(stream_name, position: written_position).first
+  read_event = Get.(stream_name, position: position).first
 
   context "Got the event that was written" do
     test "Type" do
@@ -26,7 +26,7 @@ context "Put and Get" do
     end
 
     test "Position" do
-      assert(read_event.position == written_position)
+      assert(read_event.position == position)
     end
 
     test "Global Position" do
