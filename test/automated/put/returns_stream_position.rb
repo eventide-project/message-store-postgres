@@ -2,7 +2,7 @@ require_relative '../automated_init'
 
 context "Put" do
   context "Returns Stream Position" do
-    stream_name = Controls::StreamName.example(category: 'testPutReturnsStreamPosition')
+    stream_name = Controls::StreamName.example
 
     write_event = Controls::EventData::Write.example
 
