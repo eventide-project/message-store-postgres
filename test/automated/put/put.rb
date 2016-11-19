@@ -1,7 +1,7 @@
 require_relative '../automated_init'
 
 context "Put and Get" do
-  stream_name = Controls::StreamName.example
+  stream_name = Controls::StreamName.example(category: 'testPut')
   write_event = Controls::EventData::Write.example
 
   written_position = Put.(write_event, stream_name)

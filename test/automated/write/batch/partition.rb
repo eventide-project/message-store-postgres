@@ -3,7 +3,7 @@ require_relative '../../automated_init'
 context "Write" do
   context "Batch" do
     context "Partition" do
-      stream_name = Controls::StreamName.example
+      stream_name = Controls::StreamName.example(category: 'testWriteBatchPartition')
 
       write_event_1 = Controls::EventData::Write.example(data: { attribute: 'value_1' })
       write_event_2 = Controls::EventData::Write.example(data: { attribute: 'value_2' })

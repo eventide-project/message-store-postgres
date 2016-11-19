@@ -3,7 +3,7 @@ require_relative '../../automated_init'
 context "Put" do
   context "No Stream" do
     context "Existing Stream" do
-      stream_name = Controls::StreamName.example
+      stream_name = Controls::StreamName.example(category: 'testPutNoStreamExistingStream')
 
       write_event_1 = Controls::EventData::Write.example(data: {:some_attribute => 'first'})
       write_event_2 = Controls::EventData::Write.example(data: {:some_attribute => 'second'})

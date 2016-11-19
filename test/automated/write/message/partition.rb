@@ -2,7 +2,7 @@ require_relative '../../automated_init'
 
 context "Write" do
   context "Message" do
-    stream_name = Controls::StreamName.example(category: 'testWriteMessage')
+    stream_name = Controls::StreamName.example(category: 'testWriteMessagePartition')
     write_event = Controls::EventData::Write.example
 
     written_position = Write.(write_event, stream_name)
