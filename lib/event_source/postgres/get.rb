@@ -3,25 +3,25 @@ module EventSource
     class Get
       include Log::Dependency
 
-      initializer :stream, :batch_size, :precedence, :partition
+      initializer :stream, :batch_size, :precedence
 
       dependency :session, Session
 
-      def self.build(stream_name, batch_size: nil, precedence: nil, partition: nil, session: nil)
+      def self.build(stream_name, batch_size: nil, precedence: nil, session: nil)
         stream = Stream.new(stream_name)
-        new(stream, batch_size, precedence, partition).tap do |instance|
+        new(stream, batch_size, precedence).tap do |instance|
           instance.configure(session: session)
         end
       end
 
-      def self.configure(receiver, stream_name, attr_name: nil, position: nil, batch_size: nil, precedence: nil, partition: nil, session: nil)
+      def self.configure(receiver, stream_name, attr_name: nil, position: nil, batch_size: nil, precedence: nil, session: nil)
         attr_name ||= :get
-        instance = build(stream_name, batch_size: batch_size, precedence: precedence, partition: partition, session: session)
+        instance = build(stream_name, batch_size: batch_size, precedence: precedence, session: session)
         receiver.public_send "#{attr_name}=", instance
       end
 
-      def self.call(stream_name, position: nil, batch_size: nil, precedence: nil, partition: nil, session: nil)
-        instance = build(stream_name, batch_size: batch_size, precedence: precedence, partition: partition, session: session)
+      def self.call(stream_name, position: nil, batch_size: nil, precedence: nil, session: nil)
+        instance = build(stream_name, batch_size: batch_size, precedence: precedence, session: session)
         instance.(position: position)
       end
 
@@ -30,26 +30,26 @@ module EventSource
       end
 
       def call(position: nil)
-        logger.trace { "Getting event data (Position: #{position.inspect}, Stream Name: #{stream.name}, Category: #{stream.category?}, Batch Size: #{batch_size.inspect}, Precedence: #{precedence.inspect}, Partition: #{partition.inspect})" }
+        logger.trace { "Getting event data (Position: #{position.inspect}, Stream Name: #{stream.name}, Category: #{stream.category?}, Batch Size: #{batch_size.inspect}, Precedence: #{precedence.inspect})" }
 
         records = get_records(stream, position)
 
         events = convert(records)
 
-        logger.info { "Finished getting event data (Count: #{events.length}, Position: #{position.inspect}, Stream Name: #{stream.name}, Category: #{stream.category?}, Batch Size: #{batch_size.inspect}, Precedence: #{precedence.inspect}, Partition: #{partition.inspect})" }
+        logger.info { "Finished getting event data (Count: #{events.length}, Position: #{position.inspect}, Stream Name: #{stream.name}, Category: #{stream.category?}, Batch Size: #{batch_size.inspect}, Precedence: #{precedence.inspect})" }
         logger.info(tags: [:data, :event_data]) { events.pretty_inspect }
 
         events
       end
 
       def get_records(stream, position)
-        logger.trace { "Getting records (Stream: #{stream.name}, Category: #{stream.category?}, Position: #{position.inspect}, Batch Size: #{batch_size.inspect}, Precedence: #{precedence.inspect}, Partition: #{partition.inspect})" }
+        logger.trace { "Getting records (Stream: #{stream.name}, Category: #{stream.category?}, Position: #{position.inspect}, Batch Size: #{batch_size.inspect}, Precedence: #{precedence.inspect})" }
 
-        select_statement = SelectStatement.build(stream, offset: position, batch_size: batch_size, precedence: precedence, partition: partition)
+        select_statement = SelectStatement.build(stream, offset: position, batch_size: batch_size, precedence: precedence)
 
         records = session.execute(select_statement.sql)
 
-        logger.debug { "Finished getting records (Count: #{records.ntuples}, Stream: #{stream.name}, Category: #{stream.category?}, Position: #{position.inspect}, Batch Size: #{batch_size.inspect}, Precedence: #{precedence.inspect}, Partition: #{partition.inspect})" }
+        logger.debug { "Finished getting records (Count: #{records.ntuples}, Stream: #{stream.name}, Category: #{stream.category?}, Position: #{position.inspect}, Batch Size: #{batch_size.inspect}, Precedence: #{precedence.inspect})" }
 
         records
       end

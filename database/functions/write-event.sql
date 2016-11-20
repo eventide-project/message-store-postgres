@@ -2,7 +2,6 @@ CREATE OR REPLACE FUNCTION write_event(
   _stream_name varchar,
   _type varchar,
   _data jsonb,
-  _partition varchar DEFAULT NULL,
   _metadata jsonb DEFAULT NULL,
   _expected_version int DEFAULT NULL
 )
@@ -13,11 +12,7 @@ DECLARE
   position int;
   category varchar;
 BEGIN
-  if _partition is null then
-    _partition := 'events';
-  end if;
-
-  stream_version := stream_version(_stream_name, _partition);
+  stream_version := stream_version(_stream_name);
 
   if stream_version is null then
     stream_version := -1;
@@ -31,28 +26,23 @@ BEGIN
 
   position := stream_version + 1;
 
-  EXECUTE format('insert into %I ('
-      '"stream_name", '
-      '"position", '
-      '"type", '
-      '"data", '
-      '"metadata"'
-    ') '
-    'values ('
-      '$1, '
-      '$2, '
-      '$3, '
-      '$4, '
-      '$5
-    )',
-    _partition)
-    USING
+  insert into "events"
+    (
+      "stream_name",
+      "position",
+      "type",
+      "data",
+      "metadata"
+    )
+  values
+    (
       _stream_name,
       position,
       _type,
       _data,
       _metadata
-    ;
+    )
+  ;
 
   return position;
 END;

@@ -59,9 +59,8 @@ function create-database {
   echo
 }
 
-function create-tables {
-  psql $database -f database/tables/events-table.sql
-  psql $database -f database/tables/other-events-table.sql
+function create-table {
+  psql $database -f database/table/events-table.sql
 }
 
 function create-functions {
@@ -76,6 +75,6 @@ function create-indexes {
 
 create-user
 create-database
-create-tables
+create-table
 create-functions
 create-indexes

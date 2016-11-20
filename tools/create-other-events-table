@@ -1,3 +1,0 @@
-#!/usr/bin/env bash
-
-database/create-other-events-table.sh

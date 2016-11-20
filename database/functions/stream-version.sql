@@ -1,24 +1,12 @@
 CREATE OR REPLACE FUNCTION stream_version(
-  _stream_name varchar,
-  _partition varchar DEFAULT NULL
+  _stream_name varchar
 )
 RETURNS int
 AS $$
 DECLARE
   stream_version int;
 BEGIN
-  if _partition is null then
-    _partition := 'events';
-  end if;
-
-  EXECUTE format('select max(position) '
-    'from %I '
-    'where stream_name = $1',
-    _partition)
-    INTO
-      stream_version
-    USING
-      _stream_name;
+  select max(position) into stream_version from events where stream_name = _stream_name;
 
   return stream_version;
 END;

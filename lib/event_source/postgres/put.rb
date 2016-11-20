@@ -21,20 +21,20 @@ module EventSource
         receiver.public_send "#{attr_name}=", instance
       end
 
-      def self.call(write_event, stream_name, expected_version: nil, partition: nil, session: nil)
+      def self.call(write_event, stream_name, expected_version: nil, session: nil)
         instance = build(session: session)
-        instance.(write_event, stream_name, expected_version: expected_version, partition: partition)
+        instance.(write_event, stream_name, expected_version: expected_version)
       end
 
-      def call(write_event, stream_name, expected_version: nil, partition: nil)
-        logger.trace { "Putting event data (Stream Name: #{stream_name}, Type: #{write_event.type}, Expected Version: #{expected_version.inspect}, Partition: #{partition.inspect})" }
+      def call(write_event, stream_name, expected_version: nil)
+        logger.trace { "Putting event data (Stream Name: #{stream_name}, Type: #{write_event.type}, Expected Version: #{expected_version.inspect})" }
         logger.trace(tags: [:data, :event_data]) { write_event.pretty_inspect }
 
         type, data, metadata = destructure_event(write_event)
         expected_version = ExpectedVersion.canonize(expected_version)
 
-        insert_event(stream_name, type, data, metadata, expected_version, partition).tap do |position|
-          logger.info { "Put event data (Position: #{position}, Stream Name: #{stream_name}, Type: #{write_event.type}, Expected Version: #{expected_version.inspect}, Partition: #{partition.inspect})" }
+        insert_event(stream_name, type, data, metadata, expected_version).tap do |position|
+          logger.info { "Put event data (Position: #{position}, Stream Name: #{stream_name}, Type: #{write_event.type}, Expected Version: #{expected_version.inspect})" }
           logger.info(tags: [:data, :event_data]) { write_event.pretty_inspect }
         end
       end
@@ -50,21 +50,20 @@ module EventSource
         return type, data, metadata
       end
 
-      def insert_event(stream_name, type, data, metadata, expected_version, partition)
+      def insert_event(stream_name, type, data, metadata, expected_version)
         serialized_data = serialized_data(data)
         serialized_metadata = serialized_metadata(metadata)
-        records = execute_query(stream_name, type, serialized_data, serialized_metadata, expected_version, partition)
+        records = execute_query(stream_name, type, serialized_data, serialized_metadata, expected_version)
         position(records)
       end
 
-      def execute_query(stream_name, type, serialized_data, serialized_metadata, expected_version, partition)
-        logger.trace { "Executing insert (Stream Name: #{stream_name}, Type: #{type}, Expected Version: #{expected_version.inspect}, Partition: #{partition.inspect})" }
+      def execute_query(stream_name, type, serialized_data, serialized_metadata, expected_version)
+        logger.trace { "Executing insert (Stream Name: #{stream_name}, Type: #{type}, Expected Version: #{expected_version.inspect})" }
 
         params = [
           stream_name,
           type,
           serialized_data,
-          partition,
           serialized_metadata,
           expected_version
         ]
@@ -75,13 +74,13 @@ module EventSource
           raise_error e
         end
 
-        logger.debug { "Executed insert (Stream Name: #{stream_name}, Type: #{type}, Expected Version: #{expected_version.inspect}, Partition: #{partition.inspect})" }
+        logger.debug { "Executed insert (Stream Name: #{stream_name}, Type: #{type}, Expected Version: #{expected_version.inspect})" }
 
         records
       end
 
       def self.statement
-        @statement ||= "SELECT write_event($1::varchar, $2::varchar, $3::jsonb, $4::varchar, $5::jsonb, $6::int);"
+        @statement ||= "SELECT write_event($1::varchar, $2::varchar, $3::jsonb, $4::jsonb, $5::int);"
       end
 
       def serialized_data(data)
@@ -117,12 +116,6 @@ module EventSource
           raise ExpectedVersion::Error, error_message
         end
         raise pg_error
-      end
-
-      module Defaults
-        def self.partition
-          Partition::Defaults.name
-        end
       end
     end
   end

@@ -12,8 +12,6 @@ require 'event_source/postgres/log'
 require 'event_source/postgres/settings'
 require 'event_source/postgres/session'
 
-require 'event_source/postgres/partition'
-
 require 'event_source/postgres/put'
 require 'event_source/postgres/write'
 
