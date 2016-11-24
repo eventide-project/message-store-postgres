@@ -91,9 +91,9 @@ module EventSource
       end
 
       def serialized_metadata(metadata)
-        serializable_metadata = EventData::Hash[metadata]
         serialized_metadata = nil
         unless metadata.nil?
+          serializable_metadata = EventData::Hash[metadata]
           serialized_metadata = Transform::Write.(serializable_metadata, :json)
         end
         logger.debug(tags: [:data, :serialize]) { "Serialized Metadata: #{serialized_metadata.inspect}" }
