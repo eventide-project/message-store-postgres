@@ -26,7 +26,8 @@ module EventSource
           stream.type
         end
 
-        def self.build(stream, offset: nil, batch_size: nil, precedence: nil)
+        def self.build(stream_name, offset: nil, batch_size: nil, precedence: nil)
+          stream = Stream.new(stream_name)
           new(stream, offset, batch_size, precedence)
         end
 

@@ -3,7 +3,7 @@ module EventSource
     class Get
       include Log::Dependency
 
-      initializer :stream, :batch_size, :precedence
+      initializer :batch_size, :precedence
 
       dependency :session, Session
 
