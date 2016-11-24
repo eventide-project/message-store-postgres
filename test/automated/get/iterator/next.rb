@@ -4,9 +4,9 @@ context "Iterator" do
   context "Next" do
     stream_name = Controls::Put.(instances: 2)
 
-    get = Get.build(stream_name, batch_size: 1)
+    get = Get.build(batch_size: 1)
 
-    iterator = Iterator.build(get)
+    iterator = Iterator.build(get, stream_name)
 
     batch = []
 

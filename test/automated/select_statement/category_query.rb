@@ -2,9 +2,9 @@ require_relative '../automated_init'
 
 context "Select Statement" do
   context "Category Query" do
-    stream = Controls::Stream::Category.example
+    category = Controls::Category.example
 
-    select_statement = Get::SelectStatement.build stream
+    select_statement = Get::SelectStatement.build(category)
 
     sql = select_statement.sql
     sql.gsub!(/\s+/, ' ')
