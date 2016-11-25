@@ -7,7 +7,7 @@ CREATE TABLE "public"."events" (
   "position" int4 NOT NULL,
   "type" varchar(255) NOT NULL COLLATE "default",
   "global_position" bigserial NOT NULL ,
-  "data" jsonb NOT NULL,
+  "data" jsonb,
   "metadata" jsonb,
   "time" TIMESTAMP WITHOUT TIME ZONE DEFAULT (now() AT TIME ZONE 'utc') NOT NULL
 )

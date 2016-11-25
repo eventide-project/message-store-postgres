@@ -4,9 +4,10 @@ context "Put" do
   context "Metadata" do
     context "Nil" do
       stream_name = Controls::StreamName.example
-      write_event = Controls::EventData::Write.example
 
-      write_event.metadata = {}
+      write_event = Controls::EventData::Write.example(metadata: {})
+
+      # write_event.metadata = {}
 
       position = Put.(write_event, stream_name)
 
