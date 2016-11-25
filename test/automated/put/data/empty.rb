@@ -5,7 +5,7 @@ context "Put" do
     context "Nil" do
       stream_name = Controls::StreamName.example
 
-      write_event = Controls::EventData::Write.example(metadata: :none)
+      write_event = Controls::EventData::Write.example(data: {})
 
       position = Put.(write_event, stream_name)
 
@@ -13,7 +13,7 @@ context "Put" do
 
       context "Read metadata" do
         test "Is nil" do
-          assert(read_event.metadata.nil?)
+          assert(read_event.data.nil?)
         end
       end
     end
