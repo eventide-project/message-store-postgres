@@ -92,6 +92,11 @@ module EventSource
 
       def serialized_metadata(metadata)
         serialized_metadata = nil
+
+        if metadata.is_a?(Hash) && metadata.empty?
+          metadata = nil
+        end
+
         unless metadata.nil?
           serializable_metadata = EventData::Hash[metadata]
           serialized_metadata = Transform::Write.(serializable_metadata, :json)
