@@ -8,7 +8,5 @@ require 'event_source/postgres/controls'
 
 require 'test_bench'; TestBench.activate
 
-require 'pp'
-
 include EventSource
 include EventSource::Postgres
