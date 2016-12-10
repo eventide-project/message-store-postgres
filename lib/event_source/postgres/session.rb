@@ -13,13 +13,10 @@ module EventSource
 
       attr_accessor :connection
 
-      def self.build(connection: nil, settings: nil)
+      def self.build(settings: nil)
         new.tap do |instance|
           settings ||= Settings.instance
-
           settings.set(instance)
-
-          connect(instance, connection)
         end
       end
 
@@ -31,17 +28,17 @@ module EventSource
         instance
       end
 
-      def self.connect(instance, connection=nil)
+      def connect
         logger.trace "Connecting to database"
 
-        if connection.nil?
-          logger.debug { "No connection. A new one will be built." }
-          connection = build_connection(instance)
-        else
-          logger.debug { "Reusing existing connection" }
+        if connected?
+          logger.debug { "Already connected. A new connection will not be built." }
+          return
         end
 
-        instance.connection = connection
+        logger.debug { "Not connected. A new connection will be built." }
+        connection = self.class.build_connection(self)
+        self.connection = connection
 
         logger.debug { "Connected to database" }
 
@@ -58,10 +55,6 @@ module EventSource
         logger.trace { "Built new connection to database (Settings: #{LogText.settings(settings).inspect})" }
 
         connection
-      end
-
-      def connect
-        self.class.connect(self)
       end
 
       def connected?
@@ -88,6 +81,10 @@ module EventSource
       end
 
       def execute(statement, params=nil)
+        unless connected?
+          connect
+        end
+
         if params.nil?
           connection.exec(statement)
         else
@@ -96,6 +93,10 @@ module EventSource
       end
 
       def transaction(&blk)
+        unless connected?
+          connect
+        end
+
         connection.transaction(&blk)
       end
 
