@@ -9,7 +9,7 @@ echo "Uninstalling Database"
 echo "= = ="
 echo
 
-default_name=eventsource
+default_name=event_source
 
 if [ -z ${DATABASE_USER+x} ]; then
   echo "(DATABASE_USER is not set)"
