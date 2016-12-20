@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 Gem::Specification.new do |s|
   s.name = 'evt-event_source-postgres'
-  s.version = '0.10.0.0'
+  s.version = '0.10.0.1'
   s.summary = 'Event source client for PostgreSQL'
   s.description = ' '
 
@@ -22,5 +22,5 @@ Gem::Specification.new do |s|
 
   s.add_runtime_dependency 'pg'
 
-  s.add_development_dependency 'ntl-test_bench'
+  s.add_development_dependency 'test_bench'
 end
