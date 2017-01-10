@@ -32,7 +32,7 @@ module EventSource
         last_position
       end
 
-      def write_event(event_data, stream_name, expected_version: nil)
+      def write_event_data(event_data, stream_name, expected_version: nil)
         logger.trace { "Writing event data (Stream Name: #{stream_name}, Type: #{event_data.type}, Expected Version: #{expected_version.inspect})" }
         logger.trace(tags: [:data, :event_data]) { event_data.pretty_inspect }
 
