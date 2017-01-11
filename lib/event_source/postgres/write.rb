@@ -19,7 +19,7 @@ module EventSource
         last_position = nil
         put.session.transaction do
           batch.each do |event_data|
-            last_position = write_event(event_data, stream_name, expected_version: expected_version)
+            last_position = write_event_data(event_data, stream_name, expected_version: expected_version)
 
             unless expected_version.nil?
               expected_version += 1
