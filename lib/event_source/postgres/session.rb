@@ -29,7 +29,7 @@ module EventSource
       end
 
       def connect
-        logger.trace "Connecting to database"
+        logger.trace { "Connecting to database" }
 
         if connected?
           logger.debug { "Already connected. A new connection will not be built." }
@@ -81,14 +81,22 @@ module EventSource
       end
 
       def execute(statement, params=nil)
+        logger.trace { "Executing statement" }
+        logger.trace(tag: :data) { statement }
+        logger.trace(tag: :data) { params.pretty_inspect }
+
         unless connected?
           connect
         end
 
         if params.nil?
-          connection.exec(statement)
+          connection.exec(statement).tap do
+            logger.debug { "Executed statement" }
+          end
         else
-          connection.exec_params(statement, params)
+          connection.exec_params(statement, params).tap do
+            logger.debug { "Executed statement with params" }
+          end
         end
       end
 
