@@ -1,4 +1,5 @@
 CREATE OR REPLACE FUNCTION write_event(
+  _id varchar,
   _stream_name varchar,
   _type varchar,
   _data jsonb,
@@ -8,10 +9,13 @@ CREATE OR REPLACE FUNCTION write_event(
 RETURNS int
 AS $$
 DECLARE
+  event_id uuid;
   stream_version int;
   position int;
   category varchar;
 BEGIN
+  event_id = uuid(_id);
+
   stream_version := stream_version(_stream_name);
 
   if stream_version is null then
@@ -28,6 +32,7 @@ BEGIN
 
   insert into "events"
     (
+      "id",
       "stream_name",
       "position",
       "type",
@@ -36,6 +41,7 @@ BEGIN
     )
   values
     (
+      event_id,
       _stream_name,
       position,
       _type,

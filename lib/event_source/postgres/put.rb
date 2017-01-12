@@ -30,37 +30,41 @@ module EventSource
         logger.trace { "Putting event data (Stream Name: #{stream_name}, Type: #{write_event.type}, Expected Version: #{expected_version.inspect})" }
         logger.trace(tags: [:data, :event_data]) { write_event.pretty_inspect }
 
-        type, data, metadata = destructure_event(write_event)
+        id, type, data, metadata = destructure_event(write_event)
         expected_version = ExpectedVersion.canonize(expected_version)
 
-        insert_event(stream_name, type, data, metadata, expected_version).tap do |position|
-          logger.info { "Put event data (Position: #{position}, Stream Name: #{stream_name}, Type: #{write_event.type}, Expected Version: #{expected_version.inspect})" }
+        insert_event(id, stream_name, type, data, metadata, expected_version).tap do |position|
+          logger.info { "Put event data (Position: #{position}, Stream Name: #{stream_name}, Type: #{write_event.type}, Expected Version: #{expected_version.inspect}, ID: #{id.inspect})" }
           logger.info(tags: [:data, :event_data]) { write_event.pretty_inspect }
         end
       end
 
       def destructure_event(write_event)
+        id = write_event.id
         type = write_event.type
         data = write_event.data
         metadata = write_event.metadata
 
+        logger.debug(tags: [:data, :event_data]) { "ID: #{id.pretty_inspect}" }
+        logger.debug(tags: [:data, :event_data]) { "Type: #{type.pretty_inspect}" }
         logger.debug(tags: [:data, :event_data]) { "Data: #{data.pretty_inspect}" }
         logger.debug(tags: [:data, :event_data]) { "Metadata: #{metadata.pretty_inspect}" }
 
-        return type, data, metadata
+        return id, type, data, metadata
       end
 
-      def insert_event(stream_name, type, data, metadata, expected_version)
+      def insert_event(id, stream_name, type, data, metadata, expected_version)
         serialized_data = serialized_data(data)
         serialized_metadata = serialized_metadata(metadata)
-        records = execute_query(stream_name, type, serialized_data, serialized_metadata, expected_version)
+        records = execute_query(id, stream_name, type, serialized_data, serialized_metadata, expected_version)
         position(records)
       end
 
-      def execute_query(stream_name, type, serialized_data, serialized_metadata, expected_version)
-        logger.trace { "Executing insert (Stream Name: #{stream_name}, Type: #{type}, Expected Version: #{expected_version.inspect})" }
+      def execute_query(id, stream_name, type, serialized_data, serialized_metadata, expected_version)
+        logger.trace { "Executing insert (Stream Name: #{stream_name}, Type: #{type}, Expected Version: #{expected_version.inspect}, ID: #{id.inspect})" }
 
         params = [
+          id,
           stream_name,
           type,
           serialized_data,
@@ -74,13 +78,13 @@ module EventSource
           raise_error e
         end
 
-        logger.debug { "Executed insert (Stream Name: #{stream_name}, Type: #{type}, Expected Version: #{expected_version.inspect})" }
+        logger.debug { "Executed insert (Stream Name: #{stream_name}, Type: #{type}, Expected Version: #{expected_version.inspect}, ID: #{id.inspect})" }
 
         records
       end
 
       def self.statement
-        @statement ||= "SELECT write_event($1::varchar, $2::varchar, $3::jsonb, $4::jsonb, $5::int);"
+        @statement ||= "SELECT write_event($1::varchar, $2::varchar, $3::varchar, $4::jsonb, $5::jsonb, $6::int);"
       end
 
       def serialized_data(data)
