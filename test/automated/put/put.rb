@@ -9,6 +9,10 @@ context "Put and Get" do
   read_event = Get.(stream_name, position: position).first
 
   context "Got the event that was written" do
+    test "ID" do
+      assert(read_event.id == write_event.id)
+    end
+
     test "Type" do
       assert(read_event.type == write_event.type)
     end
