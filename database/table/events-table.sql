@@ -3,7 +3,8 @@
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."events";
 CREATE TABLE "public"."events" (
-  "id" UUID NOT NULL DEFAULT gen_random_uuid(),
+  -- "id" UUID NOT NULL DEFAULT gen_random_uuid(),
+  "id" UUID NOT NULL,
   "stream_name" varchar(255) NOT NULL COLLATE "default",
   "position" int4 NOT NULL,
   "type" varchar(255) NOT NULL COLLATE "default",

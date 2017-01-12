@@ -59,9 +59,9 @@ function create-database {
   echo
 }
 
-function create-extensions {
-  psql $database -f database/extensions.sql
-}
+# function create-extensions {
+#   psql $database -f database/extensions.sql
+# }
 
 function create-table {
   psql $database -f database/table/events-table.sql
@@ -79,7 +79,7 @@ function create-indexes {
 
 create-user
 create-database
-create-extensions
+# create-extensions
 create-table
 create-functions
 create-indexes
