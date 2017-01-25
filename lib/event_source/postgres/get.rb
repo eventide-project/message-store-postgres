@@ -3,19 +3,19 @@ module EventSource
     class Get
       include Log::Dependency
 
-      initializer :batch_size, :precedence
+      initializer :batch_size
 
       dependency :session, Session
 
-      def self.build(batch_size: nil, precedence: nil, session: nil)
-        new(batch_size, precedence).tap do |instance|
+      def self.build(batch_size: nil, session: nil)
+        new(batch_size).tap do |instance|
           instance.configure(session: session)
         end
       end
 
-      def self.configure(receiver, attr_name: nil, position: nil, batch_size: nil, precedence: nil, session: nil)
+      def self.configure(receiver, attr_name: nil, position: nil, batch_size: nil, session: nil)
         attr_name ||= :get
-        instance = build(batch_size: batch_size, precedence: precedence, session: session)
+        instance = build(batch_size: batch_size, session: session)
         receiver.public_send "#{attr_name}=", instance
       end
 
@@ -23,32 +23,32 @@ module EventSource
         Session.configure self, session: session
       end
 
-      def self.call(stream_name, position: nil, batch_size: nil, precedence: nil, session: nil)
-        instance = build(batch_size: batch_size, precedence: precedence, session: session)
+      def self.call(stream_name, position: nil, batch_size: nil, session: nil)
+        instance = build(batch_size: batch_size, session: session)
         instance.(stream_name, position: position)
       end
 
       def call(stream_name, position: nil)
-        logger.trace { "Getting event data (Position: #{position.inspect}, Stream Name: #{stream_name}, Batch Size: #{batch_size.inspect}, Precedence: #{precedence.inspect})" }
+        logger.trace { "Getting event data (Position: #{position.inspect}, Stream Name: #{stream_name}, Batch Size: #{batch_size.inspect})" }
 
         records = get_records(stream_name, position)
 
         events = convert(records)
 
-        logger.info { "Finished getting event data (Count: #{events.length}, Position: #{position.inspect}, Stream Name: #{stream_name}, Batch Size: #{batch_size.inspect}, Precedence: #{precedence.inspect})" }
+        logger.info { "Finished getting event data (Count: #{events.length}, Position: #{position.inspect}, Stream Name: #{stream_name}, Batch Size: #{batch_size.inspect})" }
         logger.info(tags: [:data, :event_data]) { events.pretty_inspect }
 
         events
       end
 
       def get_records(stream_name, position)
-        logger.trace { "Getting records (Stream: #{stream_name}, Position: #{position.inspect}, Batch Size: #{batch_size.inspect}, Precedence: #{precedence.inspect})" }
+        logger.trace { "Getting records (Stream: #{stream_name}, Position: #{position.inspect}, Batch Size: #{batch_size.inspect})" }
 
-        select_statement = SelectStatement.build(stream_name, offset: position, batch_size: batch_size, precedence: precedence)
+        select_statement = SelectStatement.build(stream_name, offset: position, batch_size: batch_size)
 
         records = session.execute(select_statement.sql)
 
-        logger.debug { "Finished getting records (Count: #{records.ntuples}, Stream: #{stream_name}, Position: #{position.inspect}, Batch Size: #{batch_size.inspect}, Precedence: #{precedence.inspect})" }
+        logger.debug { "Finished getting records (Count: #{records.ntuples}, Stream: #{stream_name}, Position: #{position.inspect}, Batch Size: #{batch_size.inspect})" }
 
         records
       end

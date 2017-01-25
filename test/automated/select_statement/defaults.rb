@@ -19,12 +19,5 @@ context "Select Statement" do
         assert(select_statement.batch_size == default_batch_size)
       end
     end
-
-    context "Precedence" do
-      default_precedence = Get::SelectStatement::Defaults.precedence
-      test "#{default_precedence}" do
-        assert(select_statement.precedence == default_precedence)
-      end
-    end
   end
 end

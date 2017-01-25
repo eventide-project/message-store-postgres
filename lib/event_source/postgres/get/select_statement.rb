@@ -4,7 +4,7 @@ module EventSource
       class SelectStatement
         include Log::Dependency
 
-        initializer :stream, w(:offset), w(:batch_size), w(:precedence)
+        initializer :stream, w(:offset), w(:batch_size)
 
         def offset
           @offset ||= Defaults.offset
@@ -12,10 +12,6 @@ module EventSource
 
         def batch_size
           @batch_size ||= Defaults.batch_size
-        end
-
-        def precedence
-          @precedence ||= Defaults.precedence
         end
 
         def stream_name
@@ -26,13 +22,13 @@ module EventSource
           stream.type
         end
 
-        def self.build(stream_name, offset: nil, batch_size: nil, precedence: nil)
+        def self.build(stream_name, offset: nil, batch_size: nil)
           stream = Stream.new(stream_name)
-          new(stream, offset, batch_size, precedence)
+          new(stream, offset, batch_size)
         end
 
         def sql
-          logger.trace(tag: :sql) { "Composing select statement (Stream: #{stream_name}, Category: #{stream.category?}, Type: #{stream_type}, Position: #{offset}, Batch Size: #{batch_size}, Precedence: #{precedence})" }
+          logger.trace(tag: :sql) { "Composing select statement (Stream: #{stream_name}, Category: #{stream.category?}, Type: #{stream_type}, Position: #{offset}, Batch Size: #{batch_size})" }
 
           statement = <<-SQL
             SELECT
@@ -49,7 +45,7 @@ module EventSource
             WHERE
               #{where_clause_field} = '#{stream_name}'
             ORDER BY
-              global_position #{precedence.to_s.upcase}
+              global_position asc
             LIMIT
               #{batch_size}
             OFFSET
@@ -57,7 +53,7 @@ module EventSource
             ;
           SQL
 
-          logger.debug(tag: :sql) { "Composed select statement (Stream: #{stream_name}, Category: #{stream.category?}, Type: #{stream_type}, Position: #{offset}, Batch Size: #{batch_size}, Precedence: #{precedence})" }
+          logger.debug(tag: :sql) { "Composed select statement (Stream: #{stream_name}, Category: #{stream.category?}, Type: #{stream_type}, Position: #{offset}, Batch Size: #{batch_size})" }
           logger.debug(tags: [:data, :sql]) { "Statement: #{statement}" }
 
           statement
@@ -78,10 +74,6 @@ module EventSource
 
           def self.batch_size
             1000
-          end
-
-          def self.precedence
-            :asc
           end
         end
       end

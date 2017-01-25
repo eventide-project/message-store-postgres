@@ -3,8 +3,8 @@ module EventSource
     class Read
       include EventSource::Read
 
-      def configure(batch_size: nil, precedence: nil, session: nil)
-        Get.configure(self, batch_size: batch_size, precedence: precedence, session: session)
+      def configure(batch_size: nil, session: nil)
+        Get.configure(self, batch_size: batch_size, session: session)
       end
     end
   end
