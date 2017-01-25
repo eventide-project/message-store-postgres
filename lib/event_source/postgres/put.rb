@@ -4,6 +4,7 @@ module EventSource
       include Log::Dependency
 
       dependency :session, Session
+      dependency :identifier, Session
 
       def self.build(session: nil)
         new.tap do |instance|
@@ -13,6 +14,7 @@ module EventSource
 
       def configure(session: nil)
         Session.configure(self, session: session)
+        Identifier::UUID::Random.configure(self)
       end
 
       def self.configure(receiver, session: nil, attr_name: nil)
@@ -29,6 +31,8 @@ module EventSource
       def call(write_event, stream_name, expected_version: nil)
         logger.trace { "Putting event data (Stream Name: #{stream_name}, Type: #{write_event.type}, Expected Version: #{expected_version.inspect})" }
         logger.trace(tags: [:data, :event_data]) { write_event.pretty_inspect }
+
+        write_event.id ||= identifier.get
 
         id, type, data, metadata = destructure_event(write_event)
         expected_version = ExpectedVersion.canonize(expected_version)
