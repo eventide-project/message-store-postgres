@@ -13,6 +13,16 @@ context "Select Statement" do
       test "Filters on stream name" do
         assert(sql.include? 'WHERE stream_name =')
       end
+
+      test "Filters on position" do
+        assert(sql.include? 'position >=')
+      end
+    end
+
+    context "Order Clause" do
+      test "Orders by the global position" do
+        assert(sql.include? 'ORDER BY position')
+      end
     end
   end
 end

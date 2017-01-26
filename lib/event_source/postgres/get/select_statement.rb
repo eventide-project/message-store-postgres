@@ -46,7 +46,7 @@ module EventSource
               #{where_clause_field} = '#{stream_name}' AND
               #{position_field} >= #{position}
             ORDER BY
-              global_position ASC
+              #{position_field} ASC
             LIMIT
               #{batch_size}
             ;
