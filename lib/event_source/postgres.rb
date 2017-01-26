@@ -17,4 +17,6 @@ require 'event_source/postgres/write'
 
 require 'event_source/postgres/get/select_statement'
 require 'event_source/postgres/get'
+require 'event_source/postgres/get/last/select_statement'
+require 'event_source/postgres/get/last'
 require 'event_source/postgres/read'
