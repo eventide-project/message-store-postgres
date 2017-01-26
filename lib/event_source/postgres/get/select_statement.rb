@@ -4,10 +4,10 @@ module EventSource
       class SelectStatement
         include Log::Dependency
 
-        initializer :stream, w(:offset), w(:batch_size)
+        initializer :stream, w(:position), w(:batch_size)
 
-        def offset
-          @offset ||= Defaults.offset
+        def position
+          @position ||= Defaults.position
         end
 
         def batch_size
@@ -22,13 +22,13 @@ module EventSource
           stream.type
         end
 
-        def self.build(stream_name, offset: nil, batch_size: nil)
+        def self.build(stream_name, position: nil, batch_size: nil)
           stream = Stream.new(stream_name)
-          new(stream, offset, batch_size)
+          new(stream, position, batch_size)
         end
 
         def sql
-          logger.trace(tag: :sql) { "Composing select statement (Stream: #{stream_name}, Category: #{stream.category?}, Type: #{stream_type}, Position: #{offset}, Batch Size: #{batch_size})" }
+          logger.trace(tag: :sql) { "Composing select statement (Stream: #{stream_name}, Category: #{stream.category?}, Type: #{stream_type}, Position: #{position}, Batch Size: #{batch_size})" }
 
           statement = <<-SQL
             SELECT
@@ -43,17 +43,16 @@ module EventSource
             FROM
               events
             WHERE
-              #{where_clause_field} = '#{stream_name}'
+              #{where_clause_field} = '#{stream_name}' AND
+              #{position_field} >= #{position}
             ORDER BY
-              global_position asc
+              global_position ASC
             LIMIT
               #{batch_size}
-            OFFSET
-              #{offset}
             ;
           SQL
 
-          logger.debug(tag: :sql) { "Composed select statement (Stream: #{stream_name}, Category: #{stream.category?}, Type: #{stream_type}, Position: #{offset}, Batch Size: #{batch_size})" }
+          logger.debug(tag: :sql) { "Composed select statement (Stream: #{stream_name}, Category: #{stream.category?}, Type: #{stream_type}, Position: #{position}, Batch Size: #{batch_size})" }
           logger.debug(tags: [:data, :sql]) { "Statement: #{statement}" }
 
           statement
@@ -67,8 +66,16 @@ module EventSource
           end
         end
 
+        def position_field
+          unless stream.category?
+            'position'
+          else
+            'global_position'
+          end
+        end
+
         module Defaults
-          def self.offset
+          def self.position
             0
           end
 

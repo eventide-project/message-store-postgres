@@ -6,10 +6,10 @@ context "Select Statement" do
 
     select_statement = Get::SelectStatement.build stream
 
-    context "Offset" do
-      default_offset = Get::SelectStatement::Defaults.offset
-      test "#{default_offset}" do
-        assert(select_statement.offset == default_offset)
+    context "Position" do
+      default_position = Get::SelectStatement::Defaults.position
+      test "#{default_position}" do
+        assert(select_statement.position == default_position)
       end
     end
 

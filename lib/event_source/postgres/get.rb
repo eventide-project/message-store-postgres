@@ -44,7 +44,7 @@ module EventSource
       def get_records(stream_name, position)
         logger.trace { "Getting records (Stream: #{stream_name}, Position: #{position.inspect}, Batch Size: #{batch_size.inspect})" }
 
-        select_statement = SelectStatement.build(stream_name, offset: position, batch_size: batch_size)
+        select_statement = SelectStatement.build(stream_name, position: position, batch_size: batch_size)
 
         records = session.execute(select_statement.sql)
 
