@@ -1,7 +1,7 @@
 module EventSource
   module Postgres
     class Get
-      include Log::Dependency
+      include EventSource::Get
 
       initializer :batch_size
 
