@@ -2,9 +2,9 @@ require_relative '../automated_init'
 
 context "Select Statement" do
   context "Defaults" do
-    stream = Controls::Stream.example
+    stream_name = Controls::StreamName.example
 
-    select_statement = Get::SelectStatement.build stream
+    select_statement = Get::SelectStatement.build(stream_name)
 
     context "Position" do
       default_position = Get::SelectStatement::Defaults.position

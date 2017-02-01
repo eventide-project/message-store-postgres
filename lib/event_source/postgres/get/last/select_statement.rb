@@ -5,15 +5,10 @@ module EventSource
         class SelectStatement
           include Log::Dependency
 
-          initializer :stream
-
-          def stream_name
-            stream.name
-          end
+          initializer :stream_name
 
           def self.build(stream_name)
-            stream = Stream.new(stream_name)
-            new(stream)
+            new(stream_name)
           end
 
           def sql

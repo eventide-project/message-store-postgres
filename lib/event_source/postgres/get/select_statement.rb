@@ -4,7 +4,7 @@ module EventSource
       class SelectStatement
         include Log::Dependency
 
-        initializer :stream, w(:position), w(:batch_size)
+        initializer :stream_name, w(:position), w(:batch_size)
 
         def position
           @position ||= Defaults.position
@@ -14,21 +14,20 @@ module EventSource
           @batch_size ||= Defaults.batch_size
         end
 
-        def stream_name
-          stream.name
+        def stream_type
+          @stream_type ||= StreamName.get_type(stream_name)
         end
 
-        def stream_type
-          stream.type
+        def category_stream?
+          is_category_stream ||= StreamName.category?(stream_name)
         end
 
         def self.build(stream_name, position: nil, batch_size: nil)
-          stream = Stream.new(stream_name)
-          new(stream, position, batch_size)
+          new(stream_name, position, batch_size)
         end
 
         def sql
-          logger.trace(tag: :sql) { "Composing select statement (Stream: #{stream_name}, Category: #{stream.category?}, Type: #{stream_type.inspect}, Position: #{position}, Batch Size: #{batch_size})" }
+          logger.trace(tag: :sql) { "Composing select statement (Stream: #{stream_name}, Category: #{category_stream?}, Type: #{stream_type.inspect}, Position: #{position}, Batch Size: #{batch_size})" }
 
           statement = <<-SQL
             SELECT
@@ -52,14 +51,14 @@ module EventSource
             ;
           SQL
 
-          logger.debug(tag: :sql) { "Composed select statement (Stream: #{stream_name}, Category: #{stream.category?}, Type: #{stream_type.inspect}, Position: #{position}, Batch Size: #{batch_size})" }
+          logger.debug(tag: :sql) { "Composed select statement (Stream: #{stream_name}, Category: #{category_stream?}, Type: #{stream_type.inspect}, Position: #{position}, Batch Size: #{batch_size})" }
           logger.debug(tags: [:data, :sql]) { "Statement: #{statement}" }
 
           statement
         end
 
         def where_clause_field
-          unless stream.category?
+          unless category_stream?
             'stream_name'
           else
             'category(stream_name)'
@@ -67,7 +66,7 @@ module EventSource
         end
 
         def position_field
-          unless stream.category?
+          unless category_stream?
             'position'
           else
             'global_position'
