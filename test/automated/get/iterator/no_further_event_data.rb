@@ -4,12 +4,8 @@ context "Iterator" do
   context "No further event data" do
     stream_name = Controls::Put.(instances: 2)
 
-    get = Get.build
-
     iterator = Read::Iterator.build(stream_name)
-
-    ## TODO
-    iterator.get = get
+    Get.configure(iterator, batch_size: 1)
 
     2.times { iterator.next }
 
