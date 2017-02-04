@@ -2,7 +2,7 @@ module EventSource
   module Postgres
     class Read
       class Iterator
-        include EventSource::Iterator
+        include EventSource::Read::Iterator
 
         def last_position
           unless EventSource::StreamName.category?(stream_name)
