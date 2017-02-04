@@ -1,12 +1,11 @@
-require_relative '../../automated_init'
+require_relative '../automated_init'
 
 context "Iterator" do
   context "Next" do
     stream_name = Controls::Put.(instances: 2)
 
-    get = Get.build(batch_size: 1)
-
-    iterator = Iterator.build(get, stream_name)
+    iterator = Read::Iterator.build(stream_name)
+    Get.configure(iterator, batch_size: 1)
 
     batch = []
 
