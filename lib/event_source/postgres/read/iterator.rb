@@ -4,6 +4,8 @@ module EventSource
       class Iterator
         include Log::Dependency
 
+        dependency :get, Get
+
         attr_accessor :starting_position
         attr_accessor :batch
 
@@ -12,18 +14,18 @@ module EventSource
         end
         attr_writer :batch_index
 
-        initializer :get, :stream_name
+        initializer :stream_name
 
-        def self.build(get, stream_name, position: nil)
-          new(get, stream_name).tap do |instance|
+        def self.build(stream_name, position: nil)
+          new(stream_name).tap do |instance|
             instance.starting_position = position
             Log.get(self).debug { "Built Iterator (Stream Name: #{stream_name}, Starting Position: #{position.inspect})" }
           end
         end
 
-        def self.configure(receiver, get, stream_name, attr_name: nil, position: nil)
+        def self.configure(receiver, stream_name, attr_name: nil, position: nil)
           attr_name ||= :iterator
-          instance = build(get, stream_name, position: position)
+          instance = build(stream_name, position: position)
           receiver.public_send "#{attr_name}=", instance
         end
 
