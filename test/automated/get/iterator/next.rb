@@ -6,7 +6,10 @@ context "Iterator" do
 
     get = Get.build(batch_size: 1)
 
-    iterator = Iterator.build(get, stream_name)
+    iterator = Read::Iterator.build(stream_name)
+
+    ## TODO
+    iterator.get = get
 
     batch = []
 

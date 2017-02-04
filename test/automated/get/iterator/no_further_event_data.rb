@@ -6,7 +6,10 @@ context "Iterator" do
 
     get = Get.build
 
-    iterator = Iterator.build(get, stream_name)
+    iterator = Read::Iterator.build(stream_name)
+
+    ## TODO
+    iterator.get = get
 
     2.times { iterator.next }
 
