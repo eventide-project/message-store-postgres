@@ -2,6 +2,7 @@ module EventSource
   module Postgres
     class Get
       class Last
+        include Log::Dependency
 
         dependency :session, Session
 
