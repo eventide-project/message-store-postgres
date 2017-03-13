@@ -46,7 +46,7 @@ function create-user {
 function create-database {
   echo "Database name is: $database"
 
-  database_exists=`psql -tAc "SELECT 1 FROM pg_database WHERE datname='$database'"`
+  database_exists=`psql postgres -tAc "SELECT 1 FROM pg_database WHERE datname='$database'"`
 
   if [ "$database_exists" = "1" ]; then
     echo "Database \"$database\" was previously created. Not creating again."

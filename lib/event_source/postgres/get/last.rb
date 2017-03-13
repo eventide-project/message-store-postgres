@@ -2,7 +2,7 @@ module EventSource
   module Postgres
     class Get
       class Last
-        include EventSource::Get
+        include Log::Dependency
 
         dependency :session, Session
 
@@ -13,7 +13,7 @@ module EventSource
         end
 
         def self.configure(receiver, attr_name: nil, session: nil)
-          attr_name ||= :get
+          attr_name ||= :get_last
           instance = build(session: session)
           receiver.public_send "#{attr_name}=", instance
         end
