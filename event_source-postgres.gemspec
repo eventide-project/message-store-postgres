@@ -11,11 +11,11 @@ Gem::Specification.new do |s|
   s.licenses = ['MIT']
 
   s.require_paths = ['lib']
-  s.files = Dir.glob('{lib,database}/**/*')
+  s.files = Dir.glob('{lib,database}/**/*') + ['scripts/scripts_init.rb']
   s.platform = Gem::Platform::RUBY
   s.required_ruby_version = '>= 2.3.3'
 
-  s.executables = Dir.glob('scripts/*').map(&File.method(:basename))
+  s.executables = Dir.glob('scripts/evt-*').map(&File.method(:basename))
   s.bindir = 'scripts'
 
   s.add_runtime_dependency 'evt-event_source'
