@@ -3,8 +3,7 @@ module EventSource
     module Database
       module Delete
         def self.call
-          settings = Settings.build(Hash.new)
-          session = Session.build(settings: settings)
+          session = Session.build
 
           user = ENV['DATABASE_USER'] || 'event_source'
           database = ENV['DATABASE_NAME'] || 'event_source'
