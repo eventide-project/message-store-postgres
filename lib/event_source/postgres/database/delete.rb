@@ -3,14 +3,14 @@ module EventSource
     module Database
       module Delete
         def self.call
-          warn "Deleting event source database"
+          warn "Deleting database"
 
           session = Session.build
 
           User::Delete.(session)
           Database::Delete.(session)
 
-          warn "Done deleting event source database"
+          warn "Done deleting database"
         end
       end
     end

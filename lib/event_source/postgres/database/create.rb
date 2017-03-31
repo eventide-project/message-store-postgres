@@ -3,7 +3,7 @@ module EventSource
     module Database
       module Create
         def self.call
-          warn "Creating event source database"
+          warn "Creating database"
 
           session = Session.build
 
@@ -14,7 +14,7 @@ module EventSource
           Functions::Create.(session)
           Indexes::Create.(session)
 
-          warn "Done creating event source database"
+          warn "Done creating database"
         end
       end
     end
