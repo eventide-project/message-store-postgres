@@ -9,5 +9,3 @@ if File.exist?(init_file)
 end
 
 require 'event_source/postgres/database'
-
-puts "SCRIPTS INIT"
