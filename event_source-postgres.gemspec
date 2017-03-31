@@ -15,6 +15,9 @@ Gem::Specification.new do |s|
   s.platform = Gem::Platform::RUBY
   s.required_ruby_version = '>= 2.3.3'
 
+  s.executables = Dir.glob('scripts/*').map(&File.method(:basename))
+  s.bindir = 'scripts'
+
   s.add_runtime_dependency 'evt-event_source'
   s.add_runtime_dependency 'evt-log'
   s.add_runtime_dependency 'evt-cycle'

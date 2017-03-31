@@ -1,13 +1,10 @@
 .DS_store
 .bundle/
-.ruby-version
-.ruby-gemset
-.rvmrc
 Gemfile.lock
 *.log
 *.gem
 gems
-gems_backup
 *scratch*
 *notes*
 loader.rb
+/test/package/installed
