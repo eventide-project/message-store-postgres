@@ -1,0 +1,5 @@
+#!/usr/bin/env ruby
+
+require_relative './scripts_init'
+
+EventSource::Postgres::Database::Recreate.()
