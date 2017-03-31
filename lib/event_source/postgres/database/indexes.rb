@@ -10,7 +10,11 @@ module EventSource
           def self.call(session)
             sql_code = SQLCode.read sql_filename
 
-            session.execute(sql_code)
+            sql_statements = sql_code.split ';'
+
+            sql_statements.each do |sql_statement|
+              session.execute(sql_statement)
+            end
           end
         end
       end
