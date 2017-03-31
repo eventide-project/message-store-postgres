@@ -1,3 +1,6 @@
+require 'event_source/postgres/database/settings'
 require 'event_source/postgres/database/session'
 require 'event_source/postgres/database/delete'
 require 'event_source/postgres/database/create'
+require 'event_source/postgres/database/user'
+require 'event_source/postgres/database/database'

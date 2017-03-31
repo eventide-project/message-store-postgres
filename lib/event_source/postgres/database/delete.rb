@@ -5,11 +5,8 @@ module EventSource
         def self.call
           session = Session.build
 
-          user = ENV['DATABASE_USER'] || 'event_source'
-          database = ENV['DATABASE_NAME'] || 'event_source'
-
-          session.execute("DROP USER IF EXISTS #{user}")
-          session.execute("DROP DATABASE IF EXISTS #{database}")
+          User::Delete.(session)
+          Database::Delete.(session)
         end
       end
     end

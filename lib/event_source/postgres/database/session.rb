@@ -4,7 +4,7 @@ module EventSource
       class Session < Postgres::Session
         def self.build
           instance = new
-          settings = Settings.build({})
+          settings = Postgres::Settings.build({})
           settings.set(instance)
           instance
         end
