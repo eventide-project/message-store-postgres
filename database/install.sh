@@ -74,7 +74,11 @@ function create-functions {
 }
 
 function create-indexes {
-  psql $database -f database/indexes/events-indexes.sql
+  psql $database -f database/indexes/events-id.sql
+  psql $database -f database/indexes/events-category-global-position.sql
+  psql $database -f database/indexes/events-category.sql
+  psql $database -f database/indexes/events-stream-name.sql
+  psql $database -f database/indexes/events-stream-name-position-uniq.sql
 }
 
 create-user
