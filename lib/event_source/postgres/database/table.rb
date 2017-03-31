@@ -8,6 +8,9 @@ module EventSource
           end
 
           def self.call(session)
+            sql_code = SQLCode.read sql_filename
+
+            session.execute(sql_code)
           end
         end
       end

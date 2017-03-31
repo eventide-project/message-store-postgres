@@ -7,6 +7,7 @@ module EventSource
 
           User::Create.(session)
           Database::Create.(session)
+          Extensions::Create.(session)
           Table::Create.(session)
         end
       end
