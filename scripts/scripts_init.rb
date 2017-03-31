@@ -8,4 +8,5 @@ if File.exist?(init_file)
   require_relative '../init'
 end
 
+require 'event_source/postgres'
 require 'event_source/postgres/database'
