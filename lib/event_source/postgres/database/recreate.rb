@@ -1,7 +1,7 @@
 module EventSource
   module Postgres
     module Database
-      module Reset
+      module Recreate
         def self.call
           Delete.()
           Create.()
