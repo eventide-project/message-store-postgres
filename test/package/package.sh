@@ -19,4 +19,6 @@ for gem in *.gem; do
     --no-ri
 done
 
-GEM_PATH=test/package/installed test/package/installed/bin/evt-shim-test
+GEM_PATH=test/package/installed test/package/installed/bin/evt-pg-delete
+GEM_PATH=test/package/installed test/package/installed/bin/evt-pg-create
+GEM_PATH=test/package/installed test/package/installed/bin/evt-pg-recreate
