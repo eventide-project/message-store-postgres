@@ -1,5 +1,11 @@
 #!/usr/bin/env ruby
 
-require_relative './scripts_init'
+root = File.expand_path '../database', __dir__
 
-EventSource::Postgres::Database::Recreate.()
+script_filename = 'uninstall.sh'
+script_filepath = File.join root, script_filename
+system script_filepath
+
+script_filename = 'install.sh'
+script_filepath = File.join root, script_filename
+system script_filepath

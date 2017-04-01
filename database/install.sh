@@ -2,8 +2,6 @@
 
 set -e
 
-clear
-
 echo
 echo "Installing Database"
 echo "= = ="

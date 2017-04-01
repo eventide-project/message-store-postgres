@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
 
-require_relative './scripts_init'
+root = File.expand_path '../database', __dir__
+script_filename = 'install.sh'
+script_filepath = File.join root, script_filename
 
-EventSource::Postgres::Database::Create.()
+system script_filepath
