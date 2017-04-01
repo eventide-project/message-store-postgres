@@ -57,26 +57,35 @@ function create-database {
   echo
 }
 
+function script_dir {
+  val="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+  echo "$val"
+}
+
 function create-extensions {
-  psql $database -f database/extensions.sql
+  base=$(script_dir)
+  psql $database -f $base/extensions.sql
 }
 
 function create-table {
-  psql $database -f database/table/events-table.sql
+  base=$(script_dir)
+  psql $database -f $base/table/events-table.sql
 }
 
 function create-functions {
-  psql $database -f database/functions/category.sql
-  psql $database -f database/functions/stream-version.sql
-  psql $database -f database/functions/write-event.sql
+  base=$(script_dir)
+  psql $database -f $base/functions/category.sql
+  psql $database -f $base/functions/stream-version.sql
+  psql $database -f $base/functions/write-event.sql
 }
 
 function create-indexes {
-  psql $database -f database/indexes/events-id.sql
-  psql $database -f database/indexes/events-category-global-position.sql
-  psql $database -f database/indexes/events-category.sql
-  psql $database -f database/indexes/events-stream-name.sql
-  psql $database -f database/indexes/events-stream-name-position-uniq.sql
+  base=$(script_dir)
+  psql $database -f $base/indexes/events-id.sql
+  psql $database -f $base/indexes/events-category-global-position.sql
+  psql $database -f $base/indexes/events-category.sql
+  psql $database -f $base/indexes/events-stream-name.sql
+  psql $database -f $base/indexes/events-stream-name-position-uniq.sql
 }
 
 create-user
