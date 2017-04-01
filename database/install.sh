@@ -58,7 +58,9 @@ function create-database {
 }
 
 function create-extensions {
+  script_dir=dirname $0
   psql $database -f database/extensions.sql
+  # psql $database -f $script_dir/extensions.sql
 }
 
 function create-table {
