@@ -2,8 +2,6 @@
 
 set -e
 
-clear
-
 echo
 echo "Listing Events"
 echo "= = ="
