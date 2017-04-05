@@ -35,6 +35,18 @@ else
 fi
 echo "Table name is: $table"
 
+if [ -z ${STREAM_NAME+x} ]; then
+  echo "(STREAM_NAME is not set)"
+  stream_name=''
+else
+  stream_name=$STREAM_NAME
+  echo "Stream name is: $STREAM_NAME"
+fi
+
 echo
 
-psql $database -c "SELECT * FROM $table"
+if [ -z $stream_name ]; then
+  psql $database -c "SELECT * FROM $table"
+else
+  psql $database -c "SELECT * FROM $table WHERE stream_name = '$stream_name'"
+fi
