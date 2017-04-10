@@ -10,7 +10,7 @@ module EventSource
       end
 
       def write(batch, stream_name, expected_version: nil)
-        logger.trace { "Writing batch (Stream Name: #{stream_name}, Number of Events: #{batch.length}, Expected Version: #{expected_version.inspect})" }
+        logger.trace(tag: :write) { "Writing batch (Stream Name: #{stream_name}, Number of Events: #{batch.length}, Expected Version: #{expected_version.inspect})" }
 
         unless expected_version.nil?
           expected_version = ExpectedVersion.canonize(expected_version)
@@ -27,18 +27,18 @@ module EventSource
           end
         end
 
-        logger.debug { "Wrote batch (Stream Name: #{stream_name}, Number of Events: #{batch.length}, Expected Version: #{expected_version.inspect})" }
+        logger.debug(tag: :write) { "Wrote batch (Stream Name: #{stream_name}, Number of Events: #{batch.length}, Expected Version: #{expected_version.inspect})" }
 
         last_position
       end
 
       def write_event_data(event_data, stream_name, expected_version: nil)
-        logger.trace { "Writing event data (Stream Name: #{stream_name}, Type: #{event_data.type}, Expected Version: #{expected_version.inspect})" }
-        logger.trace(tags: [:data, :event_data]) { event_data.pretty_inspect }
+        logger.trace(tag: :write) { "Writing event data (Stream Name: #{stream_name}, Type: #{event_data.type}, Expected Version: #{expected_version.inspect})" }
+        logger.trace(tags: [:data, :event_data, :write]) { event_data.pretty_inspect }
 
         put.(event_data, stream_name, expected_version: expected_version).tap do
-          logger.debug { "Wrote event data (Stream Name: #{stream_name}, Type: #{event_data.type}, Expected Version: #{expected_version.inspect})" }
-          logger.debug(tags: [:data, :event_data]) { event_data.pretty_inspect }
+          logger.debug(tag: :write) { "Wrote event data (Stream Name: #{stream_name}, Type: #{event_data.type}, Expected Version: #{expected_version.inspect})" }
+          logger.debug(tags: [:data, :event_data, :write]) { event_data.pretty_inspect }
         end
       end
     end
