@@ -1,7 +1,6 @@
 require 'pg'
 
 require 'event_source'
-require 'cycle'
 
 require 'log'
 require 'telemetry'

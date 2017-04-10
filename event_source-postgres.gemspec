@@ -20,7 +20,6 @@ Gem::Specification.new do |s|
 
   s.add_runtime_dependency 'evt-event_source'
   s.add_runtime_dependency 'evt-log'
-  s.add_runtime_dependency 'evt-cycle'
   s.add_runtime_dependency 'evt-settings'
 
   s.add_runtime_dependency 'pg'
