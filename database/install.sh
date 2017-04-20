@@ -2,6 +2,12 @@
 
 set -e
 
+# function foo {
+#   createdb event_source
+# }
+
+# foo
+
 echo
 echo "Installing Database"
 echo "= = ="
@@ -43,17 +49,7 @@ function create-user {
 
 function create-database {
   echo "Database name is: $database"
-
-  database_exists=`psql postgres -tAc "SELECT 1 FROM pg_database WHERE datname='$database'"`
-
-  if [ "$database_exists" = "1" ]; then
-    echo "Database \"$database\" was previously created. Not creating again."
-  else
-    echo "Database \"$database\" has not yet been created"
-    echo "Creating database \"$database\""
-    createdb $database || true
-  fi
-
+  createdb $database
   echo
 }
 
