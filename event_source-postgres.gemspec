@@ -1,6 +1,6 @@
 # -*- encoding: utf-8 -*-
 Gem::Specification.new do |s|
-  s.version = '0.19.0.1'
+  s.version = '0.19.0.2'
   s.summary = 'Event source client for PostgreSQL'
   s.description = ' '
 
