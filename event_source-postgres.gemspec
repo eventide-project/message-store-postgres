@@ -1,5 +1,6 @@
 # -*- encoding: utf-8 -*-
 Gem::Specification.new do |s|
+  s.name = 'evt-event_source-postgres'
   s.version = '0.19.0.2'
   s.summary = 'Event source client for PostgreSQL'
   s.description = ' '
