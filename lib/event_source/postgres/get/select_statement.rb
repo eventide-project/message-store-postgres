@@ -14,8 +14,8 @@ module EventSource
           @batch_size ||= Defaults.batch_size
         end
 
-        def stream_type
-          @stream_type ||= StreamName.get_type(stream_name)
+        def stream_type_list
+          @stream_type ||= StreamName.get_type_list(stream_name)
         end
 
         def category_stream?
@@ -27,7 +27,7 @@ module EventSource
         end
 
         def sql
-          logger.trace(tag: :sql) { "Composing select statement (Stream: #{stream_name}, Category: #{category_stream?}, Type: #{stream_type.inspect}, Position: #{position}, Batch Size: #{batch_size})" }
+          logger.trace(tag: :sql) { "Composing select statement (Stream: #{stream_name}, Category: #{category_stream?}, Types: #{stream_type_list.inspect}, Position: #{position}, Batch Size: #{batch_size})" }
 
           statement = <<-SQL
             SELECT
@@ -51,7 +51,7 @@ module EventSource
             ;
           SQL
 
-          logger.debug(tag: :sql) { "Composed select statement (Stream: #{stream_name}, Category: #{category_stream?}, Type: #{stream_type.inspect}, Position: #{position}, Batch Size: #{batch_size})" }
+          logger.debug(tag: :sql) { "Composed select statement (Stream: #{stream_name}, Category: #{category_stream?}, Type: #{stream_type_list.inspect}, Position: #{position}, Batch Size: #{batch_size})" }
           logger.debug(tags: [:data, :sql]) { "Statement: #{statement}" }
 
           statement
