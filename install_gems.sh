@@ -2,16 +2,11 @@
 
 set -e
 
-if [ -z ${GEM_AUTHORITY_PATH+x} ]; then
-  echo "GEM_AUTHORITY_PATH is not set"
-  exit
-fi
-
 echo
 echo 'Installing local gems'
 echo '= = ='
 
-source ./set-local-gem-path.sh
+source ./set_local_gem_path.sh
 
 echo
 echo 'Removing gem files'
@@ -40,31 +35,12 @@ else
   posture=$POSTURE
 fi
 
-scheme="https:"
-gem_repo_authority_path=$GEM_AUTHORITY_PATH
-public_gem_repo_uri="$scheme//$gem_repo_authority_path"
-
-gemfury_token=""
-if [ ! -z ${GEMFURY_TOKEN+x} ]; then
-  gemfury_token=$GEMFURY_TOKEN
-fi
-
-private_source=""
-if [ ! $gemfury_token = "" ]; then
-  private_gem_repo_uri="$scheme//$gemfury_token@$gem_repo_authority_path"
-  private_source="--source $private_gem_repo_uri"
-fi
-
-public_source="--source $public_gem_repo_uri"
-
-ruby_gems_source="--source https://rubygems.org"
-
 echo
 echo "Installing gems locally (posture: $posture)"
 echo '- - -'
 for gem in *.gem; do
   echo "($gem)"
-  cmd="gem install $gem --clear-sources $private_source $public_source $ruby_gems_source --install-dir ./gems"
+  cmd="gem install $gem --install-dir ./gems"
 
   if [ operational != "$posture" ]; then
     cmd="$cmd --development"

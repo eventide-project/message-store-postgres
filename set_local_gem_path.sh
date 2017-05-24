@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 unchanged_gem_path=$GEM_PATH
 
 if [[ ! $GEM_PATH == *"./gems"* ]]; then

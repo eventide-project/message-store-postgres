@@ -1,6 +1,6 @@
 require 'pg'
 
-require 'event_source'
+require 'message_store'
 
 require 'log'
 require 'telemetry'

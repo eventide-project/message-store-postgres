@@ -19,6 +19,7 @@ Gem::Specification.new do |s|
   s.bindir = 'scripts'
 
   s.add_runtime_dependency 'evt-event_source'
+  # s.add_runtime_dependency 'evt-message_store'
   s.add_runtime_dependency 'evt-log'
   s.add_runtime_dependency 'evt-settings'
 
