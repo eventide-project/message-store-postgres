@@ -6,7 +6,7 @@ echo
 echo 'Installing local gems'
 echo '= = ='
 
-source ./set_local_gem_path.sh
+source ./set-local-gem-path.sh
 
 echo
 echo 'Removing gem files'
