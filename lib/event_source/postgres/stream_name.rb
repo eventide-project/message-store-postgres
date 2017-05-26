@@ -1,4 +1,4 @@
-module EventSource
+module MessageStore
   module Postgres
     module StreamName
       def self.stream_name(category_name, id=nil, type: nil, types: nil)

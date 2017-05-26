@@ -1,4 +1,4 @@
-module EventSource
+module MessageStore
   module Postgres
     module Controls
       module Put
@@ -11,7 +11,7 @@ module EventSource
           message ||= MessageData::Write.example
 
           instances.times do
-            EventSource::Postgres::Put.(message, stream_name)
+            MessageStore::Postgres::Put.(message, stream_name)
 
             unless message_specified
               message.id = MessageData::Write.id

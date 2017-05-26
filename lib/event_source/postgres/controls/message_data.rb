@@ -1,4 +1,4 @@
-module EventSource
+module MessageStore
   module Postgres
     module Controls
       MessageData = MessageStore::Controls::MessageData

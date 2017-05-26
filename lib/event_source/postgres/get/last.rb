@@ -1,4 +1,4 @@
-module EventSource
+module MessageStore
   module Postgres
     class Get
       class Last

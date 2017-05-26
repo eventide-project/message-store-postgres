@@ -1,4 +1,4 @@
-module EventSource
+module MessageStore
   module Postgres
     class Log < ::Log
       def tag!(tags)

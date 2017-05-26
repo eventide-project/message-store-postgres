@@ -1,12 +1,12 @@
-# module EventSource
+# module MessageStore
 #   module Postgres
 #     module Controls
-#       StreamName = EventSource::Controls::StreamName
+#       StreamName = MessageStore::Controls::StreamName
 #     end
 #   end
 # end
 
-module EventSource
+module MessageStore
   module Postgres
     module Controls
       module StreamName
@@ -14,7 +14,7 @@ module EventSource
           category ||= Category.example(category: category, randomize_category: randomize_category)
           id ||= Identifier::UUID.random
 
-          EventSource::Postgres::StreamName.stream_name(category, id, type: type, types: types)
+          MessageStore::Postgres::StreamName.stream_name(category, id, type: type, types: types)
         end
       end
     end

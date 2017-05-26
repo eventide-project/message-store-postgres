@@ -1,7 +1,7 @@
-module EventSource
+module MessageStore
   module Postgres
     class Get
-      include EventSource::Get
+      include MessageStore::Get
 
       initializer :batch_size
 

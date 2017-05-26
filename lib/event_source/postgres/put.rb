@@ -1,4 +1,4 @@
-module EventSource
+module MessageStore
   module Postgres
     class Put
       include Log::Dependency

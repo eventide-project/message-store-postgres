@@ -1,7 +1,7 @@
-module EventSource
+module MessageStore
   module Postgres
     class Write
-      include EventSource::Write
+      include MessageStore::Write
 
       dependency :put
 
