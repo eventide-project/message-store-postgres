@@ -2,19 +2,19 @@ module EventSource
   module Postgres
     module Controls
       module Put
-        def self.call(instances: nil, stream_name: nil, event: nil, category: nil)
+        def self.call(instances: nil, stream_name: nil, message: nil, category: nil)
           instances ||= 1
           stream_name ||= StreamName.example(category: category)
 
-          event_specified = !event.nil?
+          message_specified = !message.nil?
 
-          event ||= MessageData::Write.example
+          message ||= MessageData::Write.example
 
           instances.times do
-            EventSource::Postgres::Put.(event, stream_name)
+            EventSource::Postgres::Put.(message, stream_name)
 
-            unless event_specified
-              event.id = MessageData::Write.id
+            unless message_specified
+              message.id = MessageData::Write.id
             end
           end
 

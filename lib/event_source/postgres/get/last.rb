@@ -34,12 +34,12 @@ module EventSource
 
           return nil if record.nil?
 
-          event = convert(record)
+          message_data = convert(record)
 
           logger.info { "Finished getting message data (Stream Name: #{stream_name})" }
-          logger.info(tags: [:data, :message_data]) { event.pretty_inspect }
+          logger.info(tags: [:data, :message_data]) { message_data.pretty_inspect }
 
-          event
+          message_data
         end
 
         def get_record(stream_name)
@@ -63,11 +63,11 @@ module EventSource
           record['metadata'] = Deserialize.metadata(record['metadata'])
           record['time'] = Time.utc_coerced(record['time'])
 
-          event = MessageData::Read.build(record)
+          message_data = MessageData::Read.build(record)
 
           logger.debug { "Converted record to message data" }
 
-          event
+          message_data
         end
 
         def __convert(records)

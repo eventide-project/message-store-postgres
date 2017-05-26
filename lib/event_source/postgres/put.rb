@@ -23,31 +23,31 @@ module EventSource
         receiver.public_send "#{attr_name}=", instance
       end
 
-      def self.call(write_event, stream_name, expected_version: nil, session: nil)
+      def self.call(write_message, stream_name, expected_version: nil, session: nil)
         instance = build(session: session)
-        instance.(write_event, stream_name, expected_version: expected_version)
+        instance.(write_message, stream_name, expected_version: expected_version)
       end
 
-      def call(write_event, stream_name, expected_version: nil)
-        logger.trace { "Putting message data (Stream Name: #{stream_name}, Type: #{write_event.type}, Expected Version: #{expected_version.inspect})" }
-        logger.trace(tags: [:data, :message_data]) { write_event.pretty_inspect }
+      def call(write_message, stream_name, expected_version: nil)
+        logger.trace { "Putting message data (Stream Name: #{stream_name}, Type: #{write_message.type}, Expected Version: #{expected_version.inspect})" }
+        logger.trace(tags: [:data, :message_data]) { write_message.pretty_inspect }
 
-        write_event.id ||= identifier.get
+        write_message.id ||= identifier.get
 
-        id, type, data, metadata = destructure_event(write_event)
+        id, type, data, metadata = destructure_message(write_message)
         expected_version = ExpectedVersion.canonize(expected_version)
 
-        insert_event(id, stream_name, type, data, metadata, expected_version).tap do |position|
-          logger.info { "Put message data (Position: #{position}, Stream Name: #{stream_name}, Type: #{write_event.type}, Expected Version: #{expected_version.inspect}, ID: #{id.inspect})" }
-          logger.info(tags: [:data, :message_data]) { write_event.pretty_inspect }
+        insert_message(id, stream_name, type, data, metadata, expected_version).tap do |position|
+          logger.info { "Put message data (Position: #{position}, Stream Name: #{stream_name}, Type: #{write_message.type}, Expected Version: #{expected_version.inspect}, ID: #{id.inspect})" }
+          logger.info(tags: [:data, :message_data]) { write_message.pretty_inspect }
         end
       end
 
-      def destructure_event(write_event)
-        id = write_event.id
-        type = write_event.type
-        data = write_event.data
-        metadata = write_event.metadata
+      def destructure_message(write_message)
+        id = write_message.id
+        type = write_message.type
+        data = write_message.data
+        metadata = write_message.metadata
 
         logger.debug(tags: [:data, :message_data]) { "ID: #{id.pretty_inspect}" }
         logger.debug(tags: [:data, :message_data]) { "Type: #{type.pretty_inspect}" }
@@ -57,7 +57,7 @@ module EventSource
         return id, type, data, metadata
       end
 
-      def insert_event(id, stream_name, type, data, metadata, expected_version)
+      def insert_message(id, stream_name, type, data, metadata, expected_version)
         serialized_data = serialized_data(data)
         serialized_metadata = serialized_metadata(metadata)
         records = execute_query(id, stream_name, type, serialized_data, serialized_metadata, expected_version)
