@@ -1,8 +1,8 @@
 # -*- encoding: utf-8 -*-
 Gem::Specification.new do |s|
-  s.name = 'evt-event_source-postgres'
+  s.name = 'evt-message_store-postgres'
   s.version = '0.0.0.0'
-  s.summary = 'Event source client for PostgreSQL'
+  s.summary = 'Message store for PostgreSQL'
   s.description = ' '
 
   s.authors = ['The Eventide Project']
