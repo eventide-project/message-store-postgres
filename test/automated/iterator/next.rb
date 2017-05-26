@@ -10,11 +10,11 @@ context "Iterator" do
     batch = []
 
     2.times do
-      event_data = iterator.next
-      batch << event_data unless event_data.nil?
+      message_data = iterator.next
+      batch << message_data unless message_data.nil?
     end
 
-    test "Gets each event" do
+    test "Gets each message" do
       assert(batch.length == 2)
     end
   end

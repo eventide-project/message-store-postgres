@@ -4,12 +4,12 @@ context "Get" do
   context "Batch Size" do
     stream_name = Controls::Put.(instances: 3)
 
-    events = Get.(stream_name, batch_size: 2)
+    messages = Get.(stream_name, batch_size: 2)
 
-    number_of_events = events.length
+    number_of_messages = messages.length
 
-    test "Number of events retrieved is the specified batch size" do
-      assert(number_of_events == 2)
+    test "Number of messages retrieved is the specified batch size" do
+      assert(number_of_messages == 2)
     end
   end
 end

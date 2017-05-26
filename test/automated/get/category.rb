@@ -6,12 +6,12 @@ context "Get" do
 
     stream_name = Controls::Put.(instances: 2, category: category)
 
-    events = Get.(stream_name)
+    messages = Get.(stream_name)
 
-    number_of_events = events.length
+    number_of_messages = messages.length
 
-    test "Number of events retrieved is the number written to the category" do
-      assert(number_of_events == 2)
+    test "Number of messages retrieved is the number written to the category" do
+      assert(number_of_messages == 2)
     end
   end
 end

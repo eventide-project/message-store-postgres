@@ -5,12 +5,12 @@ context "Put" do
     context "Existing Stream" do
       stream_name = Controls::StreamName.example
 
-      write_event_1 = Controls::EventData::Write.example
-      write_event_2 = Controls::EventData::Write.example
+      write_message_1 = Controls::MessageData::Write.example
+      write_message_2 = Controls::MessageData::Write.example
 
-      Put.(write_event_1, stream_name)
+      Put.(write_message_1, stream_name)
 
-      erroneous = proc { Put.(write_event_2, stream_name, expected_version: NoStream.name) }
+      erroneous = proc { Put.(write_message_2, stream_name, expected_version: NoStream.name) }
 
       test "Is an error" do
         assert erroneous do

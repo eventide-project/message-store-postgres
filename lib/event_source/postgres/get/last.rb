@@ -28,7 +28,7 @@ module EventSource
         end
 
         def call(stream_name)
-          logger.trace { "Getting last event data (Stream Name: #{stream_name})" }
+          logger.trace { "Getting last message data (Stream Name: #{stream_name})" }
 
           record = get_record(stream_name)
 
@@ -36,8 +36,8 @@ module EventSource
 
           event = convert(record)
 
-          logger.info { "Finished getting event data (Stream Name: #{stream_name})" }
-          logger.info(tags: [:data, :event_data]) { event.pretty_inspect }
+          logger.info { "Finished getting message data (Stream Name: #{stream_name})" }
+          logger.info(tags: [:data, :message_data]) { event.pretty_inspect }
 
           event
         end
@@ -57,46 +57,46 @@ module EventSource
         end
 
         def convert(record)
-          logger.trace { "Converting record to event data" }
+          logger.trace { "Converting record to message data" }
 
           record['data'] = Deserialize.data(record['data'])
           record['metadata'] = Deserialize.metadata(record['metadata'])
           record['time'] = Time.utc_coerced(record['time'])
 
-          event = EventData::Read.build(record)
+          event = MessageData::Read.build(record)
 
-          logger.debug { "Converted record to event data" }
+          logger.debug { "Converted record to message data" }
 
           event
         end
 
         def __convert(records)
-          logger.trace { "Converting records to event data (Records Count: #{records.ntuples})" }
+          logger.trace { "Converting records to message data (Records Count: #{records.ntuples})" }
 
-          events = records.map do |record|
+          messages = records.map do |record|
             record['data'] = Deserialize.data(record['data'])
             record['metadata'] = Deserialize.metadata(record['metadata'])
             record['time'] = Time.utc_coerced(record['time'])
 
-            EventData::Read.build record
+            MessageData::Read.build record
 
             break
           end
 
-          logger.debug { "Converted records to event data (Event Data Count: #{events.length})" }
+          logger.debug { "Converted records to message data (Message Data Count: #{messages.length})" }
 
-          events
+          messages
         end
 
         module Deserialize
           def self.data(serialized_data)
             return nil if serialized_data.nil?
-            Transform::Read.(serialized_data, EventData::Hash, :json)
+            Transform::Read.(serialized_data, MessageData::Hash, :json)
           end
 
           def self.metadata(serialized_metadata)
             return nil if serialized_metadata.nil?
-            Transform::Read.(serialized_metadata, EventData::Hash, :json)
+            Transform::Read.(serialized_metadata, MessageData::Hash, :json)
           end
         end
 

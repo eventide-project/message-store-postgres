@@ -1,7 +1,7 @@
 module EventSource
   module Postgres
     module Controls
-      EventData = EventSource::Controls::EventData
+      MessageData = MessageStore::Controls::MessageData
     end
   end
 end

@@ -29,8 +29,8 @@ module EventSource
       end
 
       def call(write_event, stream_name, expected_version: nil)
-        logger.trace { "Putting event data (Stream Name: #{stream_name}, Type: #{write_event.type}, Expected Version: #{expected_version.inspect})" }
-        logger.trace(tags: [:data, :event_data]) { write_event.pretty_inspect }
+        logger.trace { "Putting message data (Stream Name: #{stream_name}, Type: #{write_event.type}, Expected Version: #{expected_version.inspect})" }
+        logger.trace(tags: [:data, :message_data]) { write_event.pretty_inspect }
 
         write_event.id ||= identifier.get
 
@@ -38,8 +38,8 @@ module EventSource
         expected_version = ExpectedVersion.canonize(expected_version)
 
         insert_event(id, stream_name, type, data, metadata, expected_version).tap do |position|
-          logger.info { "Put event data (Position: #{position}, Stream Name: #{stream_name}, Type: #{write_event.type}, Expected Version: #{expected_version.inspect}, ID: #{id.inspect})" }
-          logger.info(tags: [:data, :event_data]) { write_event.pretty_inspect }
+          logger.info { "Put message data (Position: #{position}, Stream Name: #{stream_name}, Type: #{write_event.type}, Expected Version: #{expected_version.inspect}, ID: #{id.inspect})" }
+          logger.info(tags: [:data, :message_data]) { write_event.pretty_inspect }
         end
       end
 
@@ -49,10 +49,10 @@ module EventSource
         data = write_event.data
         metadata = write_event.metadata
 
-        logger.debug(tags: [:data, :event_data]) { "ID: #{id.pretty_inspect}" }
-        logger.debug(tags: [:data, :event_data]) { "Type: #{type.pretty_inspect}" }
-        logger.debug(tags: [:data, :event_data]) { "Data: #{data.pretty_inspect}" }
-        logger.debug(tags: [:data, :event_data]) { "Metadata: #{metadata.pretty_inspect}" }
+        logger.debug(tags: [:data, :message_data]) { "ID: #{id.pretty_inspect}" }
+        logger.debug(tags: [:data, :message_data]) { "Type: #{type.pretty_inspect}" }
+        logger.debug(tags: [:data, :message_data]) { "Data: #{data.pretty_inspect}" }
+        logger.debug(tags: [:data, :message_data]) { "Metadata: #{metadata.pretty_inspect}" }
 
         return id, type, data, metadata
       end
@@ -99,7 +99,7 @@ module EventSource
         end
 
         unless data.nil?
-          serializable_data = EventData::Hash[data]
+          serializable_data = MessageData::Hash[data]
           serialized_data = Transform::Write.(serializable_data, :json)
         end
 
@@ -115,7 +115,7 @@ module EventSource
         end
 
         unless metadata.nil?
-          serializable_metadata = EventData::Hash[metadata]
+          serializable_metadata = MessageData::Hash[metadata]
           serialized_metadata = Transform::Write.(serializable_metadata, :json)
         end
 

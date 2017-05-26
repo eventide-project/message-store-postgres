@@ -3,14 +3,14 @@ require_relative '../automated_init'
 context "Put" do
   context "Category as Stream Name" do
     category = Controls::Category.example
-    write_event = Controls::EventData::Write.example
+    write_message = Controls::MessageData::Write.example
 
-    Put.(write_event, category)
+    Put.(write_message, category)
 
-    read_event = Get.(category).first
+    read_message = Get.(category).first
 
     test "Writes the category name as the stream name" do
-      assert(read_event.stream_name == category)
+      assert(read_message.stream_name == category)
     end
   end
 end

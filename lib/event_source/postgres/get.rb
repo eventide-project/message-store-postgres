@@ -29,16 +29,16 @@ module EventSource
       end
 
       def call(stream_name, position: nil)
-        logger.trace { "Getting event data (Position: #{position.inspect}, Stream Name: #{stream_name}, Batch Size: #{batch_size.inspect})" }
+        logger.trace { "Getting message data (Position: #{position.inspect}, Stream Name: #{stream_name}, Batch Size: #{batch_size.inspect})" }
 
         records = get_records(stream_name, position)
 
-        events = convert(records)
+        messages = convert(records)
 
-        logger.info { "Finished getting event data (Count: #{events.length}, Position: #{position.inspect}, Stream Name: #{stream_name}, Batch Size: #{batch_size.inspect})" }
-        logger.info(tags: [:data, :event_data]) { events.pretty_inspect }
+        logger.info { "Finished getting message data (Count: #{messages.length}, Position: #{position.inspect}, Stream Name: #{stream_name}, Batch Size: #{batch_size.inspect})" }
+        logger.info(tags: [:data, :message_data]) { messages.pretty_inspect }
 
-        events
+        messages
       end
 
       def get_records(stream_name, position)
@@ -54,30 +54,30 @@ module EventSource
       end
 
       def convert(records)
-        logger.trace { "Converting records to event data (Records Count: #{records.ntuples})" }
+        logger.trace { "Converting records to message data (Records Count: #{records.ntuples})" }
 
-        events = records.map do |record|
+        messages = records.map do |record|
           record['data'] = Deserialize.data(record['data'])
           record['metadata'] = Deserialize.metadata(record['metadata'])
           record['time'] = Time.utc_coerced(record['time'])
 
-          EventData::Read.build record
+          MessageData::Read.build record
         end
 
-        logger.debug { "Converted records to event data (Event Data Count: #{events.length})" }
+        logger.debug { "Converted records to message data (Message Data Count: #{messages.length})" }
 
-        events
+        messages
       end
 
       module Deserialize
         def self.data(serialized_data)
           return nil if serialized_data.nil?
-          Transform::Read.(serialized_data, EventData::Hash, :json)
+          Transform::Read.(serialized_data, MessageData::Hash, :json)
         end
 
         def self.metadata(serialized_metadata)
           return nil if serialized_metadata.nil?
-          Transform::Read.(serialized_metadata, EventData::Hash, :json)
+          Transform::Read.(serialized_metadata, MessageData::Hash, :json)
         end
       end
 

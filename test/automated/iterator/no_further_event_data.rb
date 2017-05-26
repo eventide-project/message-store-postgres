@@ -1,7 +1,7 @@
 require_relative '../automated_init'
 
 context "Iterator" do
-  context "No further event data" do
+  context "No further message data" do
     stream_name = Controls::Put.(instances: 2)
 
     iterator = Read::Iterator.build(stream_name)

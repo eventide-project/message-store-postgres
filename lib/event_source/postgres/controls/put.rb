@@ -8,13 +8,13 @@ module EventSource
 
           event_specified = !event.nil?
 
-          event ||= EventData::Write.example
+          event ||= MessageData::Write.example
 
           instances.times do
             EventSource::Postgres::Put.(event, stream_name)
 
             unless event_specified
-              event.id = EventData::Write.id
+              event.id = MessageData::Write.id
             end
           end
 
