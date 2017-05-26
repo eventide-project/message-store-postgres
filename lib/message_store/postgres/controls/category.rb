@@ -1,13 +1,13 @@
-# module EventSource
+# module MessageStore
 #   module Postgres
 #     module Controls
-#       Category = EventSource::Controls::Category
+#       Category = MessageStore::Controls::Category
 #     end
 #   end
 # end
 
 
-module EventSource
+module MessageStore
   module Postgres
     module Controls
       module Category

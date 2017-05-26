@@ -5,23 +5,23 @@ context "Write" do
     context "Expected Version" do
       stream_name = Controls::StreamName.example
 
-      write_event = Controls::EventData::Write.example
-      position = Write.(write_event, stream_name)
+      write_message = Controls::MessageData::Write.example
+      position = Write.(write_message, stream_name)
 
-      write_event_1 = Controls::EventData::Write.example
-      write_event_2 = Controls::EventData::Write.example
+      write_message_1 = Controls::MessageData::Write.example
+      write_message_2 = Controls::MessageData::Write.example
 
-      batch = [write_event_1, write_event_2]
+      batch = [write_message_1, write_message_2]
 
       Write.(batch, stream_name, expected_version: position)
 
-      context "Individual Events are Written" do
+      context "Individual Messages are Written" do
         2.times do |i|
-          read_event = Get.(stream_name, position: i + 1, batch_size: 1).first
-          write_event = batch[i]
+          read_message = Get.(stream_name, position: i + 1, batch_size: 1).first
+          write_message = batch[i]
 
-          test "Event #{i + 1}" do
-            assert(read_event.data == write_event.data)
+          test "Message #{i + 1}" do
+            assert(read_message.data == write_message.data)
           end
         end
       end

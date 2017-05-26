@@ -4,9 +4,9 @@ ENV['LOG_LEVEL'] ||= '_min'
 puts RUBY_DESCRIPTION
 
 require_relative '../init.rb'
-require 'event_source/postgres/controls'
+require 'message_store/postgres/controls'
 
 require 'test_bench'; TestBench.activate
 
-include EventSource
-include EventSource::Postgres
+include MessageStore
+include MessageStore::Postgres
