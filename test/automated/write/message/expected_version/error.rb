@@ -13,7 +13,7 @@ context "Write" do
 
         test "Is an error" do
           assert proc { Write.(write_message, stream_name, expected_version: incorrect_stream_version ) } do
-            raises_error? EventSource::ExpectedVersion::Error
+            raises_error? ExpectedVersion::Error
           end
         end
 
