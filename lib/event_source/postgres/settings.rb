@@ -6,7 +6,7 @@ module EventSource
       end
 
       def self.data_source
-        'settings/event_source_postgres.json'
+        'settings/message_store_postgres.json'
       end
 
       def self.names
