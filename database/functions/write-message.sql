@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION write_event(
+CREATE OR REPLACE FUNCTION write_message(
   _id varchar,
   _stream_name varchar,
   _type varchar,
@@ -9,12 +9,12 @@ CREATE OR REPLACE FUNCTION write_event(
 RETURNS int
 AS $$
 DECLARE
-  event_id uuid;
+  message_id uuid;
   stream_version int;
   position int;
   category varchar;
 BEGIN
-  event_id = uuid(_id);
+  message_id = uuid(_id);
 
   stream_version := stream_version(_stream_name);
 
@@ -41,7 +41,7 @@ BEGIN
     )
   values
     (
-      event_id,
+      message_id,
       _stream_name,
       position,
       _type,
