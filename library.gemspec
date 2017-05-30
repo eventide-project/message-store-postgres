@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 Gem::Specification.new do |s|
   s.name = 'evt-message_store-postgres'
-  s.version = '0.1.0.0'
+  s.version = '0.2.0.0'
   s.summary = 'Message store implementation for PostgreSQL'
   s.description = ' '
 
@@ -11,7 +11,7 @@ Gem::Specification.new do |s|
   s.licenses = ['MIT']
 
   s.require_paths = ['lib']
-  s.files = Dir.glob('{lib,database}/**/*') + ['scripts/scripts_init.rb']
+  s.files = Dir.glob('{lib,database}/**/*')
   s.platform = Gem::Platform::RUBY
   s.required_ruby_version = '>= 2.4.0'
 
