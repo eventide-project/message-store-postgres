@@ -1,7 +1,7 @@
 -- ----------------------------
---  Table structure for events
+--  Table structure for messages
 -- ----------------------------
-CREATE TABLE "public"."events" (
+CREATE TABLE "public"."messages" (
   "id" UUID NOT NULL DEFAULT gen_random_uuid(),
   "stream_name" varchar(255) NOT NULL COLLATE "default",
   "type" varchar(255) NOT NULL COLLATE "default",
@@ -14,6 +14,6 @@ CREATE TABLE "public"."events" (
 WITH (OIDS=FALSE);
 
 -- ----------------------------
---  Primary key structure for table events
+--  Primary key structure for table messages
 -- ----------------------------
-ALTER TABLE "public"."events" ADD PRIMARY KEY ("global_position") NOT DEFERRABLE INITIALLY IMMEDIATE;
+ALTER TABLE "public"."messages" ADD PRIMARY KEY ("global_position") NOT DEFERRABLE INITIALLY IMMEDIATE;
