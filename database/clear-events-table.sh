@@ -7,7 +7,7 @@ echo "Clearing Events Table"
 echo "= = ="
 echo
 
-default_name=event_source
+default_name=message_store
 
 if [ -z ${DATABASE_USER+x} ]; then
   echo "(DATABASE_USER is not set)"
@@ -25,7 +25,7 @@ else
 fi
 echo "Database name is: $database"
 
-default_table_name=events
+default_table_name=messages
 
 if [ -z ${TABLE_NAME+x} ]; then
   echo "(TABLE_NAME is not set)"
