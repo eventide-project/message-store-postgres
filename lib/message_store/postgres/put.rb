@@ -88,7 +88,7 @@ module MessageStore
       end
 
       def self.statement
-        @statement ||= "SELECT write_event($1::varchar, $2::varchar, $3::varchar, $4::jsonb, $5::jsonb, $6::int);"
+        @statement ||= "SELECT write_message($1::varchar, $2::varchar, $3::varchar, $4::jsonb, $5::jsonb, $6::int);"
       end
 
       def serialized_data(data)

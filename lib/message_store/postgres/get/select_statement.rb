@@ -40,7 +40,7 @@ module MessageStore
               metadata::varchar,
               time::timestamp
             FROM
-              events
+              messages
             WHERE
               #{where_clause_field} = '#{stream_name}' AND
               #{position_field} >= #{position}

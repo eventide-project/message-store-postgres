@@ -25,7 +25,7 @@ module MessageStore
                 metadata::varchar,
                 time::timestamp
               FROM
-                events
+                messages
               WHERE
                 stream_name = '#{stream_name}'
               ORDER BY

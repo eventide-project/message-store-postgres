@@ -7,7 +7,7 @@ echo "Uninstalling Database"
 echo "= = ="
 echo
 
-default_name=event_source
+default_name=message_store
 
 if [ -z ${DATABASE_USER+x} ]; then
   echo "(DATABASE_USER is not set. Default will be used.)"
