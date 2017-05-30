@@ -7,7 +7,7 @@ echo "Installing Database"
 echo "= = ="
 echo
 
-default_name=event_source
+default_name=message_store
 
 if [ -z ${DATABASE_USER+x} ]; then
   echo "(DATABASE_USER is not set. Default will be used.)"
@@ -61,9 +61,9 @@ function create-extensions {
 }
 
 function create-table {
-  echo "Creating events table..."
+  echo "Creating messages table..."
   base=$(script_dir)
-  psql $database -f $base/table/events-table.sql
+  psql $database -f $base/table/messages-table.sql
   echo
 }
 
