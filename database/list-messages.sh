@@ -3,7 +3,7 @@
 set -e
 
 echo
-echo "Listing Events"
+echo "Listing Messages"
 echo "= = ="
 echo
 
