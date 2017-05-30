@@ -75,23 +75,23 @@ function create-functions {
   echo "stream_version function"
   psql $database -f $base/functions/stream-version.sql
   echo "write_sql function"
-  psql $database -f $base/functions/write-event.sql
+  psql $database -f $base/functions/write-message.sql
   echo
 }
 
 function create-indexes {
   base=$(script_dir)
   echo "Creating indexes..."
-  echo "events_id_idx"
-  psql $database -f $base/indexes/events-id.sql
-  echo "events_category_global_position_idx"
-  psql $database -f $base/indexes/events-category-global-position.sql
-  echo "events_category_idx"
-  psql $database -f $base/indexes/events-category.sql
-  echo "events_stream_name_idx"
-  psql $database -f $base/indexes/events-stream-name.sql
-  echo "events_stream_name_position_uniq_idx"
-  psql $database -f $base/indexes/events-stream-name-position-uniq.sql
+  echo "messages_id_idx"
+  psql $database -f $base/indexes/messages-id.sql
+  echo "messages_category_global_position_idx"
+  psql $database -f $base/indexes/messages-category-global-position.sql
+  echo "messages_category_idx"
+  psql $database -f $base/indexes/messages-category.sql
+  echo "messages_stream_name_idx"
+  psql $database -f $base/indexes/messages-stream-name.sql
+  echo "messages_stream_name_position_uniq_idx"
+  psql $database -f $base/indexes/messages-stream-name-position-uniq.sql
   echo
 }
 
