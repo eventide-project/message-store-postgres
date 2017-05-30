@@ -30,7 +30,7 @@ BEGIN
 
   position := stream_version + 1;
 
-  insert into "events"
+  insert into "messages"
     (
       "id",
       "stream_name",

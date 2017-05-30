@@ -1,1 +1,1 @@
-CREATE INDEX CONCURRENTLY  "events_id_idx" ON "public"."events" USING btree(id ASC NULLS LAST);
+CREATE INDEX CONCURRENTLY  "messages_id_idx" ON "public"."messages" USING btree(id ASC NULLS LAST);
