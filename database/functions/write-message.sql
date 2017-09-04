@@ -4,14 +4,14 @@ CREATE OR REPLACE FUNCTION write_message(
   _type varchar,
   _data jsonb,
   _metadata jsonb DEFAULT NULL,
-  _expected_version int DEFAULT NULL
+  _expected_version bigint DEFAULT NULL
 )
-RETURNS int
+RETURNS bigint
 AS $$
 DECLARE
   message_id uuid;
-  stream_version int;
-  position int;
+  stream_version bigint;
+  position bigint;
   category varchar;
 BEGIN
   message_id = uuid(_id);
