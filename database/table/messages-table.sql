@@ -5,7 +5,7 @@ CREATE TABLE "public"."messages" (
   "id" UUID NOT NULL DEFAULT gen_random_uuid(),
   "stream_name" varchar(255) NOT NULL COLLATE "default",
   "type" varchar(255) NOT NULL COLLATE "default",
-  "position" int4 NOT NULL,
+  "position" bigint NOT NULL,
   "global_position" bigserial NOT NULL ,
   "data" jsonb,
   "metadata" jsonb,
