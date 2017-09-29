@@ -6,19 +6,8 @@ module MessageStore
 
         dependency :session, Session
 
-        def self.configure(receiver, attr_name: nil, session: nil)
-          attr_name ||= :get_last
-          instance = build(session: session)
-          receiver.public_send "#{attr_name}=", instance
-        end
-
         def configure(session: nil)
           Session.configure(self, session: session)
-        end
-
-        def self.call(stream_name, session: nil)
-          instance = build(session: session)
-          instance.(stream_name)
         end
 
         def call(stream_name)
