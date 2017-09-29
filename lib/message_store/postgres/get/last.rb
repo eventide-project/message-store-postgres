@@ -2,15 +2,9 @@ module MessageStore
   module Postgres
     class Get
       class Last
-        include Log::Dependency
+        include MessageStore::Get::Last
 
         dependency :session, Session
-
-        def self.build(session: nil)
-          new.tap do |instance|
-            instance.configure(session: session)
-          end
-        end
 
         def self.configure(receiver, attr_name: nil, session: nil)
           attr_name ||= :get_last
@@ -19,7 +13,7 @@ module MessageStore
         end
 
         def configure(session: nil)
-          Session.configure self, session: session
+          Session.configure(self, session: session)
         end
 
         def self.call(stream_name, session: nil)
