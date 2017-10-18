@@ -4,7 +4,7 @@ module MessageStore
       class SelectStatement
         include Log::Dependency
 
-        initializer :stream_name, w(:position), w(:batch_size)
+        initializer :stream_name, w(:position), w(:batch_size), :where_fragment
 
         def position
           @position ||= Defaults.position
@@ -22,14 +22,16 @@ module MessageStore
           is_category_stream ||= StreamName.category?(stream_name)
         end
 
-        def self.build(stream_name, position: nil, batch_size: nil)
-          new(stream_name, position, batch_size)
+        def self.build(stream_name, position: nil, batch_size: nil, where_fragment: nil)
+          new(stream_name, position, batch_size, where_fragment)
         end
 
         def sql
           logger.trace(tag: :sql) { "Composing select statement (Stream: #{stream_name}, Category: #{category_stream?}, Types: #{stream_type_list.inspect}, Position: #{position}, Batch Size: #{batch_size})" }
 
-          statement = <<-SQL
+          formatted_where_clause = where_clause.each_line.to_a.join("  ")
+
+          statement = <<~SQL
             SELECT
               id::varchar,
               stream_name::varchar,
@@ -42,8 +44,7 @@ module MessageStore
             FROM
               messages
             WHERE
-              #{where_clause_field} = '#{stream_name}' AND
-              #{position_field} >= #{position}
+              #{formatted_where_clause}
             ORDER BY
               #{position_field} ASC
             LIMIT
@@ -55,6 +56,19 @@ module MessageStore
           logger.debug(tags: [:data, :sql]) { "Statement: #{statement}" }
 
           statement
+        end
+
+        def where_clause
+          clause = <<~SQL.chomp
+            #{where_clause_field} = '#{stream_name}' AND
+            #{position_field} >= #{position}
+          SQL
+
+          unless where_fragment.nil?
+            clause << " AND\n(#{where_fragment})"
+          end
+
+          clause
         end
 
         def where_clause_field
