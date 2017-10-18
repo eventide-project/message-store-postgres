@@ -46,7 +46,7 @@ module MessageStore
 
         where_fragment = self.condition
 
-        select_statement = SelectStatement.build(stream_name, position: position, batch_size: batch_size, where_fragment: where_fragment)
+        select_statement = SelectStatement.build(stream_name, position: position, batch_size: batch_size, condition: condition)
 
         records = session.execute(select_statement.sql)
 

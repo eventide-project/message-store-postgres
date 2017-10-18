@@ -1,12 +1,12 @@
 require_relative '../automated_init'
 
 context "Select Statement" do
-  context "Where Fragment" do
+  context "Condition" do
     stream_name = Controls::StreamName.example
 
-    where_fragment = '1 = 1'
+    condition = '1 = 1'
 
-    select_statement = Get::SelectStatement.build(stream_name, where_fragment: where_fragment)
+    select_statement = Get::SelectStatement.build(stream_name, condition: condition)
 
     sql = select_statement.sql
     sql.gsub!(/\s+/, ' ')
@@ -20,8 +20,8 @@ context "Select Statement" do
         assert(sql.include? 'position >=')
       end
 
-      test "Includes where fragment encased in parentheses" do
-        assert(sql.include? "AND (#{where_fragment})")
+      test "Includes condition encased in parentheses" do
+        assert(sql.include? "AND (#{condition})")
       end
     end
   end

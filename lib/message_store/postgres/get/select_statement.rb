@@ -4,7 +4,7 @@ module MessageStore
       class SelectStatement
         include Log::Dependency
 
-        initializer :stream_name, w(:position), w(:batch_size), :where_fragment
+        initializer :stream_name, w(:position), w(:batch_size), :condition
 
         def position
           @position ||= Defaults.position
@@ -22,8 +22,8 @@ module MessageStore
           is_category_stream ||= StreamName.category?(stream_name)
         end
 
-        def self.build(stream_name, position: nil, batch_size: nil, where_fragment: nil)
-          new(stream_name, position, batch_size, where_fragment)
+        def self.build(stream_name, position: nil, batch_size: nil, condition: nil)
+          new(stream_name, position, batch_size, condition)
         end
 
         def sql
@@ -64,8 +64,8 @@ module MessageStore
             #{position_field} >= #{position}
           SQL
 
-          unless where_fragment.nil?
-            clause << " AND\n(#{where_fragment})"
+          unless condition.nil?
+            clause << " AND\n(#{condition})"
           end
 
           clause
