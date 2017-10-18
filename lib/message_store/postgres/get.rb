@@ -3,19 +3,19 @@ module MessageStore
     class Get
       include MessageStore::Get
 
-      initializer :batch_size
+      initializer :batch_size, :condition
 
       dependency :session, Session
 
-      def self.build(batch_size: nil, session: nil)
-        new(batch_size).tap do |instance|
+      def self.build(batch_size: nil, session: nil, condition: nil)
+        new(batch_size, condition).tap do |instance|
           instance.configure(session: session)
         end
       end
 
-      def self.configure(receiver, attr_name: nil, position: nil, batch_size: nil, session: nil)
+      def self.configure(receiver, attr_name: nil, position: nil, batch_size: nil, condition: nil, session: nil)
         attr_name ||= :get
-        instance = build(batch_size: batch_size, session: session)
+        instance = build(batch_size: batch_size, condition: condition, session: session)
         receiver.public_send "#{attr_name}=", instance
       end
 
@@ -23,8 +23,8 @@ module MessageStore
         Session.configure self, session: session
       end
 
-      def self.call(stream_name, position: nil, batch_size: nil, session: nil)
-        instance = build(batch_size: batch_size, session: session)
+      def self.call(stream_name, position: nil, batch_size: nil, condition: nil,  session: nil)
+        instance = build(batch_size: batch_size, condition: condition, session: session)
         instance.(stream_name, position: position)
       end
 
@@ -44,7 +44,9 @@ module MessageStore
       def get_records(stream_name, position)
         logger.trace { "Getting records (Stream: #{stream_name}, Position: #{position.inspect}, Batch Size: #{batch_size.inspect})" }
 
-        select_statement = SelectStatement.build(stream_name, position: position, batch_size: batch_size)
+        where_fragment = self.condition
+
+        select_statement = SelectStatement.build(stream_name, position: position, batch_size: batch_size, where_fragment: where_fragment)
 
         records = session.execute(select_statement.sql)
 
