@@ -42,7 +42,7 @@ module MessageStore
       end
 
       def get_records(stream_name, position)
-        logger.trace { "Getting records (Stream: #{stream_name}, Position: #{position.inspect}, Batch Size: #{batch_size.inspect})" }
+        logger.trace { "Getting records (Stream: #{stream_name}, Position: #{position.inspect}, Batch Size: #{batch_size.inspect}, Condition: #{condition || '(none)'})" }
 
         where_fragment = self.condition
 
@@ -50,7 +50,7 @@ module MessageStore
 
         records = session.execute(select_statement.sql)
 
-        logger.debug { "Finished getting records (Count: #{records.ntuples}, Stream: #{stream_name}, Position: #{position.inspect}, Batch Size: #{batch_size.inspect})" }
+        logger.debug { "Finished getting records (Count: #{records.ntuples}, Stream: #{stream_name}, Position: #{position.inspect}, Batch Size: #{batch_size.inspect}, Condition: #{condition || '(none)'})" }
 
         records
       end

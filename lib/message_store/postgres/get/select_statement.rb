@@ -27,7 +27,7 @@ module MessageStore
         end
 
         def sql
-          logger.trace(tag: :sql) { "Composing select statement (Stream: #{stream_name}, Category: #{category_stream?}, Types: #{stream_type_list.inspect}, Position: #{position}, Batch Size: #{batch_size})" }
+          logger.trace(tag: :sql) { "Composing select statement (Stream: #{stream_name}, Category: #{category_stream?}, Types: #{stream_type_list.inspect}, Position: #{position}, Batch Size: #{batch_size}, Condition: #{condition || '(none)'})" }
 
           formatted_where_clause = where_clause.each_line.to_a.join("  ")
 
@@ -52,7 +52,7 @@ module MessageStore
             ;
           SQL
 
-          logger.debug(tag: :sql) { "Composed select statement (Stream: #{stream_name}, Category: #{category_stream?}, Types: #{stream_type_list.inspect}, Position: #{position}, Batch Size: #{batch_size})" }
+          logger.debug(tag: :sql) { "Composed select statement (Stream: #{stream_name}, Category: #{category_stream?}, Types: #{stream_type_list.inspect}, Position: #{position}, Batch Size: #{batch_size}, Condition: #{condition || '(none)'})" }
           logger.debug(tags: [:data, :sql]) { "Statement: #{statement}" }
 
           statement
