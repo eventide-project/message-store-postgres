@@ -60,7 +60,7 @@ module MessageStore
 
         def where_clause
           clause = <<~SQL.chomp
-            #{where_clause_field} = '#{stream_name}' AND
+            #{discriminator_field} = '#{stream_name}' AND
             #{position_field} >= #{position}
           SQL
 
@@ -71,7 +71,7 @@ module MessageStore
           clause
         end
 
-        def where_clause_field
+        def discriminator_field
           unless category_stream?
             'stream_name'
           else
