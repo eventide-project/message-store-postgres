@@ -4,7 +4,7 @@ module MessageStore
       class SelectStatement
         include Log::Dependency
 
-        initializer :stream_name, w(:position), w(:batch_size), :condition
+        initializer :stream_name, na(:position), na(:batch_size), :condition
 
         def position
           @position ||= Defaults.position
