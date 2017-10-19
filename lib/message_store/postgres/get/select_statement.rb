@@ -4,7 +4,7 @@ module MessageStore
       class SelectStatement
         include Log::Dependency
 
-        initializer :stream_name, w(:position), w(:batch_size)
+        initializer :stream_name, w(:position), w(:batch_size), :condition
 
         def position
           @position ||= Defaults.position
@@ -22,14 +22,16 @@ module MessageStore
           is_category_stream ||= StreamName.category?(stream_name)
         end
 
-        def self.build(stream_name, position: nil, batch_size: nil)
-          new(stream_name, position, batch_size)
+        def self.build(stream_name, position: nil, batch_size: nil, condition: nil)
+          new(stream_name, position, batch_size, condition)
         end
 
         def sql
-          logger.trace(tag: :sql) { "Composing select statement (Stream: #{stream_name}, Category: #{category_stream?}, Types: #{stream_type_list.inspect}, Position: #{position}, Batch Size: #{batch_size})" }
+          logger.trace(tag: :sql) { "Composing select statement (Stream: #{stream_name}, Category: #{category_stream?}, Types: #{stream_type_list.inspect}, Position: #{position}, Batch Size: #{batch_size}, Condition: #{condition || '(none)'})" }
 
-          statement = <<-SQL
+          formatted_where_clause = where_clause.each_line.to_a.join("  ")
+
+          statement = <<~SQL
             SELECT
               id::varchar,
               stream_name::varchar,
@@ -42,8 +44,7 @@ module MessageStore
             FROM
               messages
             WHERE
-              #{where_clause_field} = '#{stream_name}' AND
-              #{position_field} >= #{position}
+              #{formatted_where_clause}
             ORDER BY
               #{position_field} ASC
             LIMIT
@@ -51,13 +52,26 @@ module MessageStore
             ;
           SQL
 
-          logger.debug(tag: :sql) { "Composed select statement (Stream: #{stream_name}, Category: #{category_stream?}, Types: #{stream_type_list.inspect}, Position: #{position}, Batch Size: #{batch_size})" }
+          logger.debug(tag: :sql) { "Composed select statement (Stream: #{stream_name}, Category: #{category_stream?}, Types: #{stream_type_list.inspect}, Position: #{position}, Batch Size: #{batch_size}, Condition: #{condition || '(none)'})" }
           logger.debug(tags: [:data, :sql]) { "Statement: #{statement}" }
 
           statement
         end
 
-        def where_clause_field
+        def where_clause
+          clause = <<~SQL.chomp
+            #{discriminator_field} = '#{stream_name}' AND
+            #{position_field} >= #{position}
+          SQL
+
+          unless condition.nil?
+            clause << " AND\n(#{condition})"
+          end
+
+          clause
+        end
+
+        def discriminator_field
           unless category_stream?
             'stream_name'
           else
