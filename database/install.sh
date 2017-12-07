@@ -86,10 +86,6 @@ function create-indexes {
   psql $database -f $base/indexes/messages-id.sql
   echo "messages_category_global_position_idx"
   psql $database -f $base/indexes/messages-category-global-position.sql
-  echo "messages_category_idx"
-  psql $database -f $base/indexes/messages-category.sql
-  echo "messages_stream_name_idx"
-  psql $database -f $base/indexes/messages-stream-name.sql
   echo "messages_stream_name_position_uniq_idx"
   psql $database -f $base/indexes/messages-stream-name-position-uniq.sql
   echo
