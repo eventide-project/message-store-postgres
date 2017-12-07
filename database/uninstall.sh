@@ -28,7 +28,7 @@ echo
 function delete-user {
   echo "Database user is: $user"
 
-  user_exists=`psql postgres -tAc "SELECT 1 FROM pg_roles WHERE rolname='$user'"`
+  user_exists=`psql postgres -qtAXc "SELECT 1 FROM pg_roles WHERE rolname='$user'"`
 
   if [ "$user_exists" = "1" ]; then
     echo "Deleting database user \"$user\"..."
@@ -43,7 +43,7 @@ function delete-user {
 function delete-database {
   echo "Database name is: $database"
 
-  database_exists=`psql postgres -tAc "SELECT 1 FROM pg_database WHERE datname='$database'"`
+  database_exists=`psql postgres -qtAXc "SELECT 1 FROM pg_database WHERE datname='$database'"`
 
   if [ "$database_exists" = "1" ]; then
     echo "Deleting database \"$database\"..."

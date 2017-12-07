@@ -28,7 +28,7 @@ echo
 function create-user {
   echo "Database user is: $user"
 
-  user_exists=`psql postgres -tAc "SELECT 1 FROM pg_roles WHERE rolname='$user'"`
+  user_exists=`psql postgres -qtAXc "SELECT 1 FROM pg_roles WHERE rolname='$user'"`
 
   if [ "$user_exists" = "1" ]; then
     echo "Database user \"$user\" was previously created. Not creating again."
