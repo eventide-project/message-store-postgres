@@ -53,24 +53,6 @@ module MessageStore
           message_data
         end
 
-        def __convert(records)
-          logger.trace { "Converting records to message data (Records Count: #{records.ntuples})" }
-
-          messages = records.map do |record|
-            record['data'] = Deserialize.data(record['data'])
-            record['metadata'] = Deserialize.metadata(record['metadata'])
-            record['time'] = Time.utc_coerced(record['time'])
-
-            MessageData::Read.build record
-
-            break
-          end
-
-          logger.debug { "Converted records to message data (Message Data Count: #{messages.length})" }
-
-          messages
-        end
-
         module Deserialize
           def self.data(serialized_data)
             return nil if serialized_data.nil?
