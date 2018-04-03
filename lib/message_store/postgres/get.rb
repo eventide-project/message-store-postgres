@@ -74,12 +74,12 @@ module MessageStore
       module Deserialize
         def self.data(serialized_data)
           return nil if serialized_data.nil?
-          Transform::Read.(serialized_data, MessageData::Hash, :json)
+          Transform::Read.(serialized_data, :json, MessageData::Hash)
         end
 
         def self.metadata(serialized_metadata)
           return nil if serialized_metadata.nil?
-          Transform::Read.(serialized_metadata, MessageData::Hash, :json)
+          Transform::Read.(serialized_metadata, :json, MessageData::Hash)
         end
       end
 
