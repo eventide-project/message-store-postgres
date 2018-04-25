@@ -44,8 +44,6 @@ module MessageStore
       def get_records(stream_name, position)
         logger.trace { "Getting records (Stream: #{stream_name}, Position: #{position.inspect}, Batch Size: #{batch_size.inspect}, Condition: #{condition || '(none)'})" }
 
-        where_fragment = self.condition
-
         select_statement = SelectStatement.build(stream_name, position: position, batch_size: batch_size, condition: condition)
 
         records = session.execute(select_statement.sql)
