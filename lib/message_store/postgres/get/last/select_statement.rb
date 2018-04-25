@@ -18,7 +18,7 @@ module MessageStore
               SELECT
                 id::varchar,
                 stream_name::varchar,
-                position::int,
+                position::bigint,
                 type::varchar,
                 global_position::bigint,
                 data::varchar,
