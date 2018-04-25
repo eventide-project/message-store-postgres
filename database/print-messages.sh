@@ -3,7 +3,7 @@
 set -e
 
 echo
-echo "Listing Messages"
+echo "Printing Messages"
 echo "= = ="
 echo
 
