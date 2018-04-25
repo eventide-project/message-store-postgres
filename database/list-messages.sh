@@ -46,7 +46,7 @@ fi
 echo
 
 if [ -z $stream_name ]; then
-  psql $database -c "SELECT * FROM $table"
+  psql $database -x -c "SELECT * FROM $table"
 else
-  psql $database -c "SELECT * FROM $table WHERE stream_name = '$stream_name'"
+  psql $database -x -c "SELECT * FROM $table WHERE stream_name = '$stream_name'"
 fi
