@@ -1,7 +1,0 @@
-Put Benchmark
-- - -
-Cycles: 20000
-Time: 62569.619000ms
-Mean Cycle Time: 3.128481ms (± 16.107108ms)
-Cycles Per Second: 319.643947
-GC: off
