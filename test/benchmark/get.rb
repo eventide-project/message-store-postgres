@@ -2,10 +2,6 @@ require_relative 'benchmark_init'
 
 defaults = Benchmark::Defaults.build
 
-puts
-puts 'Get Benchmark'
-puts '- - -'
-
 list = Controls::MessageData::Write::List.get(instances: defaults.total_cycles)
 
 put = Put.build
@@ -21,5 +17,8 @@ result = Diagnostics::Sample.(defaults.cycles, warmup_cycles: defaults.warmup_cy
   get.(entry.stream_name)
 end
 
-puts result
+puts
+filename = Benchmark::RecordResult.('Get Benchmark', result)
+puts
+puts filename
 puts
