@@ -1,0 +1,7 @@
+Get Benchmark
+- - -
+Cycles: 100000
+Time: 155466.029000ms
+Mean Cycle Time: 1.554660ms (± 6.764445ms)
+Cycles Per Second: 643.227338
+GC: off
