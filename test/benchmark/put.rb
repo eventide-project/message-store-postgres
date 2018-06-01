@@ -11,4 +11,8 @@ result = Diagnostics::Sample.(defaults.cycles, warmup_cycles: defaults.warmup_cy
   put.(entry.message_data, entry.stream_name)
 end
 
-Benchmark::RecordResult.('Put Benchmark', result)
+puts
+filename = Benchmark::RecordResult.('Put Benchmark', result)
+puts
+puts filename
+puts
