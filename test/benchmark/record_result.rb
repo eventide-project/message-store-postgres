@@ -16,11 +16,11 @@ module Benchmark
     end
 
     def call
-      digest = write_result_file
+      digest, filename = write_result_file
 
-      puts
       puts digest
-      puts
+
+      filename.to_s
     end
 
     def write_result_file
@@ -31,7 +31,7 @@ module Benchmark
       d = digest
       fn.write(d)
 
-      d
+      [d, fn]
     end
 
     def filename
@@ -46,8 +46,8 @@ module Benchmark
         #{name}
         - - -
         #{content}
-        (#{filename})
       TEXT
+      .chomp
     end
 
     def configure
