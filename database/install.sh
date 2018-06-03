@@ -70,12 +70,19 @@ function create-table {
 function create-functions {
   base=$(script_dir)
   echo "Creating functions..."
+
+  echo "hash_64 function"
+  psql $database -f $base/functions/hash-64.sql
+
   echo "category function"
   psql $database -f $base/functions/category.sql
+
   echo "stream_version function"
   psql $database -f $base/functions/stream-version.sql
+
   echo "write_sql function"
   psql $database -f $base/functions/write-message.sql
+
   echo
 }
 
