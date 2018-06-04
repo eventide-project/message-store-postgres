@@ -18,7 +18,8 @@ BEGIN
   message_id = uuid(_id);
 
   stream_name_hash = hash_64(_stream_name);
-  PERFORM pg_advisory_lock(stream_name_hash);
+
+  PERFORM pg_advisory_xact_lock(stream_name_hash);
 
   stream_version := stream_version(_stream_name);
 
@@ -28,7 +29,6 @@ BEGIN
 
   if _expected_version is not null then
     if _expected_version != stream_version then
-      PERFORM pg_advisory_unlock(stream_name_hash);
       raise exception 'Wrong expected version: % (Stream: %, Stream Version: %)', _expected_version, _stream_name, stream_version;
     end if;
   end if;
@@ -54,8 +54,6 @@ BEGIN
       _metadata
     )
   ;
-
-  PERFORM pg_advisory_unlock(stream_name_hash);
 
   return position;
 END;
