@@ -18,7 +18,6 @@ BEGIN
   message_id = uuid(_id);
 
   stream_name_hash = hash_64(_stream_name);
-
   PERFORM pg_advisory_xact_lock(stream_name_hash);
 
   stream_version := stream_version(_stream_name);
