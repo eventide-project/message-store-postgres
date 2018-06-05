@@ -13,7 +13,7 @@ module MessageStore
         end
       end
 
-      def self.configure(receiver, attr_name: nil, position: nil, batch_size: nil, condition: nil, session: nil)
+      def self.configure(receiver, attr_name: nil, batch_size: nil, condition: nil, session: nil)
         attr_name ||= :get
         instance = build(batch_size: batch_size, condition: condition, session: session)
         receiver.public_send "#{attr_name}=", instance
