@@ -15,7 +15,7 @@ module MessageStore
         end
 
         def stream_type_list
-          @stream_type ||= StreamName.get_type_list(stream_name)
+          @stream_type_list ||= StreamName.get_type_list(stream_name)
         end
 
         def category_stream?
