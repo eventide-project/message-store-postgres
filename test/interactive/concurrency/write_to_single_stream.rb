@@ -1,4 +1,4 @@
-require_relative './interactive_init'
+require_relative '../interactive_init'
 
 require 'actor'
 
@@ -17,13 +17,13 @@ class ExampleProcess
   end
 
   handle :write_message do
-    message_data_1 = MessageStore::Postgres::Controls::MessageData::Write.example(data: { attribute: 1 })
-    message_data_2 = MessageStore::Postgres::Controls::MessageData::Write.example(data: { attribute: 2 })
+    message_data_1 = MessageStore::Postgres::Controls::MessageData::Write.example(data: { actor: object_id })
+    message_data_2 = MessageStore::Postgres::Controls::MessageData::Write.example(data: { actor: object_id })
     batch = [message_data_1, message_data_2]
 
     position = MessageStore::Postgres::Write.(batch, stream_name)
 
-    logger.info { "Wrote message data (Object ID: #{object_id}, Position: #{position}, Message Type: #{message_data_1.type.inspect}, Stream Name: #{stream_name.inspect})" }
+    logger.info(tag: :actor) { "Wrote message data (Object ID: #{object_id}, Position: #{position}, Message Type: #{message_data_1.type.inspect}, Stream Name: #{stream_name.inspect})" }
 
     :write_message
   end
