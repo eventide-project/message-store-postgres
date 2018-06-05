@@ -10,4 +10,5 @@ BEGIN
 
   return stream_version;
 END;
-$$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql
+VOLATILE;

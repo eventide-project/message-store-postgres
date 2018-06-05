@@ -56,4 +56,5 @@ BEGIN
 
   return position;
 END;
-$$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql
+VOLATILE;

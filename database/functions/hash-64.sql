@@ -10,3 +10,4 @@ BEGIN
   return hash;
 END;
 $$ LANGUAGE plpgsql
+IMMUTABLE;
