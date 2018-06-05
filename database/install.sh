@@ -80,8 +80,11 @@ function create-functions {
   echo "stream_version function"
   psql $database -f $base/functions/stream-version.sql
 
-  echo "write_sql function"
+  echo "write_message function"
   psql $database -f $base/functions/write-message.sql
+
+  echo "get_messages function"
+  psql $database -f $base/functions/get-messages.sql
 
   echo
 }
