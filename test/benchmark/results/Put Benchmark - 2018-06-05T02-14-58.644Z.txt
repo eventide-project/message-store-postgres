@@ -1,0 +1,22 @@
+Put Benchmark
+- - -
+Cycles: 100000
+Time: 146689.646000ms
+Mean Cycle Time: 1.466896ms (± 1.990456ms)
+Cycles Per Second: 681.711373
+GC: off
+
+Note: Post-advisory lock implementation
+
+Model Name: MacBook
+Model Identifier: MacBook10,1
+Processor Name: Intel Core i7
+Processor Speed:  1.4 GHz
+Number of Processors: 1
+Total Number of Cores:  2
+L2 Cache (per Core):  256 KB
+L3 Cache: 4 MB
+Memory: 16 GB
+Boot ROM Version: MB101.0156.B00
+SMC Version (system): 2.42f10
+
