@@ -21,7 +21,7 @@ class ExampleProcess
 
     MessageStore::Postgres::Write.(message_data, stream_name)
 
-    logger.info { "Wrote message (Type: #{message_data.type.inspect}, Stream Name: #{stream_name.inspect})" }
+    logger.info { "Wrote message (Object ID: #{object_id}, Type: #{message_data.type.inspect}, Stream Name: #{stream_name.inspect})" }
 
     :write_message
   end
