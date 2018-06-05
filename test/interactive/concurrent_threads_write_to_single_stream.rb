@@ -17,17 +17,20 @@ class ExampleProcess
   end
 
   handle :write_message do
-    message_data = ::Controls::MessageData::Write.example
+    message_data_1 = MessageStore::Postgres::Controls::MessageData::Write.example(data: { attribute: 1 })
+    message_data_2 = MessageStore::Postgres::Controls::MessageData::Write.example(data: { attribute: 2 })
+    batch = [message_data_1, message_data_2]
 
-    MessageStore::Postgres::Write.(message_data, stream_name)
+    position = MessageStore::Postgres::Write.(batch, stream_name)
 
-    logger.info { "Wrote message (Object ID: #{object_id}, Type: #{message_data.type.inspect}, Stream Name: #{stream_name.inspect})" }
+    logger.info { "Wrote message data (Object ID: #{object_id}, Position: #{position}, Message Type: #{message_data_1.type.inspect}, Stream Name: #{stream_name.inspect})" }
 
     :write_message
   end
 end
 
-stream_name = Controls::StreamName.example
+random = SecureRandom.hex[0..5]
+stream_name = Controls::StreamName.example(category: "testConcurrentWrite-#{random}", randomize_category: false)
 
 Actor::Supervisor.start do
   2.times do
