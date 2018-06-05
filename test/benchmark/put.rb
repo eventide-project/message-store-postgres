@@ -1,6 +1,6 @@
 require_relative 'benchmark_init'
 
-defaults = Benchmark::Defaults.build
+defaults = Test::Benchmark::Defaults.build
 
 list = Controls::MessageData::Write::List.get(instances: defaults.total_cycles)
 
