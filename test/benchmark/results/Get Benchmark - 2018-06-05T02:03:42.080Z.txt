@@ -1,10 +1,12 @@
 Get Benchmark
 - - -
 Cycles: 100000
-Time: 155466.029000ms
-Mean Cycle Time: 1.554660ms (± 6.764445ms)
-Cycles Per Second: 643.227338
+Time: 77864.587000ms
+Mean Cycle Time: 0.778646ms (± 1.020442ms)
+Cycles Per Second: 1284.280876
 GC: off
+
+Note: Pre-advisory lock implementation
 
 Model Name: MacBook
 Model Identifier: MacBook10,1
