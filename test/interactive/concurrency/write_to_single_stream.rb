@@ -1,4 +1,4 @@
-require_relative '../interactive_init'
+require_relative 'concurrency_init'
 
 require 'actor'
 
@@ -32,8 +32,15 @@ end
 random = SecureRandom.hex[0..5]
 stream_name = Controls::StreamName.example(category: "testConcurrentWrite-#{random}", randomize_category: false)
 
+number_of_actors = Test::Interactive::Concurrency::Defaults.actors
+
+puts
+puts "Concurrent Write (#{number_of_actors} actors)"
+puts "- - -"
+puts
+
 Actor::Supervisor.start do
-  2.times do
+  number_of_actors.times do
     ExampleProcess.start(stream_name)
   end
 end
