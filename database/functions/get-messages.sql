@@ -1,46 +1,45 @@
-
-CREATE OR REPLACE FUNCTION get_messages(
-  condition varchar DEFAULT NULL
+CREATE OR REPLACE FUNCTION get_stream_messages(
   -- stream_name varchar,
-  -- position bigint DEFAULT 0,
-  -- batch_size bigint DEFAULT 1000,
+
+  _position bigint DEFAULT 0,
+  _batch_size bigint DEFAULT 1000,
+  _condition varchar DEFAULT NULL
 )
-RETURNS SETOF messages
+RETURNS SETOF message
 AS $$
 DECLARE
   command text;
 BEGIN
-  command := 'SELECT * FROM messages';
+  command := '
+SELECT
+  id::varchar,
+  stream_name::varchar,
+  position::bigint,
+  type::varchar,
+  global_position::bigint,
+  data::varchar,
+  metadata::varchar,
+  time::timestamp
+FROM
+  messages
+WHERE
+  position >= $1';
 
-  -- command := '
-  -- SELECT
-  --     id,
-  --     stream_name,
-  --     position,
-  --     type,
-  --     global_position,
-  --     data,
-  --     metadata,
-  --     time
-  --   FROM
-  --     messages';
-
-    -- WHERE
-    --   #{formatted_where_clause}
-    -- ORDER BY
-    --   #{position_field} ASC
-    -- LIMIT
-    --   #{batch_size}
-    -- ;
-
-
-  if condition is not null then
-    command := command || ' WHERE %s';
-    command := format(command, condition);
+  if _condition is not null then
+    command := command || ' AND
+  %s';
+    command := format(command, _condition);
   end if;
 
+  command := command || '
+ORDER BY
+  position ASC
+LIMIT
+  $2';
 
-  RETURN QUERY EXECUTE command;
+  RAISE NOTICE '%', command;
+
+  RETURN QUERY EXECUTE command USING _position, _batch_size;
 END;
 $$ LANGUAGE plpgsql
 VOLATILE;
