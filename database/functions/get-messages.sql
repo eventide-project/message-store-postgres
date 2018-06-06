@@ -11,31 +11,31 @@ DECLARE
   command text;
 BEGIN
   command := '
-SELECT
-  id::varchar,
-  stream_name::varchar,
-  position::bigint,
-  type::varchar,
-  global_position::bigint,
-  data::varchar,
-  metadata::varchar,
-  time::timestamp
-FROM
-  messages
-WHERE
-  position >= $1';
+    SELECT
+      id::varchar,
+      stream_name::varchar,
+      position::bigint,
+      type::varchar,
+      global_position::bigint,
+      data::varchar,
+      metadata::varchar,
+      time::timestamp
+    FROM
+      messages
+    WHERE
+      position >= $1';
 
   if _condition is not null then
     command := command || ' AND
-  %s';
+      %s';
     command := format(command, _condition);
   end if;
 
   command := command || '
-ORDER BY
-  position ASC
-LIMIT
-  $2';
+    ORDER BY
+      position ASC
+    LIMIT
+      $2';
 
   RAISE NOTICE '%', command;
 
