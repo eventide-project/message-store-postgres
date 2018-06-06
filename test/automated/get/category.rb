@@ -4,7 +4,7 @@ context "Get" do
   context "Category" do
     category = Controls::Category.example
 
-    stream_name = Controls::Put.(instances: 2, category: category)
+    stream_name, _ = Controls::Put.(instances: 2, category: category)
 
     messages = Get.(stream_name)
 
