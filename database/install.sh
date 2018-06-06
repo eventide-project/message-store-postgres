@@ -62,14 +62,23 @@ function create-extensions {
 
 function create-table {
   echo "Creating messages table..."
-  base=$(script_dir)
   psql $database -f $base/table/messages-table.sql
   echo
 }
 
-function create-functions {
+function create-types {
   base=$(script_dir)
+  echo "Creating types..."
+
+  echo "message type"
+  psql $database -f $base/types/message.sql
+
+  echo
+}
+
+function create-functions {
   echo "Creating functions..."
+  base=$(script_dir)
 
   echo "hash_64 function"
   psql $database -f $base/functions/hash-64.sql
@@ -90,14 +99,18 @@ function create-functions {
 }
 
 function create-indexes {
-  base=$(script_dir)
   echo "Creating indexes..."
+  base=$(script_dir)
+
   echo "messages_id_idx"
   psql $database -f $base/indexes/messages-id.sql
+
   echo "messages_category_global_position_idx"
   psql $database -f $base/indexes/messages-category-global-position.sql
+
   echo "messages_stream_name_position_uniq_idx"
   psql $database -f $base/indexes/messages-stream-name-position-uniq.sql
+
   echo
 }
 
@@ -105,5 +118,6 @@ create-user
 create-database
 create-extensions
 create-table
+create-types
 create-functions
 create-indexes
