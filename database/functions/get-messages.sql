@@ -1,8 +1,6 @@
 CREATE OR REPLACE FUNCTION get_messages()
-RETURNS messages
+RETURNS SETOF messages
 AS $$
-BEGIN
-  SELECT * FROM messages WHERE global_position > 0;
-END;
-$$ LANGUAGE plpgsql
+  SELECT * FROM messages;
+$$ LANGUAGE SQL
 VOLATILE;
