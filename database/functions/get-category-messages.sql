@@ -23,7 +23,7 @@ BEGIN
       messages
     WHERE
       category(stream_name) = $1 AND
-      position >= $2';
+      global_position >= $2';
 
   if _condition is not null then
     command := command || ' AND
