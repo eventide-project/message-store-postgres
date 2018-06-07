@@ -25,7 +25,7 @@ BEGIN
     LIMIT
       1';
 
-  RAISE NOTICE '%', command;
+  -- RAISE NOTICE '%', command;
 
   RETURN QUERY EXECUTE command USING _stream_name;
 END;
