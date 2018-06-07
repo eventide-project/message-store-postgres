@@ -92,8 +92,11 @@ function create-functions {
   echo "write_message function"
   psql $database -f $base/functions/write-message.sql
 
-  echo "get_messages function"
-  psql $database -f $base/functions/get-messages.sql
+  echo "get_stream_messages function"
+  psql $database -f $base/functions/get-stream-messages.sql
+
+  echo "get_category_messages function"
+  psql $database -f $base/functions/get-category-messages.sql
 
   echo
 }
