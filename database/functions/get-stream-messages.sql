@@ -13,8 +13,8 @@ BEGIN
     SELECT
       id::varchar,
       stream_name::varchar,
-      position::bigint,
       type::varchar,
+      position::bigint,
       global_position::bigint,
       data::varchar,
       metadata::varchar,

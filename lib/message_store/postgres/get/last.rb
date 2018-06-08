@@ -13,11 +13,11 @@ module MessageStore
         def call(stream_name)
           logger.trace { "Getting last message data (Stream Name: #{stream_name})" }
 
-          record = get_record(stream_name)
+          result = get_result(stream_name)
 
-          return nil if record.nil?
+          return nil if result.nil?
 
-          message_data = convert(record)
+          message_data = convert(result[0])
 
           logger.info { "Finished getting message data (Stream Name: #{stream_name})" }
           logger.info(tags: [:data, :message_data]) { message_data.pretty_inspect }
@@ -25,18 +25,28 @@ module MessageStore
           message_data
         end
 
-        def get_record(stream_name)
+        def get_result(stream_name)
           logger.trace { "Getting last record (Stream: #{stream_name})" }
 
-          select_statement = SelectStatement.build(stream_name)
+          sql_command = self.class.sql_command(stream_name)
 
-          records = session.execute(select_statement.sql)
+          params = [
+            stream_name
+          ]
 
-          logger.debug { "Finished getting record (Stream: #{stream_name})" }
+          result = session.execute(sql_command, params)
 
-          return nil if records.ntuples == 0
+          logger.debug { "Finished getting result (Count: #{result.ntuples}, Stream: #{stream_name}" }
 
-          records[0]
+          return nil if result.ntuples == 0
+
+          result
+        end
+
+        def self.sql_command(stream_name)
+          parameters = '$1::varchar'
+
+          "SELECT * FROM get_last_message(#{parameters});"
         end
 
         def convert(record)

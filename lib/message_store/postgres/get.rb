@@ -3,9 +3,13 @@ module MessageStore
     class Get
       include MessageStore::Get
 
-      initializer :batch_size, :condition
-
       dependency :session, Session
+
+      initializer na(:batch_size), :condition
+
+      def batch_size
+        @batch_size ||= Defaults.batch_size
+      end
 
       def self.build(batch_size: nil, session: nil, condition: nil)
         new(batch_size, condition).tap do |instance|
@@ -31,32 +35,63 @@ module MessageStore
       def call(stream_name, position: nil)
         logger.trace { "Getting message data (Position: #{position.inspect}, Stream Name: #{stream_name}, Batch Size: #{batch_size.inspect})" }
 
-        records = get_records(stream_name, position)
+        position ||= Defaults.position
 
-        messages = convert(records)
+        result = get_result(stream_name, position)
 
-        logger.info { "Finished getting message data (Count: #{messages.length}, Position: #{position.inspect}, Stream Name: #{stream_name}, Batch Size: #{batch_size.inspect})" }
-        logger.info(tags: [:data, :message_data]) { messages.pretty_inspect }
+        message_data = convert(result)
 
-        messages
+        logger.info { "Finished getting message data (Count: #{message_data.length}, Position: #{position.inspect}, Stream Name: #{stream_name}, Batch Size: #{batch_size.inspect})" }
+        logger.info(tags: [:data, :message_data]) { message_data.pretty_inspect }
+
+        message_data
       end
 
-      def get_records(stream_name, position)
-        logger.trace { "Getting records (Stream: #{stream_name}, Position: #{position.inspect}, Batch Size: #{batch_size.inspect}, Condition: #{condition || '(none)'})" }
+      def get_result(stream_name, position)
+        logger.trace { "Getting result (Stream: #{stream_name}, Position: #{position.inspect}, Batch Size: #{batch_size.inspect}, Condition: #{condition || '(none)'})" }
 
-        select_statement = SelectStatement.build(stream_name, position: position, batch_size: batch_size, condition: condition)
+        sql_command = self.class.sql_command(stream_name, position, batch_size, condition)
 
-        records = session.execute(select_statement.sql)
+        cond = self.class.constrain_condition(condition)
 
-        logger.debug { "Finished getting records (Count: #{records.ntuples}, Stream: #{stream_name}, Position: #{position.inspect}, Batch Size: #{batch_size.inspect}, Condition: #{condition || '(none)'})" }
+        params = [
+          stream_name,
+          position,
+          batch_size,
+          cond
+        ]
 
-        records
+        result = session.execute(sql_command, params)
+
+        logger.debug { "Finished getting result (Count: #{result.ntuples}, Stream: #{stream_name}, Position: #{position.inspect}, Batch Size: #{batch_size.inspect}, Condition: #{condition || '(none)'})" }
+
+        result
       end
 
-      def convert(records)
-        logger.trace { "Converting records to message data (Records Count: #{records.ntuples})" }
+      def self.constrain_condition(condition)
+        return nil if condition.nil?
 
-        messages = records.map do |record|
+        "(#{condition})"
+      end
+
+      def self.sql_command(stream_name, position, batch_size, condition)
+        parameters = '$1::varchar, $2::bigint, $3::bigint, $4::varchar'
+
+        if category_stream?(stream_name)
+          return "SELECT * FROM get_category_messages(#{parameters});"
+        else
+          return "SELECT * FROM get_stream_messages(#{parameters});"
+        end
+      end
+
+      def self.category_stream?(stream_name)
+        StreamName.category?(stream_name)
+      end
+
+      def convert(result)
+        logger.trace { "Converting result to message data (Result Count: #{result.ntuples})" }
+
+        message_data = result.map do |record|
           record['data'] = Deserialize.data(record['data'])
           record['metadata'] = Deserialize.metadata(record['metadata'])
           record['time'] = Time.utc_coerced(record['time'])
@@ -64,9 +99,9 @@ module MessageStore
           MessageData::Read.build record
         end
 
-        logger.debug { "Converted records to message data (Message Data Count: #{messages.length})" }
+        logger.debug { "Converted result to message data (Message Data Count: #{message_data.length})" }
 
-        messages
+        message_data
       end
 
       module Deserialize
@@ -84,6 +119,16 @@ module MessageStore
       module Time
         def self.utc_coerced(local_time)
           Clock::UTC.coerce(local_time)
+        end
+      end
+
+      module Defaults
+        def self.position
+          0
+        end
+
+        def self.batch_size
+          1000
         end
       end
     end

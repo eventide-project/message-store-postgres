@@ -33,7 +33,7 @@ module MessageStore
 
         if connected?
           logger.debug { "Already connected. A new connection will not be built." }
-          return
+          return connection
         end
 
         logger.debug { "Not connected. A new connection will be built." }
@@ -80,9 +80,9 @@ module MessageStore
         settings
       end
 
-      def execute(statement, params=nil)
-        logger.trace { "Executing statement" }
-        logger.trace(tag: :data) { statement }
+      def execute(sql_command, params=nil)
+        logger.trace { "Executing SQL command" }
+        logger.trace(tag: :data) { sql_command }
         logger.trace(tag: :data) { params.pretty_inspect }
 
         unless connected?
@@ -90,12 +90,12 @@ module MessageStore
         end
 
         if params.nil?
-          connection.exec(statement).tap do
-            logger.debug { "Executed statement" }
+          connection.exec(sql_command).tap do
+            logger.debug { "Executed SQL command (no params)" }
           end
         else
-          connection.exec_params(statement, params).tap do
-            logger.debug { "Executed statement with params" }
+          connection.exec_params(sql_command, params).tap do
+            logger.debug { "Executed SQL command with params" }
           end
         end
       end
@@ -117,7 +117,7 @@ module MessageStore
           s = settings.dup
 
           if s.has_key?(:password)
-            s[:password] = '(hidden)'
+            s[:password] = '*' * 8
           end
 
           s
