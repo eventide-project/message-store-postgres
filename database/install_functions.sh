@@ -3,7 +3,7 @@
 set -e
 
 echo
-echo "Installing Function"
+echo "Installing Functions"
 echo "= = ="
 echo
 
