@@ -2,7 +2,7 @@ require_relative '../automated_init'
 
 context "Get" do
   context "Condition" do
-    stream_name = Controls::Put.(instances: 3)
+    stream_name, _ = Controls::Put.(instances: 3)
 
     condition = 'position = 0 OR position = 2'
 

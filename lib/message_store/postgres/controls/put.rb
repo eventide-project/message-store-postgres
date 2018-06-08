@@ -10,15 +10,16 @@ module MessageStore
 
           message ||= MessageData::Write.example
 
+          position = nil
           instances.times do
-            MessageStore::Postgres::Put.(message, stream_name)
+            position = MessageStore::Postgres::Put.(message, stream_name)
 
             unless message_specified
               message.id = MessageData::Write.id
             end
           end
 
-          stream_name
+          [stream_name, position]
         end
       end
     end

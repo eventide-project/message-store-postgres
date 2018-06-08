@@ -1,1 +1,0 @@
-SELECT write_message(gen_random_uuid()::varchar, 'testWriteIsolation'::varchar, 'SomeType'::varchar, '{"attribute": "79a59e513f9182d5754abdf9b90e2179"}'::jsonb, '{"metaAttribute": "6b3ae03d713a51a445290f3fc4b5223a"}'::jsonb);

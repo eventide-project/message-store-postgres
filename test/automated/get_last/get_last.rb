@@ -1,7 +1,7 @@
 require_relative '../automated_init'
 
 context "Get Last" do
-  stream_name = Controls::Put.(instances: 2)
+  stream_name, _ = Controls::Put.(instances: 2)
 
   write_message = Controls::MessageData::Write.example
 

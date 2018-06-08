@@ -2,7 +2,7 @@ require_relative '../automated_init'
 
 context "Get" do
   context "Position" do
-    stream_name = Controls::Put.(instances: 2)
+    stream_name, _ = Controls::Put.(instances: 2)
 
     batch = Get.(stream_name, position: 1, batch_size: 1)
 
