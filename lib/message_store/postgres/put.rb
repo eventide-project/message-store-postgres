@@ -57,7 +57,6 @@ module MessageStore
         return id, type, data, metadata
       end
 
-## TODO Rename to put_messages
       def insert_message(id, stream_name, type, data, metadata, expected_version)
         serialized_data = serialized_data(data)
         serialized_metadata = serialized_metadata(metadata)
