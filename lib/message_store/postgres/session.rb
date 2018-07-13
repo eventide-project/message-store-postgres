@@ -28,7 +28,7 @@ module MessageStore
         instance
       end
 
-      def connect
+      def open
         logger.trace { "Connecting to database" }
 
         if connected?
@@ -44,6 +44,7 @@ module MessageStore
 
         connection
       end
+      alias :connect :open
 
       def self.build_connection(instance)
         settings = instance.settings
