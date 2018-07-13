@@ -82,7 +82,7 @@ module MessageStore
 
       def execute(sql_command, params=nil)
         logger.trace { "Executing SQL command" }
-        logger.trace(tag: :data) { sql_command }
+        logger.trace(tag: :sql) { sql_command }
         logger.trace(tag: :data) { params.pretty_inspect }
 
         unless connected?
