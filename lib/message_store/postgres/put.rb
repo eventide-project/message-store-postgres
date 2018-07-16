@@ -29,7 +29,7 @@ module MessageStore
       end
 
       def call(write_message, stream_name, expected_version: nil)
-        logger.trace { "Putting message data (Stream Name: #{stream_name}, Type: #{write_message.type}, Expected Version: #{expected_version.inspect})" }
+        logger.trace { "Putting message data (Type: #{write_message.type}, Stream Name: #{stream_name}, Expected Version: #{expected_version.inspect})" }
         logger.trace(tags: [:data, :message_data]) { write_message.pretty_inspect }
 
         write_message.id ||= identifier.get
@@ -38,7 +38,7 @@ module MessageStore
         expected_version = ExpectedVersion.canonize(expected_version)
 
         insert_message(id, stream_name, type, data, metadata, expected_version).tap do |position|
-          logger.info { "Put message data (Position: #{position}, Stream Name: #{stream_name}, Type: #{write_message.type}, Expected Version: #{expected_version.inspect}, ID: #{id.inspect})" }
+          logger.info { "Put message data (Type: #{write_message.type}, Stream Name: #{stream_name}, Expected Version: #{expected_version.inspect}, ID: #{id.inspect}, Position: #{position})" }
           logger.info(tags: [:data, :message_data]) { write_message.pretty_inspect }
         end
       end
@@ -58,21 +58,21 @@ module MessageStore
       end
 
       def insert_message(id, stream_name, type, data, metadata, expected_version)
-        serialized_data = serialized_data(data)
-        serialized_metadata = serialized_metadata(metadata)
-        records = execute_query(id, stream_name, type, serialized_data, serialized_metadata, expected_version)
+        transformed_data = transformed_data(data)
+        transformed_metadata = transformed_metadata(metadata)
+        records = execute_query(id, stream_name, type, transformed_data, transformed_metadata, expected_version)
         position(records)
       end
 
-      def execute_query(id, stream_name, type, serialized_data, serialized_metadata, expected_version)
+      def execute_query(id, stream_name, type, transformed_data, transformed_metadata, expected_version)
         logger.trace { "Executing insert (Stream Name: #{stream_name}, Type: #{type}, Expected Version: #{expected_version.inspect}, ID: #{id.inspect})" }
 
         params = [
           id,
           stream_name,
           type,
-          serialized_data,
-          serialized_metadata,
+          transformed_data,
+          transformed_metadata,
           expected_version
         ]
 
@@ -82,7 +82,7 @@ module MessageStore
           raise_error e
         end
 
-        logger.debug { "Executed insert (Stream Name: #{stream_name}, Type: #{type}, Expected Version: #{expected_version.inspect}, ID: #{id.inspect})" }
+        logger.debug { "Executed insert (Type: #{type}, Stream Name: #{stream_name}, Expected Version: #{expected_version.inspect}, ID: #{id.inspect})" }
 
         records
       end
@@ -91,36 +91,36 @@ module MessageStore
         @statement ||= "SELECT write_message($1::varchar, $2::varchar, $3::varchar, $4::jsonb, $5::jsonb, $6::bigint);"
       end
 
-      def serialized_data(data)
-        serialized_data = nil
+      def transformed_data(data)
+        transformed_data = nil
 
         if data.is_a?(Hash) && data.empty?
           data = nil
         end
 
         unless data.nil?
-          serializable_data = MessageData::Hash[data]
-          serialized_data = Transform::Write.(serializable_data, :json)
+          transformable_data = MessageData::Hash[data]
+          transformed_data = Transform::Write.(transformable_data, :json)
         end
 
-        logger.debug(tags: [:data, :serialize]) { "Serialized Data: #{serialized_data.inspect}" }
-        serialized_data
+        logger.debug(tags: [:data, :serialize]) { "Transformed Data: #{transformed_data.inspect}" }
+        transformed_data
       end
 
-      def serialized_metadata(metadata)
-        serialized_metadata = nil
+      def transformed_metadata(metadata)
+        transformed_metadata = nil
 
         if metadata.is_a?(Hash) && metadata.empty?
           metadata = nil
         end
 
         unless metadata.nil?
-          serializable_metadata = MessageData::Hash[metadata]
-          serialized_metadata = Transform::Write.(serializable_metadata, :json)
+          transformable_metadata = MessageData::Hash[metadata]
+          transformed_metadata = Transform::Write.(transformable_metadata, :json)
         end
 
-        logger.debug(tags: [:data, :serialize]) { "Serialized Metadata: #{serialized_metadata.inspect}" }
-        serialized_metadata
+        logger.debug(tags: [:data, :serialize]) { "Transformed Metadata: #{transformed_metadata.inspect}" }
+        transformed_metadata
       end
 
       def position(records)
