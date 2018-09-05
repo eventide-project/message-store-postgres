@@ -47,6 +47,7 @@ module Benchmark
         #{name}
         - - -
         #{content}
+        #{RUBY_DESCRIPTION}
       TEXT
       .chomp
     end
