@@ -1,6 +1,8 @@
 module MessageStore
   module Postgres
     class Session
+      Error = Class.new(RuntimeError)
+
       include Log::Dependency
 
       def self.settings
@@ -20,10 +22,14 @@ module MessageStore
         end
       end
 
-      def self.configure(receiver, session: nil, attr_name: nil)
+      def self.configure(receiver, session: nil, settings: nil, attr_name: nil)
         attr_name ||= :session
 
-        instance = session || build
+        if session != nil && settings != nil
+          raise Error, "Session configured with both settings and session arguments. Use one or the other, but not both."
+        end
+
+        instance = session || build(settings: settings)
         receiver.public_send "#{attr_name}=", instance
         instance
       end
