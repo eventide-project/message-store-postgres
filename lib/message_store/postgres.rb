@@ -4,7 +4,7 @@ require 'message_store'
 
 require 'log'
 require 'telemetry'
-require 'settings'; Settings.activate
+require 'settings'
 
 require 'message_store/postgres/log'
 
