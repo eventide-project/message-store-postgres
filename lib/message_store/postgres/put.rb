@@ -1,8 +1,7 @@
 module MessageStore
   module Postgres
     class Put
-      Dependency.activate(self)
-
+      include Dependency
       include Log::Dependency
 
       dependency :session, Session
