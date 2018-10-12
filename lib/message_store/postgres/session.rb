@@ -3,7 +3,7 @@ module MessageStore
     class Session
       Error = Class.new(RuntimeError)
 
-      Settings.activate(self)
+      include Settings::Setting
 
       include Log::Dependency
 
