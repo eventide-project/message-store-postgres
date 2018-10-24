@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 Gem::Specification.new do |s|
   s.name = 'evt-message_store-postgres'
-  s.version = '0.11.0.3'
+  s.version = '0.11.1.0'
   s.summary = 'Message store implementation for PostgreSQL'
   s.description = ' '
 
