@@ -1,5 +1,8 @@
 require_relative '../test_init'
 
+Dependency.activate
+Initializer.activate
+
 require 'diagnostics/sample'
 require 'fileutils'
 require 'pathname'
