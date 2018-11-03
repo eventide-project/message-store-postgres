@@ -33,7 +33,7 @@ module MessageStore
       end
 
       def call(stream_name, position: nil)
-        logger.trace { "Getting message data (Position: #{position.inspect}, Stream Name: #{stream_name}, Batch Size: #{batch_size.inspect})" }
+        logger.trace(tag: :get) { "Getting message data (Position: #{position.inspect}, Stream Name: #{stream_name}, Batch Size: #{batch_size.inspect})" }
 
         position ||= Defaults.position
 
@@ -41,14 +41,14 @@ module MessageStore
 
         message_data = convert(result)
 
-        logger.info { "Finished getting message data (Count: #{message_data.length}, Position: #{position.inspect}, Stream Name: #{stream_name}, Batch Size: #{batch_size.inspect})" }
+        logger.info(tag: :get) { "Finished getting message data (Count: #{message_data.length}, Position: #{position.inspect}, Stream Name: #{stream_name}, Batch Size: #{batch_size.inspect})" }
         logger.info(tags: [:data, :message_data]) { message_data.pretty_inspect }
 
         message_data
       end
 
       def get_result(stream_name, position)
-        logger.trace { "Getting result (Stream: #{stream_name}, Position: #{position.inspect}, Batch Size: #{batch_size.inspect}, Condition: #{condition || '(none)'})" }
+        logger.trace(tag: :get) { "Getting result (Stream: #{stream_name}, Position: #{position.inspect}, Batch Size: #{batch_size.inspect}, Condition: #{condition || '(none)'})" }
 
         sql_command = self.class.sql_command(stream_name, position, batch_size, condition)
 
@@ -63,7 +63,7 @@ module MessageStore
 
         result = session.execute(sql_command, params)
 
-        logger.debug { "Finished getting result (Count: #{result.ntuples}, Stream: #{stream_name}, Position: #{position.inspect}, Batch Size: #{batch_size.inspect}, Condition: #{condition || '(none)'})" }
+        logger.debug(tag: :get) { "Finished getting result (Count: #{result.ntuples}, Stream: #{stream_name}, Position: #{position.inspect}, Batch Size: #{batch_size.inspect}, Condition: #{condition || '(none)'})" }
 
         result
       end
@@ -89,7 +89,7 @@ module MessageStore
       end
 
       def convert(result)
-        logger.trace { "Converting result to message data (Result Count: #{result.ntuples})" }
+        logger.trace(tag: :get) { "Converting result to message data (Result Count: #{result.ntuples})" }
 
         message_data = result.map do |record|
           record['data'] = Deserialize.data(record['data'])
@@ -99,7 +99,7 @@ module MessageStore
           MessageData::Read.build record
         end
 
-        logger.debug { "Converted result to message data (Message Data Count: #{message_data.length})" }
+        logger.debug(tag: :get) { "Converted result to message data (Message Data Count: #{message_data.length})" }
 
         message_data
       end

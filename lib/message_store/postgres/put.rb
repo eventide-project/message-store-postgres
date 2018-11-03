@@ -30,7 +30,7 @@ module MessageStore
       end
 
       def call(write_message, stream_name, expected_version: nil)
-        logger.trace { "Putting message data (Type: #{write_message.type}, Stream Name: #{stream_name}, Expected Version: #{expected_version.inspect})" }
+        logger.trace(tag: :put) { "Putting message data (Type: #{write_message.type}, Stream Name: #{stream_name}, Expected Version: #{expected_version.inspect})" }
         logger.trace(tags: [:data, :message_data]) { write_message.pretty_inspect }
 
         write_message.id ||= identifier.get
@@ -39,7 +39,7 @@ module MessageStore
         expected_version = ExpectedVersion.canonize(expected_version)
 
         insert_message(id, stream_name, type, data, metadata, expected_version).tap do |position|
-          logger.info { "Put message data (Type: #{write_message.type}, Stream Name: #{stream_name}, Expected Version: #{expected_version.inspect}, ID: #{id.inspect}, Position: #{position})" }
+          logger.info(tag: :put) { "Put message data (Type: #{write_message.type}, Stream Name: #{stream_name}, Expected Version: #{expected_version.inspect}, ID: #{id.inspect}, Position: #{position})" }
           logger.info(tags: [:data, :message_data]) { write_message.pretty_inspect }
         end
       end
@@ -66,7 +66,7 @@ module MessageStore
       end
 
       def execute_query(id, stream_name, type, transformed_data, transformed_metadata, expected_version)
-        logger.trace { "Executing insert (Stream Name: #{stream_name}, Type: #{type}, Expected Version: #{expected_version.inspect}, ID: #{id.inspect})" }
+        logger.trace(tag: :put) { "Executing insert (Stream Name: #{stream_name}, Type: #{type}, Expected Version: #{expected_version.inspect}, ID: #{id.inspect})" }
 
         params = [
           id,
@@ -83,7 +83,7 @@ module MessageStore
           raise_error e
         end
 
-        logger.debug { "Executed insert (Type: #{type}, Stream Name: #{stream_name}, Expected Version: #{expected_version.inspect}, ID: #{id.inspect})" }
+        logger.debug(tag: :put) { "Executed insert (Type: #{type}, Stream Name: #{stream_name}, Expected Version: #{expected_version.inspect}, ID: #{id.inspect})" }
 
         records
       end
