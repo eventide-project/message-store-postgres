@@ -28,7 +28,9 @@ module MessageStore
         attr_name ||= :session
 
         if session != nil && settings != nil
-          raise Error, "Session configured with both settings and session arguments. Use one or the other, but not both."
+          error_msg = "Session configured with both settings and session arguments. Use one or the other, but not both."
+          logger.error(tag: :session) { error_msg }
+          raise Error, error_msg
         end
 
         instance = session || build(settings: settings)
@@ -37,18 +39,18 @@ module MessageStore
       end
 
       def open
-        logger.trace { "Connecting to database" }
+        logger.trace(tag: :session) { "Connecting to database" }
 
         if connected?
-          logger.debug { "Already connected. A new connection will not be built." }
+          logger.debug(tag: :session) { "Already connected. A new connection will not be built." }
           return connection
         end
 
-        logger.debug { "Not connected. A new connection will be built." }
+        logger.debug(tag: :session) { "Not connected. A new connection will be built." }
         connection = self.class.build_connection(self)
         self.connection = connection
 
-        logger.debug { "Connected to database" }
+        logger.debug(tag: :session) { "Connected to database" }
 
         connection
       end
@@ -56,12 +58,12 @@ module MessageStore
 
       def self.build_connection(instance)
         settings = instance.settings
-        logger.trace { "Building new connection to database (Settings: #{LogText.settings(settings).inspect})" }
+        logger.trace(tag: :session) { "Building new connection to database (Settings: #{LogText.settings(settings).inspect})" }
 
         connection = PG::Connection.open(settings)
         connection.type_map_for_results = PG::BasicTypeMapForResults.new(connection)
 
-        logger.trace { "Built new connection to database (Settings: #{LogText.settings(settings).inspect})" }
+        logger.debug(tag: :session) { "Built new connection to database (Settings: #{LogText.settings(settings).inspect})" }
 
         connection
       end
@@ -90,7 +92,7 @@ module MessageStore
       end
 
       def execute(sql_command, params=nil)
-        logger.trace { "Executing SQL command" }
+        logger.trace(tag: :session) { "Executing SQL command" }
         logger.trace(tag: :sql) { sql_command }
         logger.trace(tag: :data) { params.pretty_inspect }
 
@@ -100,11 +102,11 @@ module MessageStore
 
         if params.nil?
           connection.exec(sql_command).tap do
-            logger.debug { "Executed SQL command (no params)" }
+            logger.debug(tag: :session) { "Executed SQL command (no params)" }
           end
         else
           connection.exec_params(sql_command, params).tap do
-            logger.debug { "Executed SQL command with params" }
+            logger.debug(tag: :session) { "Executed SQL command with params" }
           end
         end
       end
