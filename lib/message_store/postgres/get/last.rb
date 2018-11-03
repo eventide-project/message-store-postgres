@@ -11,7 +11,7 @@ module MessageStore
         end
 
         def call(stream_name)
-          logger.trace { "Getting last message data (Stream Name: #{stream_name})" }
+          logger.trace(tag: :get) { "Getting last message data (Stream Name: #{stream_name})" }
 
           result = get_result(stream_name)
 
@@ -19,14 +19,14 @@ module MessageStore
 
           message_data = convert(result[0])
 
-          logger.info { "Finished getting message data (Stream Name: #{stream_name})" }
+          logger.info(tag: :get) { "Finished getting message data (Stream Name: #{stream_name})" }
           logger.info(tags: [:data, :message_data]) { message_data.pretty_inspect }
 
           message_data
         end
 
         def get_result(stream_name)
-          logger.trace { "Getting last record (Stream: #{stream_name})" }
+          logger.trace(tag: :get) { "Getting last record (Stream: #{stream_name})" }
 
           sql_command = self.class.sql_command(stream_name)
 
@@ -36,7 +36,7 @@ module MessageStore
 
           result = session.execute(sql_command, params)
 
-          logger.debug { "Finished getting result (Count: #{result.ntuples}, Stream: #{stream_name}" }
+          logger.debug(tag: :get) { "Finished getting result (Count: #{result.ntuples}, Stream: #{stream_name}" }
 
           return nil if result.ntuples == 0
 
@@ -50,7 +50,7 @@ module MessageStore
         end
 
         def convert(record)
-          logger.trace { "Converting record to message data" }
+          logger.trace(tag: :get) { "Converting record to message data" }
 
           record['data'] = Deserialize.data(record['data'])
           record['metadata'] = Deserialize.metadata(record['metadata'])
@@ -58,7 +58,7 @@ module MessageStore
 
           message_data = MessageData::Read.build(record)
 
-          logger.debug { "Converted record to message data" }
+          logger.debug(tag: :get) { "Converted record to message data" }
 
           message_data
         end
