@@ -69,7 +69,16 @@ module MessageStore
       end
 
       def connected?
-        !connection.nil? && connection.status == PG::CONNECTION_OK
+        return false if connection.nil?
+
+        status = PG::CONNECTION_OK
+        begin
+          status = connection.status
+        rescue PG::ConnectionBad
+          status = nil
+        end
+
+        status == PG::CONNECTION_OK
       end
       alias :open? :connected?
 
