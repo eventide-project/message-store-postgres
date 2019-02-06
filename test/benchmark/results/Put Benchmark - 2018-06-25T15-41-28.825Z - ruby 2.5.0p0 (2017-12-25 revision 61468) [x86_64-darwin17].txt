@@ -8,6 +8,8 @@ GC: off
 
 Note: ID index has a unique constraint
 
+ruby 2.5.0p0 (2017-12-25 revision 61468) [x86_64-darwin17]
+
 Model Name: MacBook
 Model Identifier: MacBook10,1
 Processor Name: Intel Core i7
