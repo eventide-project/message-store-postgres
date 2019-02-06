@@ -1,0 +1,9 @@
+Get Benchmark
+- - -
+Cycles: 100000
+Time: 62712.511000ms
+Mean Cycle Time: 0.627125ms (± 0.081911ms)
+Cycles Per Second: 1594.578154
+GC: off
+
+ruby 2.6.1p33 (2019-01-30 revision 66950) [x86_64-darwin17]

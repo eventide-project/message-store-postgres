@@ -1,0 +1,9 @@
+Put Benchmark
+- - -
+Cycles: 100000
+Time: 137535.101000ms
+Mean Cycle Time: 1.375351ms (± 0.955491ms)
+Cycles Per Second: 727.087116
+GC: off
+
+ruby 2.6.1p33 (2019-01-30 revision 66950) [x86_64-darwin17]

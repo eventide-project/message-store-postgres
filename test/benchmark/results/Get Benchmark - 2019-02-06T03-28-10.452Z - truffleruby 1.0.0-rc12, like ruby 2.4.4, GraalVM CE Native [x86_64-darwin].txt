@@ -1,0 +1,9 @@
+Get Benchmark
+- - -
+Cycles: 100000
+Time: 196650.188980ms
+Mean Cycle Time: 1.966502ms (± 23.192495ms)
+Cycles Per Second: 508.517182
+GC: off
+
+truffleruby 1.0.0-rc12, like ruby 2.4.4, GraalVM CE Native [x86_64-darwin]
