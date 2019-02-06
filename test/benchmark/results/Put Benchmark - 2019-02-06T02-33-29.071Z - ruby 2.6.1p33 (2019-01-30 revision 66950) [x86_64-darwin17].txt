@@ -7,3 +7,15 @@ Cycles Per Second: 727.087116
 GC: off
 
 ruby 2.6.1p33 (2019-01-30 revision 66950) [x86_64-darwin17]
+
+Model Name: MacBook
+Model Identifier: MacBook10,1
+Processor Name: Intel Core i7
+Processor Speed:  1.4 GHz
+Number of Processors: 1
+Total Number of Cores:  2
+L2 Cache (per Core):  256 KB
+L3 Cache: 4 MB
+Memory: 16 GB
+Boot ROM Version: MB101.0163.B00
+SMC Version (system): 2.42f10
