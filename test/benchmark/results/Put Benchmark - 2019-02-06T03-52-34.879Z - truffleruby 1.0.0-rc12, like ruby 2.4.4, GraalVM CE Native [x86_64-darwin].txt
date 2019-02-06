@@ -1,0 +1,21 @@
+Put Benchmark
+- - -
+Cycles: 100000
+Time: 199665.528250ms
+Mean Cycle Time: 1.996655ms (± 17.571019ms)
+Cycles Per Second: 500.837580
+GC: on
+
+truffleruby 1.0.0-rc12, like ruby 2.4.4, GraalVM CE Native [x86_64-darwin]
+
+Model Name: MacBook
+Model Identifier: MacBook10,1
+Processor Name: Intel Core i7
+Processor Speed:  1.4 GHz
+Number of Processors: 1
+Total Number of Cores:  2
+L2 Cache (per Core):  256 KB
+L3 Cache: 4 MB
+Memory: 16 GB
+Boot ROM Version: MB101.0163.B00
+SMC Version (system): 2.42f10
