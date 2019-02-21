@@ -20,7 +20,7 @@ module Test
       end
 
       def self.cycles
-        Integer(ENV['CYCLES'] || 2500)
+        Integer(ENV['CYCLES'] || 100_000)
       end
 
       def self.warmup_cycles
