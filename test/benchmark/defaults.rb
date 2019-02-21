@@ -1,7 +1,7 @@
 module Test
   module Benchmark
     class Defaults
-      initializer :cycles, :warmup_cycles, :gc
+      initializer :cycles, :warmup_cycles, :gc, :stream_name
 
       def total_cycles
         cycles + warmup_cycles
@@ -12,11 +12,12 @@ module Test
           Cycles: #{cycles}
           Warmup Cycles: #{warmup_cycles}
           GC: #{gc}
+          Stream Name: #{stream_name.inspect}
         TEXT
       end
 
       def self.build
-        new(cycles, warmup_cycles, gc)
+        new(cycles, warmup_cycles, gc, stream_name)
       end
 
       def self.cycles
@@ -29,6 +30,10 @@ module Test
 
       def self.gc
         ['on', 'true'].include?(ENV['GC']) ? true : false
+      end
+
+      def self.stream_name
+        ENV['STREAM_NAME']
       end
     end
   end

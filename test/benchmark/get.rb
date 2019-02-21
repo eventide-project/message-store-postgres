@@ -7,14 +7,16 @@ list = Controls::MessageData::Write::List.get(instances: defaults.total_cycles)
 put = Put.build
 
 list.each do |entry|
-  put.(entry.message_data, entry.stream_name)
+  stream_name = defaults.stream_name || entry.stream_name
+  put.(entry.message_data, stream_name)
 end
 
 get = Get.build
 
 result = Diagnostics::Sample.(defaults.cycles, warmup_cycles: defaults.warmup_cycles, gc: defaults.gc) do |i|
   entry = list[i]
-  get.(entry.stream_name)
+  stream_name = defaults.stream_name || entry.stream_name
+  get.(stream_name)
 end
 
 puts

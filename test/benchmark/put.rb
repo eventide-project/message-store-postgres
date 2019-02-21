@@ -8,7 +8,8 @@ put = Put.build
 
 result = Diagnostics::Sample.(defaults.cycles, warmup_cycles: defaults.warmup_cycles, gc: defaults.gc) do |i|
   entry = list[i]
-  put.(entry.message_data, entry.stream_name)
+  stream_name = defaults.stream_name || entry.stream_name
+  put.(entry.message_data, stream_name)
 end
 
 puts
