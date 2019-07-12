@@ -12,7 +12,7 @@ context "Session" do
     names.each do |name|
       test "#{name}" do
         session_val = session.public_send(name)
-        settings_val = settings_hash[name]
+        settings_val = settings_hash[name.to_s]
 
         assert(session_val == settings_val)
       end

@@ -10,7 +10,7 @@ context "Settings" do
 
     names.each do |name|
       test "#{name}" do
-        assert(settings_hash.has_key? name)
+        assert(settings_hash.has_key? name.to_s)
       end
     end
   end
