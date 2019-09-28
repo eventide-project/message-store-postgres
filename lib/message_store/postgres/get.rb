@@ -28,10 +28,10 @@ module MessageStore
       end
 
       def self.specialization(stream_name)
-        if not category_stream?(stream_name)
-          Stream
+        if category_stream?(stream_name)
+          Category
         else
-          ## Category
+          Stream
         end
       end
 
