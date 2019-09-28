@@ -17,6 +17,8 @@ require 'message_store/postgres/put'
 require 'message_store/postgres/write'
 
 require 'message_store/postgres/get'
+require 'message_store/postgres/get/stream'
+require 'message_store/postgres/get/category'
 require 'message_store/postgres/get/last'
 require 'message_store/postgres/read/iterator'
 require 'message_store/postgres/read'

@@ -1,20 +1,37 @@
 module MessageStore
   module Postgres
+    ## Make into module
     class Get
       include MessageStore::Get
 
       dependency :session, Session
 
-      initializer na(:batch_size), :condition
+##    initializer na(:batch_size), :condition
+      initializer :stream_name, na(:batch_size), :condition
 
       def batch_size
         @batch_size ||= Defaults.batch_size
       end
 
-## Must receive stream name
-      def self.build(batch_size: nil, session: nil, condition: nil)
-        new(batch_size, condition).tap do |instance|
+##      def self.__build(batch_size: nil, session: nil, condition: nil)
+##        new(batch_size, condition).tap do |instance|
+##          instance.configure(session: session)
+##        end
+##      end
+
+      def self.build(stream_name, batch_size: nil, session: nil, condition: nil)
+        specialization = specialization(stream_name)
+
+        specialization.new(stream_name, batch_size, condition).tap do |instance|
           instance.configure(session: session)
+        end
+      end
+
+      def self.specialization(stream_name)
+        if not category_stream?(stream_name)
+          Stream
+        else
+          ## Category
         end
       end
 
