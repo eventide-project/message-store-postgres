@@ -11,6 +11,7 @@ module MessageStore
         @batch_size ||= Defaults.batch_size
       end
 
+## Must receive stream name
       def self.build(batch_size: nil, session: nil, condition: nil)
         new(batch_size, condition).tap do |instance|
           instance.configure(session: session)
