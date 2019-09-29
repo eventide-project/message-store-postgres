@@ -12,7 +12,10 @@ module MessageStore
         include MessageStore::Read::Iterator
 
         def last_position
-          unless MessageStore::Postgres::StreamName.category?(stream_name)
+## Using get's stream name to figure out how to access last position
+## Note: Needs strategy injection
+##          unless MessageStore::Postgres::StreamName.category?(stream_name)
+          unless MessageStore::Postgres::StreamName.category?(get.stream_name)
             batch.last.position
           else
             batch.last.global_position

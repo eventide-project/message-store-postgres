@@ -6,7 +6,8 @@ context "Iterator" do
       stream_name, _ = Controls::Put.(instances: 2)
 
 ## build parm not needed. get will have it
-      iterator = Read::Iterator.build(stream_name)
+##      iterator = Read::Iterator.build(stream_name)
+      iterator = Read::Iterator.build
       Get.configure(iterator, stream_name, batch_size: 1)
 
       batch = []
