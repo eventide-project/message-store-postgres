@@ -6,18 +6,11 @@ module MessageStore
 
       dependency :session, Session
 
-##    initializer na(:batch_size), :condition
       initializer :stream_name, na(:batch_size), :condition
 
       def batch_size
         @batch_size ||= Defaults.batch_size
       end
-
-##      def self.__build(batch_size: nil, session: nil, condition: nil)
-##        new(batch_size, condition).tap do |instance|
-##          instance.configure(session: session)
-##        end
-##      end
 
       def self.build(stream_name, batch_size: nil, session: nil, condition: nil)
         specialization = specialization(stream_name)
