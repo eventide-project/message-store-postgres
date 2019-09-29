@@ -7,10 +7,10 @@ context "Get" do
 
       category = Controls::Category.example
 
-      stream_name_1, _ = Controls::Put.(category: category)
-      stream_name_2, _ = Controls::Put.(category: category)
+      stream_name, _ = Controls::Put.(category: category)
+      Controls::Put.(category: category)
 
-      messages = Get.(stream_name_1)
+      messages = Get.(stream_name)
 
       context "Messages Retrieved" do
         test "Only messages from the specific stream" do

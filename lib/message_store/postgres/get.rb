@@ -46,7 +46,7 @@ module MessageStore
       end
 
       def self.call(stream_name, position: nil, batch_size: nil, condition: nil,  session: nil)
-        instance = build(batch_size: batch_size, condition: condition, session: session)
+        instance = build(stream_name, batch_size: batch_size, condition: condition, session: session)
         instance.(stream_name, position: position)
       end
 

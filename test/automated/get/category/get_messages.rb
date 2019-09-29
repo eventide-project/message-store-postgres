@@ -3,12 +3,10 @@ require_relative '../../automated_init'
 context "Get" do
   context "Category" do
     context "Get Messages" do
-      write_message = Controls::MessageData::Write.example
-
       category = Controls::Category.example
 
-      stream_name_1, _ = Controls::Put.(category: category)
-      stream_name_2, _ = Controls::Put.(category: category)
+      Controls::Put.(category: category)
+      Controls::Put.(category: category)
 
       messages = Get.(category)
 
