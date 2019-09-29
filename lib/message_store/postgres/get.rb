@@ -13,9 +13,9 @@ module MessageStore
       end
 
       def self.build(stream_name, batch_size: nil, session: nil, condition: nil)
-        specialization = specialization(stream_name)
+        cls = specialization(stream_name)
 
-        specialization.new(stream_name, batch_size, condition).tap do |instance|
+        cls.new(stream_name, batch_size, condition).tap do |instance|
           instance.configure(session: session)
         end
       end
@@ -40,11 +40,11 @@ module MessageStore
 
       def self.call(stream_name, position: nil, batch_size: nil, condition: nil,  session: nil)
         instance = build(stream_name, batch_size: batch_size, condition: condition, session: session)
-        instance.(stream_name, position: position)
+        instance.(position)
       end
 
-      def call(stream_name, position: nil)
-        logger.trace(tag: :get) { "Getting message data (Position: #{position.inspect}, Stream Name: #{stream_name}, Batch Size: #{batch_size.inspect})" }
+      def call(position)
+        logger.trace(tag: :get) { "Getting message data (Stream Name: #{stream_name}, Position: #{position.inspect}, Batch Size: #{batch_size.inspect})" }
 
         position ||= Defaults.position
 
@@ -52,14 +52,14 @@ module MessageStore
 
         message_data = convert(result)
 
-        logger.info(tag: :get) { "Finished getting message data (Count: #{message_data.length}, Position: #{position.inspect}, Stream Name: #{stream_name}, Batch Size: #{batch_size.inspect})" }
+        logger.info(tag: :get) { "Finished getting message data (Count: #{message_data.length}, Stream Name: #{stream_name}, Position: #{position.inspect}, Batch Size: #{batch_size.inspect})" }
         logger.info(tags: [:data, :message_data]) { message_data.pretty_inspect }
 
         message_data
       end
 
       def get_result(stream_name, position)
-        logger.trace(tag: :get) { "Getting result (Stream: #{stream_name}, Position: #{position.inspect}, Batch Size: #{batch_size.inspect}, Condition: #{condition || '(none)'})" }
+        logger.trace(tag: :get) { "Getting result (Stream Name: #{stream_name}, Position: #{position.inspect}, Batch Size: #{batch_size.inspect}, Condition: #{condition || '(none)'})" }
 
         sql_command = self.class.sql_command(stream_name, position, batch_size, condition)
 
@@ -74,7 +74,7 @@ module MessageStore
 
         result = session.execute(sql_command, params)
 
-        logger.debug(tag: :get) { "Finished getting result (Count: #{result.ntuples}, Stream: #{stream_name}, Position: #{position.inspect}, Batch Size: #{batch_size.inspect}, Condition: #{condition || '(none)'})" }
+        logger.debug(tag: :get) { "Finished getting result (Count: #{result.ntuples}, Stream Name: #{stream_name}, Position: #{position.inspect}, Batch Size: #{batch_size.inspect}, Condition: #{condition || '(none)'})" }
 
         result
       end
