@@ -9,8 +9,9 @@ context "Iterator" do
 
       Controls::Put.(category: category)
 
+## build parm not needed. get will have it
       iterator = Read::Iterator.build(category)
-      Get.configure(iterator, batch_size: 1)
+      Get.configure(iterator, category, batch_size: 1)
 
       batch = []
 
