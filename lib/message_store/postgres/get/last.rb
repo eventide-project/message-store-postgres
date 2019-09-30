@@ -1,6 +1,6 @@
 module MessageStore
   module Postgres
-    class Get
+    module Get
       class Last
         include MessageStore::Get::Last
 
