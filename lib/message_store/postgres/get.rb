@@ -111,7 +111,7 @@ module MessageStore
           record['metadata'] = Deserialize.metadata(record['metadata'])
           record['time'] = Time.utc_coerced(record['time'])
 
-          MessageData::Read.build record
+          MessageData::Read.build(record)
         end
 
         logger.debug(tag: :get) { "Converted result to message data (Message Data Count: #{message_data.length})" }
