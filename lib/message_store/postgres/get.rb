@@ -29,14 +29,6 @@ module MessageStore
         end
       end
 
-      def self.specialization(stream_name)
-        if StreamName.category?(stream_name)
-          Category
-        else
-          Stream
-        end
-      end
-
       def self.configure(receiver, stream_name, attr_name: nil, batch_size: nil, condition: nil, session: nil)
         attr_name ||= :get
         instance = build(stream_name, batch_size: batch_size, condition: condition, session: session)
@@ -117,6 +109,14 @@ module MessageStore
         logger.debug(tag: :get) { "Converted result to message data (Message Data Count: #{message_data.length})" }
 
         message_data
+      end
+
+      def self.specialization(stream_name)
+        if StreamName.category?(stream_name)
+          Category
+        else
+          Stream
+        end
       end
 
       module Deserialize
