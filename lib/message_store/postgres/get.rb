@@ -1,3 +1,7 @@
+## Needs abstract method for getting last position from batch
+## Put it on the specialized get classes (as a class method)
+## Pass in the batch, get the last position back
+
 module MessageStore
   module Postgres
     ## Make into module
@@ -95,6 +99,7 @@ module MessageStore
         end
       end
 
+## Can be generalized to base module
       def self.category_stream?(stream_name)
         StreamName.category?(stream_name)
       end
