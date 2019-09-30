@@ -5,8 +5,6 @@ context "Iterator" do
     context "No Further Message Data" do
       stream_name, _ = Controls::Put.(instances: 2)
 
-## build parm not needed. get will have it
-##      iterator = Read::Iterator.build(stream_name)
       iterator = Read::Iterator.build
       Get.configure(iterator, batch_size: 1)
 
