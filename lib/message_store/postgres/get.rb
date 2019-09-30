@@ -99,11 +99,6 @@ module MessageStore
         end
       end
 
-## Can be generalized to base module
-      def self.category_stream?(stream_name)
-        StreamName.category?(stream_name)
-      end
-
       def convert(result)
         logger.trace(tag: :get) { "Converting result to message data (Result Count: #{result.ntuples})" }
 
@@ -118,6 +113,19 @@ module MessageStore
         logger.debug(tag: :get) { "Converted result to message data (Message Data Count: #{message_data.length})" }
 
         message_data
+      end
+
+      def last_position(batch)
+        if self.class.category_stream?(stream_name)
+          batch.last.global_position
+        else
+          batch.last.position
+        end
+      end
+
+## Can be generalized to base module
+      def self.category_stream?(stream_name)
+        StreamName.category?(stream_name)
       end
 
       module Deserialize

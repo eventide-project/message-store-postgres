@@ -11,7 +11,7 @@ module MessageStore
       class Iterator
         include MessageStore::Read::Iterator
 
-        def last_position
+        def _last_position
 ## Using get's stream name to figure out how to access last position
 ## Note: Needs strategy injection
 ##          unless MessageStore::Postgres::StreamName.category?(stream_name)
