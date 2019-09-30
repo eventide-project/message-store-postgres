@@ -7,7 +7,7 @@ context "Get Last" do
 
   position = Put.(write_message, stream_name)
 
-  last_message = Get::Last.(stream_name)
+  last_message = Get::Stream::Last.(stream_name)
 
   test "Gets the last message in the stream" do
     assert(last_message.data == write_message.data)
