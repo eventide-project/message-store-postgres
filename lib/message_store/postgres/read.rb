@@ -5,7 +5,8 @@ module MessageStore
 
       def configure(session: nil, condition: nil)
 ##        Iterator.configure(self, stream_name, position: position)
-        Iterator.configure(self, position)
+## Iterator is concrete
+##        Iterator.configure(self, position)
 
 ## Configure method should select the proper implementation based on
 ## The stream name
