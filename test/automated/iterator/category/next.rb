@@ -9,8 +9,8 @@ context "Iterator" do
 
       Controls::Put.(category: category)
 
-      iterator = Read::Iterator.build(category)
-      Get.configure(iterator, batch_size: 1)
+      iterator = Read::Iterator.build
+      Get.configure(iterator, category, batch_size: 1)
 
       batch = []
 

@@ -4,7 +4,7 @@ context "Get Last" do
   context "No Messages" do
     stream_name = Controls::StreamName.example
 
-    last_message = Get::Last.(stream_name)
+    last_message = Get::Stream::Last.(stream_name)
 
     test "Nil message" do
       assert(last_message.nil?)

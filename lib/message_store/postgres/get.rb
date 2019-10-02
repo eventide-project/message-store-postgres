@@ -1,25 +1,37 @@
 module MessageStore
   module Postgres
-    class Get
-      include MessageStore::Get
+    module Get
+      def self.included(cls)
+        cls.class_exec do
+          include MessageStore::Get
+          prepend Call
+          prepend BatchSize
 
-      dependency :session, Session
+          extend SQLCommand
 
-      initializer na(:batch_size), :condition
+          dependency :session, Session
 
-      def batch_size
-        @batch_size ||= Defaults.batch_size
+          initializer :stream_name, na(:batch_size), :condition
+        end
       end
 
-      def self.build(batch_size: nil, session: nil, condition: nil)
-        new(batch_size, condition).tap do |instance|
+      module BatchSize
+        def batch_size
+          @batch_size ||= Defaults.batch_size
+        end
+      end
+
+      def self.build(stream_name, batch_size: nil, session: nil, condition: nil)
+        cls = specialization(stream_name)
+
+        cls.new(stream_name, batch_size, condition).tap do |instance|
           instance.configure(session: session)
         end
       end
 
-      def self.configure(receiver, attr_name: nil, batch_size: nil, condition: nil, session: nil)
+      def self.configure(receiver, stream_name, attr_name: nil, batch_size: nil, condition: nil, session: nil)
         attr_name ||= :get
-        instance = build(batch_size: batch_size, condition: condition, session: session)
+        instance = build(stream_name, batch_size: batch_size, condition: condition, session: session)
         receiver.public_send "#{attr_name}=", instance
       end
 
@@ -28,31 +40,33 @@ module MessageStore
       end
 
       def self.call(stream_name, position: nil, batch_size: nil, condition: nil,  session: nil)
-        instance = build(batch_size: batch_size, condition: condition, session: session)
-        instance.(stream_name, position: position)
+        instance = build(stream_name, batch_size: batch_size, condition: condition, session: session)
+        instance.(position)
       end
 
-      def call(stream_name, position: nil)
-        logger.trace(tag: :get) { "Getting message data (Position: #{position.inspect}, Stream Name: #{stream_name}, Batch Size: #{batch_size.inspect})" }
+      module Call
+        def call(position)
+          logger.trace(tag: :get) { "Getting message data (Stream Name: #{stream_name}, Position: #{position.inspect}, Batch Size: #{batch_size.inspect})" }
 
-        position ||= Defaults.position
+          position ||= Defaults.position
 
-        result = get_result(stream_name, position)
+          result = get_result(stream_name, position)
 
-        message_data = convert(result)
+          message_data = convert(result)
 
-        logger.info(tag: :get) { "Finished getting message data (Count: #{message_data.length}, Position: #{position.inspect}, Stream Name: #{stream_name}, Batch Size: #{batch_size.inspect})" }
-        logger.info(tags: [:data, :message_data]) { message_data.pretty_inspect }
+          logger.info(tag: :get) { "Finished getting message data (Count: #{message_data.length}, Stream Name: #{stream_name}, Position: #{position.inspect}, Batch Size: #{batch_size.inspect})" }
+          logger.info(tags: [:data, :message_data]) { message_data.pretty_inspect }
 
-        message_data
+          message_data
+        end
       end
 
       def get_result(stream_name, position)
-        logger.trace(tag: :get) { "Getting result (Stream: #{stream_name}, Position: #{position.inspect}, Batch Size: #{batch_size.inspect}, Condition: #{condition || '(none)'})" }
+        logger.trace(tag: :get) { "Getting result (Stream Name: #{stream_name}, Position: #{position.inspect}, Batch Size: #{batch_size.inspect}, Condition: #{condition || '(none)'})" }
 
         sql_command = self.class.sql_command(stream_name, position, batch_size, condition)
 
-        cond = self.class.constrain_condition(condition)
+        cond = Get.constrain_condition(condition)
 
         params = [
           stream_name,
@@ -63,7 +77,7 @@ module MessageStore
 
         result = session.execute(sql_command, params)
 
-        logger.debug(tag: :get) { "Finished getting result (Count: #{result.ntuples}, Stream: #{stream_name}, Position: #{position.inspect}, Batch Size: #{batch_size.inspect}, Condition: #{condition || '(none)'})" }
+        logger.debug(tag: :get) { "Finished getting result (Count: #{result.ntuples}, Stream Name: #{stream_name}, Position: #{position.inspect}, Batch Size: #{batch_size.inspect}, Condition: #{condition || '(none)'})" }
 
         result
       end
@@ -74,18 +88,11 @@ module MessageStore
         "(#{condition})"
       end
 
-      def self.sql_command(stream_name, position, batch_size, condition)
-        parameters = '$1::varchar, $2::bigint, $3::bigint, $4::varchar'
-
-        if category_stream?(stream_name)
-          return "SELECT * FROM get_category_messages(#{parameters});"
-        else
-          return "SELECT * FROM get_stream_messages(#{parameters});"
+      module SQLCommand
+        def sql_command(stream_name, position, batch_size, condition)
+          parameters = '$1::varchar, $2::bigint, $3::bigint, $4::varchar'
+          command_text(parameters)
         end
-      end
-
-      def self.category_stream?(stream_name)
-        StreamName.category?(stream_name)
       end
 
       def convert(result)
@@ -96,12 +103,20 @@ module MessageStore
           record['metadata'] = Deserialize.metadata(record['metadata'])
           record['time'] = Time.utc_coerced(record['time'])
 
-          MessageData::Read.build record
+          MessageData::Read.build(record)
         end
 
         logger.debug(tag: :get) { "Converted result to message data (Message Data Count: #{message_data.length})" }
 
         message_data
+      end
+
+      def self.specialization(stream_name)
+        if StreamName.category?(stream_name)
+          Category
+        else
+          Stream
+        end
       end
 
       module Deserialize

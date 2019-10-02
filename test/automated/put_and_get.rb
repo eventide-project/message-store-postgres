@@ -1,4 +1,4 @@
-require_relative '../automated_init'
+require_relative 'automated_init'
 
 context "Put and Get" do
   stream_name = Controls::StreamName.example
