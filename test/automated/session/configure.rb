@@ -38,8 +38,8 @@ context "Session" do
       session = Object.new
 
       test "Is an error" do
-        assert proc { Session.configure(receiver, settings: settings, session: session) } do
-          raises_error? Session::Error
+        assert_raises Session::Error do
+          Session.configure(receiver, settings: settings, session: session)
         end
       end
     end

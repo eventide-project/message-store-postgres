@@ -10,11 +10,9 @@ context "Put" do
 
       Put.(write_message_1, stream_name)
 
-      erroneous = proc { Put.(write_message_2, stream_name, expected_version: NoStream.name) }
-
       test "Is an error" do
-        assert erroneous do
-          raises_error? ExpectedVersion::Error
+        assert_raises ExpectedVersion::Error do
+          Put.(write_message_2, stream_name, expected_version: NoStream.name)
         end
       end
     end

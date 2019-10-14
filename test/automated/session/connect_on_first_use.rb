@@ -7,8 +7,8 @@ context "Session" do
     refute(session.connected?)
 
     test "Connects" do
-      refute proc { session.execute('SELECT 1;') } do
-        raises_error?
+      refute_raises do
+        session.execute('SELECT 1;')
       end
     end
   end

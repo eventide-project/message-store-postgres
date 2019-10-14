@@ -17,8 +17,8 @@ context "Write" do
         batch = [write_message_1, write_message_2]
 
         test "Is an error" do
-          assert proc { Write.(batch, stream_name, expected_version: incorrect_stream_version ) } do
-            raises_error? ExpectedVersion::Error
+          assert_raises ExpectedVersion::Error do
+            Write.(batch, stream_name, expected_version: incorrect_stream_version)
           end
         end
 
