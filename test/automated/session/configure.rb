@@ -38,7 +38,7 @@ context "Session" do
       session = Object.new
 
       test "Is an error" do
-        assert_raises Session::Error do
+        assert_raises(Session::Error) do
           Session.configure(receiver, settings: settings, session: session)
         end
       end

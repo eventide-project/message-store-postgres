@@ -12,7 +12,7 @@ context "Write" do
         incorrect_stream_version = position  + 1
 
         test "Is an error" do
-          assert_raises ExpectedVersion::Error do
+          assert_raises(ExpectedVersion::Error) do
             Write.(write_message, stream_name, expected_version: incorrect_stream_version )
           end
         end
