@@ -10,7 +10,7 @@ context "Iterator" do
       Controls::Put.(category: category)
 
       iterator = Read::Iterator.build
-      Get.configure(iterator, batch_size: 1)
+      Get.configure(iterator, category, batch_size: 1)
 
       2.times { iterator.next }
 

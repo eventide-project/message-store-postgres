@@ -6,7 +6,7 @@ context "Iterator" do
       stream_name, _ = Controls::Put.(instances: 2)
 
       iterator = Read::Iterator.build
-      Get.configure(iterator, batch_size: 1)
+      Get.configure(iterator, stream_name, batch_size: 1)
 
       2.times { iterator.next }
 
