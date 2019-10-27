@@ -15,7 +15,7 @@ context "Get" do
         message.position
       end
 
-      test "Returns messages that meet the condition" do
+      test "Retrieves messages that meet the condition" do
         assert(message_positions == [0, 2])
       end
     end
