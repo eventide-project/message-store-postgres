@@ -7,7 +7,7 @@ module MessageStore
           prepend Call
           prepend BatchSize
 
-          extend SQLParameters
+          extend Parameters
 
           dependency :session, Session
 
@@ -88,7 +88,7 @@ module MessageStore
         "(#{condition})"
       end
 
-      module SQLParameters
+      module Parameters
         def parameters
           '$1::varchar, $2::bigint, $3::bigint, $4::varchar'
         end
