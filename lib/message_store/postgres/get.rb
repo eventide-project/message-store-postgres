@@ -11,7 +11,7 @@ module MessageStore
 
           dependency :session, Session
 
-          initializer :stream_name, na(:batch_size), :condition
+          initializer :stream_name, na(:batch_size), :correlation, :condition
         end
       end
 
@@ -21,32 +21,32 @@ module MessageStore
         end
       end
 
-      def self.build(stream_name, batch_size: nil, session: nil, condition: nil)
+      def self.build(stream_name, batch_size: nil, session: nil, correlation: nil, condition: nil)
         cls = specialization(stream_name)
 
-        cls.new(stream_name, batch_size, condition).tap do |instance|
+        cls.new(stream_name, batch_size, correlation, condition).tap do |instance|
           instance.configure(session: session)
         end
       end
 
-      def self.configure(receiver, stream_name, attr_name: nil, batch_size: nil, condition: nil, session: nil)
+      def self.configure(receiver, stream_name, attr_name: nil, batch_size: nil, correlation: nil, condition: nil, session: nil)
         attr_name ||= :get
-        instance = build(stream_name, batch_size: batch_size, condition: condition, session: session)
-        receiver.public_send "#{attr_name}=", instance
+        instance = build(stream_name, batch_size: batch_size, correlation: correlation, condition: condition, session: session)
+        receiver.public_send("#{attr_name}=", instance)
       end
 
       def configure(session: nil)
-        Session.configure self, session: session
+        Session.configure(self, session: session)
       end
 
-      def self.call(stream_name, position: nil, batch_size: nil, condition: nil,  session: nil)
-        instance = build(stream_name, batch_size: batch_size, condition: condition, session: session)
+      def self.call(stream_name, position: nil, batch_size: nil, correlation: nil, condition: nil,  session: nil)
+        instance = build(stream_name, batch_size: batch_size, correlation: correlation, condition: condition, session: session)
         instance.(position)
       end
 
       module Call
         def call(position)
-          logger.trace(tag: :get) { "Getting message data (Stream Name: #{stream_name}, Position: #{position.inspect}, Batch Size: #{batch_size.inspect})" }
+          logger.trace(tag: :get) { "Getting message data (Stream Name: #{stream_name}, Position: #{position.inspect}, Batch Size: #{batch_size.inspect}, Condition: #{condition || '(none)'}, Correlation: #{correlation || '(none)'})" }
 
           position ||= Defaults.position
 
@@ -54,7 +54,7 @@ module MessageStore
 
           message_data = convert(result)
 
-          logger.info(tag: :get) { "Finished getting message data (Count: #{message_data.length}, Stream Name: #{stream_name}, Position: #{position.inspect}, Batch Size: #{batch_size.inspect})" }
+          logger.info(tag: :get) { "Finished getting message data (Count: #{message_data.length}, Stream Name: #{stream_name}, Position: #{position.inspect}, Batch Size: #{batch_size.inspect}, Condition: #{condition || '(none)'}, Correlation: #{correlation || '(none)'})" }
           logger.info(tags: [:data, :message_data]) { message_data.pretty_inspect }
 
           message_data
@@ -62,7 +62,7 @@ module MessageStore
       end
 
       def get_result(stream_name, position)
-        logger.trace(tag: :get) { "Getting result (Stream Name: #{stream_name}, Position: #{position.inspect}, Batch Size: #{batch_size.inspect}, Condition: #{condition || '(none)'})" }
+        logger.trace(tag: :get) { "Getting result (Stream Name: #{stream_name}, Position: #{position.inspect}, Batch Size: #{batch_size.inspect}, Condition: #{condition || '(none)'}, Correlation: #{correlation || '(none)'})" }
 
         sql_command = self.class.sql_command
 
@@ -72,12 +72,13 @@ module MessageStore
           stream_name,
           position,
           batch_size,
+          correlation,
           cond
         ]
 
         result = session.execute(sql_command, params)
 
-        logger.debug(tag: :get) { "Finished getting result (Count: #{result.ntuples}, Stream Name: #{stream_name}, Position: #{position.inspect}, Batch Size: #{batch_size.inspect}, Condition: #{condition || '(none)'})" }
+        logger.debug(tag: :get) { "Finished getting result (Count: #{result.ntuples}, Stream Name: #{stream_name}, Position: #{position.inspect}, Batch Size: #{batch_size.inspect}, Condition: #{condition || '(none)'}, Correlation: #{correlation || '(none)'})" }
 
         result
       end
@@ -90,7 +91,7 @@ module MessageStore
 
       module Parameters
         def parameters
-          '$1::varchar, $2::bigint, $3::bigint, $4::varchar'
+          '$1::varchar, $2::bigint, $3::bigint, $4::varchar, $5::varchar'
         end
       end
 
