@@ -4,7 +4,7 @@ module MessageStore
       class Stream
         include Get
 
-        def self.command_text(parameters)
+        def self.sql_command
           "SELECT * FROM get_stream_messages(#{parameters});"
         end
 

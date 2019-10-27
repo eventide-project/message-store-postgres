@@ -7,7 +7,7 @@ module MessageStore
           prepend Call
           prepend BatchSize
 
-          extend SQLCommand
+          extend SQLParameters
 
           dependency :session, Session
 
@@ -64,7 +64,7 @@ module MessageStore
       def get_result(stream_name, position)
         logger.trace(tag: :get) { "Getting result (Stream Name: #{stream_name}, Position: #{position.inspect}, Batch Size: #{batch_size.inspect}, Condition: #{condition || '(none)'})" }
 
-        sql_command = self.class.sql_command(stream_name, position, batch_size, condition)
+        sql_command = self.class.sql_command
 
         cond = Get.constrain_condition(condition)
 
@@ -88,10 +88,9 @@ module MessageStore
         "(#{condition})"
       end
 
-      module SQLCommand
-        def sql_command(stream_name, position, batch_size, condition)
-          parameters = '$1::varchar, $2::bigint, $3::bigint, $4::varchar'
-          command_text(parameters)
+      module SQLParameters
+        def parameters
+          '$1::varchar, $2::bigint, $3::bigint, $4::varchar'
         end
       end
 
