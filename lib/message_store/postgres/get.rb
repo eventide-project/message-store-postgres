@@ -21,7 +21,7 @@ module MessageStore
         end
       end
 
-      def self.build(stream_name, batch_size: nil, session: nil, correlation: nil, condition: nil)
+      def self.build(stream_name, batch_size: nil, correlation: nil, condition: nil, session: nil)
         cls = specialization(stream_name)
 
         cls.new(stream_name, batch_size, correlation, condition).tap do |instance|
