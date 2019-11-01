@@ -11,8 +11,6 @@ require 'message_store/postgres/log'
 require 'message_store/postgres/settings'
 require 'message_store/postgres/session'
 
-require 'message_store/postgres/stream_name'
-
 require 'message_store/postgres/put'
 require 'message_store/postgres/write'
 
