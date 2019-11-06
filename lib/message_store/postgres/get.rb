@@ -45,10 +45,12 @@ module MessageStore
       end
 
       module Call
-        def call(position)
-          logger.trace(tag: :get) { "Getting message data (Stream Name: #{stream_name}, Position: #{position.inspect}, Batch Size: #{batch_size.inspect}, Condition: #{condition || '(none)'}, Correlation: #{correlation || '(none)'})" }
-
+        def call(position=nil, stream_name: nil)
           position ||= Defaults.position
+
+          stream_name ||= self.stream_name
+
+          logger.trace(tag: :get) { "Getting message data (Stream Name: #{stream_name}, Position: #{position.inspect}, Batch Size: #{batch_size.inspect}, Condition: #{condition || '(none)'}, Correlation: #{correlation || '(none)'})" }
 
           result = get_result(stream_name, position)
 

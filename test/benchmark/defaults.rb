@@ -33,7 +33,7 @@ module Test
       end
 
       def self.stream_name
-        ENV['STREAM_NAME']
+        ENV['STREAM_NAME'] || Controls::StreamName.example
       end
     end
   end
