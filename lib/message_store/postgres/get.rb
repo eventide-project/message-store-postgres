@@ -78,7 +78,11 @@ module MessageStore
           cond
         ]
 
-        result = session.execute(sql_command, params)
+        begin
+          result = session.execute(sql_command, params)
+        rescue PG::RaiseException => e
+          raise_error(e)
+        end
 
         logger.debug(tag: :get) { "Finished getting result (Count: #{result.ntuples}, Stream Name: #{stream_name}, Position: #{position.inspect}, Batch Size: #{batch_size.inspect}, Condition: #{condition || '(none)'}, Correlation: #{correlation || '(none)'})" }
 
@@ -111,6 +115,16 @@ module MessageStore
         logger.debug(tag: :get) { "Converted result to message data (Message Data Count: #{message_data.length})" }
 
         message_data
+      end
+
+      def raise_error(pg_error)
+        error_message = pg_error.message
+        if error_message.include?('Correlation must be a category')
+          error_message.gsub!('ERROR:', '').strip!
+          logger.error { error_message }
+          raise Correlation::Error, error_message
+        end
+        raise pg_error
       end
 
       def self.specialization(stream_name)
