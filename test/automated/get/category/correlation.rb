@@ -2,7 +2,7 @@ require_relative '../../automated_init'
 
 context "Get" do
   context "Category" do
-    context "Condition" do
+    context "Correlation" do
       correlation_category = Controls::Category.example
 
       correlation_stream_name = Controls::StreamName.example(category: correlation_category)
