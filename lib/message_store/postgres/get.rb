@@ -46,7 +46,7 @@ module MessageStore
 
       module Call
         def call(position=nil, stream_name: nil)
-          position ||= Defaults.position
+          position ||= self.class::Defaults.position
 
           stream_name ||= self.stream_name
 
@@ -154,10 +154,6 @@ module MessageStore
       end
 
       module Defaults
-        def self.position
-          0
-        end
-
         def self.batch_size
           1000
         end

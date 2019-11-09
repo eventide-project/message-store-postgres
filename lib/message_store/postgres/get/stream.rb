@@ -11,6 +11,12 @@ module MessageStore
         def last_position(batch)
           batch.last.position
         end
+
+        module Defaults
+          def self.position
+            0
+          end
+        end
       end
     end
   end
