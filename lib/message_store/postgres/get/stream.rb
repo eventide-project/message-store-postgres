@@ -4,11 +4,17 @@ module MessageStore
       class Stream
         include Get
 
-        def sql_command
-          "SELECT * FROM get_stream_messages(#{parameter_names});"
+        initializer :stream_name, na(:batch_size), :correlation, :condition
+
+        def self.build(stream_name, batch_size: nil, correlation: nil, condition: nil)
+          new(stream_name, batch_size, correlation, condition)
         end
 
-        def parameter_names
+        def sql_command
+          "SELECT * FROM get_stream_messages(#{parameters});"
+        end
+
+        def parameters
           '$1::varchar, $2::bigint, $3::bigint, $4::varchar, $5::varchar'
         end
 

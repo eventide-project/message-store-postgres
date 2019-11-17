@@ -4,12 +4,17 @@ module MessageStore
       class Category
         include Get
 
-##        def self.sql_command
+        initializer :stream_name, na(:batch_size), :correlation, :consumer_group_member, :consumer_group_size, :condition
+
+        def self.build(stream_name, batch_size: nil, correlation: nil, consumer_group_member: nil, consumer_group_size: nil, condition: nil)
+          new(stream_name, batch_size, correlation, consumer_group_member, consumer_group_size, condition)
+        end
+
         def sql_command
           "SELECT * FROM get_category_messages(#{parameters});"
         end
 
-        def parameter_names
+        def parameters
           '$1::varchar, $2::bigint, $3::bigint, $4::varchar, $5::bigint, $6::bigint, $7::varchar'
         end
 

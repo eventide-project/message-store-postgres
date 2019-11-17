@@ -9,10 +9,8 @@ module MessageStore
 
           dependency :session, Session
 
-          initializer :stream_name, na(:batch_size), :correlation, :condition
-
           abstract :sql_command
-          abstract :parameter_names
+          abstract :parameters
           abstract :parameter_values
           abstract :last_position
         end
@@ -24,17 +22,17 @@ module MessageStore
         end
       end
 
-      def self.build(stream_name, batch_size: nil, correlation: nil, condition: nil, session: nil)
+      def self.build(stream_name, session: nil, **args)
         cls = specialization(stream_name)
 
-        cls.new(stream_name, batch_size, correlation, condition).tap do |instance|
+        cls.build(stream_name, **args).tap do |instance|
           instance.configure(session: session)
         end
       end
 
-      def self.configure(receiver, stream_name, attr_name: nil, batch_size: nil, correlation: nil, condition: nil, session: nil)
+      def self.configure(receiver, stream_name, attr_name: nil, session: nil, **args)
         attr_name ||= :get
-        instance = build(stream_name, batch_size: batch_size, correlation: correlation, condition: condition, session: session)
+        instance = build(stream_name, session: session, **args)
         receiver.public_send("#{attr_name}=", instance)
       end
 
@@ -53,13 +51,13 @@ module MessageStore
 
           stream_name ||= self.stream_name
 
-          logger.trace(tag: :get) { "Getting message data (Stream Name: #{stream_name}, Position: #{position.inspect}, Batch Size: #{batch_size.inspect}, Condition: #{condition || '(none)'}, Correlation: #{correlation || '(none)'})" }
+          logger.trace(tag: :get) { "Getting message data (Stream Name: #{stream_name}, Position: #{position.inspect}, Batch Size: #{batch_size.inspect}, Correlation: #{correlation.inspect}, Condition: #{condition.inspect})" }
 
           result = get_result(stream_name, position)
 
           message_data = convert(result)
 
-          logger.info(tag: :get) { "Finished getting message data (Count: #{message_data.length}, Stream Name: #{stream_name}, Position: #{position.inspect}, Batch Size: #{batch_size.inspect}, Condition: #{condition || '(none)'}, Correlation: #{correlation || '(none)'})" }
+          logger.info(tag: :get) { "Finished getting message data (Count: #{message_data.length}, Stream Name: #{stream_name}, Position: #{position.inspect}, Batch Size: #{batch_size.inspect}, Correlation: #{correlation.inspect}, Condition: #{condition.inspect})" }
           logger.info(tags: [:data, :message_data]) { message_data.pretty_inspect }
 
           message_data
@@ -67,41 +65,20 @@ module MessageStore
       end
 
       def get_result(stream_name, position)
-        logger.trace(tag: :get) { "Getting result (Stream Name: #{stream_name}, Position: #{position.inspect}, Batch Size: #{batch_size.inspect}, Condition: #{condition || '(none)'}, Correlation: #{correlation || '(none)'})" }
-
-##        sql_command = self.class.sql_command
-
-##        cond = Get.constrain_condition(condition)
-
-##
-        # params = [
-        #   stream_name,
-        #   position,
-        #   batch_size,
-        #   correlation,
-        #   cond
-        # ]
+        logger.trace(tag: :get) { "Getting result (Stream Name: #{stream_name}, Position: #{position.inspect}, Batch Size: #{batch_size.inspect}, Correlation: #{correlation.inspect}, Condition: #{condition.inspect})" }
 
         parameter_values = parameter_values(stream_name, position)
 
         begin
-##          result = session.execute(sql_command, params)
           result = session.execute(sql_command, parameter_values)
         rescue PG::RaiseException => e
           raise_error(e)
         end
 
-        logger.debug(tag: :get) { "Finished getting result (Count: #{result.ntuples}, Stream Name: #{stream_name}, Position: #{position.inspect}, Batch Size: #{batch_size.inspect}, Condition: #{condition || '(none)'}, Correlation: #{correlation || '(none)'})" }
+        logger.debug(tag: :get) { "Finished getting result (Count: #{result.ntuples}, Stream Name: #{stream_name}, Position: #{position.inspect}, Batch Size: #{batch_size.inspect}, Correlation: #{correlation.inspect}, Condition: #{condition.inspect})" }
 
         result
       end
-
-##
-      # def self.constrain_condition(condition)
-      #   return nil if condition.nil?
-
-      #   "(#{condition})"
-      # end
 
       def convert(result)
         logger.trace(tag: :get) { "Converting result to message data (Result Count: #{result.ntuples})" }
