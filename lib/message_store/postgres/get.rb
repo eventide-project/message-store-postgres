@@ -7,11 +7,14 @@ module MessageStore
           prepend Call
           prepend BatchSize
 
-          extend Parameters
-
           dependency :session, Session
 
           initializer :stream_name, na(:batch_size), :correlation, :condition
+
+          abstract :sql_command
+          abstract :parameter_names
+          abstract :parameter_values
+          abstract :last_position
         end
       end
 
@@ -66,20 +69,24 @@ module MessageStore
       def get_result(stream_name, position)
         logger.trace(tag: :get) { "Getting result (Stream Name: #{stream_name}, Position: #{position.inspect}, Batch Size: #{batch_size.inspect}, Condition: #{condition || '(none)'}, Correlation: #{correlation || '(none)'})" }
 
-        sql_command = self.class.sql_command
+##        sql_command = self.class.sql_command
 
-        cond = Get.constrain_condition(condition)
+##        cond = Get.constrain_condition(condition)
 
-        params = [
-          stream_name,
-          position,
-          batch_size,
-          correlation,
-          cond
-        ]
+##
+        # params = [
+        #   stream_name,
+        #   position,
+        #   batch_size,
+        #   correlation,
+        #   cond
+        # ]
+
+        parameter_values = parameter_values(stream_name, position)
 
         begin
-          result = session.execute(sql_command, params)
+##          result = session.execute(sql_command, params)
+          result = session.execute(sql_command, parameter_values)
         rescue PG::RaiseException => e
           raise_error(e)
         end
@@ -89,17 +96,12 @@ module MessageStore
         result
       end
 
-      def self.constrain_condition(condition)
-        return nil if condition.nil?
+##
+      # def self.constrain_condition(condition)
+      #   return nil if condition.nil?
 
-        "(#{condition})"
-      end
-
-      module Parameters
-        def parameters
-          '$1::varchar, $2::bigint, $3::bigint, $4::varchar, $5::varchar'
-        end
-      end
+      #   "(#{condition})"
+      # end
 
       def convert(result)
         logger.trace(tag: :get) { "Converting result to message data (Result Count: #{result.ntuples})" }
