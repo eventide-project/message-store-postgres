@@ -32,6 +32,10 @@ module MessageStore
           batch.last.position
         end
 
+        def log_text(position, stream_name)
+          "Stream Name: #{stream_name}, Position: #{position.inspect}, Batch Size: #{batch_size.inspect}, Correlation: #{correlation.inspect}, Condition: #{condition.inspect})"
+        end
+
         module Defaults
           def self.position
             0

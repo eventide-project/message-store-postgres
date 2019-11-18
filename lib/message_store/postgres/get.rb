@@ -13,6 +13,7 @@ module MessageStore
           abstract :parameters
           abstract :parameter_values
           abstract :last_position
+          abstract :log_text
         end
       end
 
@@ -51,13 +52,13 @@ module MessageStore
 
           stream_name ||= self.stream_name
 
-          logger.trace(tag: :get) { "Getting message data (Stream Name: #{stream_name}, Position: #{position.inspect}, Batch Size: #{batch_size.inspect}, Correlation: #{correlation.inspect}, Condition: #{condition.inspect})" }
+          logger.trace(tag: :get) { "Getting message data (#{log_text(position, stream_name)})" }
 
           result = get_result(stream_name, position)
 
           message_data = convert(result)
 
-          logger.info(tag: :get) { "Finished getting message data (Count: #{message_data.length}, Stream Name: #{stream_name}, Position: #{position.inspect}, Batch Size: #{batch_size.inspect}, Correlation: #{correlation.inspect}, Condition: #{condition.inspect})" }
+          logger.info(tag: :get) { "Finished getting message data (Count: #{message_data.length}, #{log_text(position, stream_name)})" }
           logger.info(tags: [:data, :message_data]) { message_data.pretty_inspect }
 
           message_data
@@ -65,7 +66,7 @@ module MessageStore
       end
 
       def get_result(stream_name, position)
-        logger.trace(tag: :get) { "Getting result (Stream Name: #{stream_name}, Position: #{position.inspect}, Batch Size: #{batch_size.inspect}, Correlation: #{correlation.inspect}, Condition: #{condition.inspect})" }
+        logger.trace(tag: :get) { "Getting result (#{log_text(position, stream_name)})" }
 
         parameter_values = parameter_values(stream_name, position)
 
@@ -75,7 +76,7 @@ module MessageStore
           raise_error(e)
         end
 
-        logger.debug(tag: :get) { "Finished getting result (Count: #{result.ntuples}, Stream Name: #{stream_name}, Position: #{position.inspect}, Batch Size: #{batch_size.inspect}, Correlation: #{correlation.inspect}, Condition: #{condition.inspect})" }
+        logger.debug(tag: :get) { "Finished getting result (Count: #{result.ntuples}, #{log_text(position, stream_name)})" }
 
         result
       end
