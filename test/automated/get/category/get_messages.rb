@@ -8,11 +8,21 @@ context "Get" do
       Controls::Put.(category: category)
       Controls::Put.(category: category)
 
-      messages = Get.(category)
+      message_data = Get.(category)
 
       context "Messages Retrieved" do
         test "Messages from the all streams in the category" do
-          assert(messages.length == 2)
+          assert(message_data.length == 2)
+        end
+
+        context "Message category is the category written" do
+          message_data.each do |md|
+            message_cateogry = StreamName.get_category(md.stream_name)
+
+            test do
+              assert(message_cateogry == category)
+            end
+          end
         end
       end
     end
