@@ -2,6 +2,8 @@ module MessageStore
   module Postgres
     module Get
       class Category
+        Error = Class.new(RuntimeError)
+
         include Get
 
         initializer :stream_name, na(:batch_size), :correlation, :consumer_group_member, :consumer_group_size, :condition

@@ -1,9 +1,14 @@
 module MessageStore
   module Postgres
     module Get
+      Error = Class.new(RuntimeError)
+
       def self.included(cls)
         cls.class_exec do
           include MessageStore::Get
+
+          extend Assure
+
           prepend Call
           prepend BatchSize
 
@@ -25,6 +30,8 @@ module MessageStore
 
       def self.build(stream_name, **args)
         cls = specialization(stream_name)
+
+        cls.assure(stream_name, args)
 
         session = args.delete(:session)
 
@@ -103,12 +110,25 @@ module MessageStore
       end
 
       def raise_error(pg_error)
-        error_message = pg_error.message
-        if error_message.include?('Correlation must be a category')
-          error_message.gsub!('ERROR:', '').strip!
-          logger.error { error_message }
-          raise Correlation::Error, error_message
+        error_message = pg_error.message.gsub('ERROR:', '').strip
+
+        error_class = nil
+
+        case
+        when error_message.start_with?('Correlation must be a category')
+          error_class = Correlation::Error
+        when error_message.start_with?('Consumer group size must not be less than 1') ||
+            error_message.start_with?('Consumer group member must be less than the group size') ||
+            error_message.start_with?('Consumer group member must not be less than 0') ||
+            error_message.start_with?('Consumer group member and size must be specified')
+          error_class = Get::Category::ConsumerGroup::Error
         end
+
+        if not error_message.nil?
+          logger.error { error_message }
+          raise error_class, error_message
+        end
+
         raise pg_error
       end
 
@@ -135,6 +155,11 @@ module MessageStore
       module Time
         def self.utc_coerced(local_time)
           Clock::UTC.coerce(local_time)
+        end
+      end
+
+      module Assure
+        def assure(*)
         end
       end
 
