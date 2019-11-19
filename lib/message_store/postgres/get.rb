@@ -23,17 +23,21 @@ module MessageStore
         end
       end
 
-      def self.build(stream_name, session: nil, **args)
+      def self.build(stream_name, **args)
         cls = specialization(stream_name)
+
+        session = args.delete(:session)
 
         cls.build(stream_name, **args).tap do |instance|
           instance.configure(session: session)
         end
       end
 
-      def self.configure(receiver, stream_name, attr_name: nil, session: nil, **args)
+      def self.configure(receiver, stream_name, **args)
+        attr_name = args.delete(:attr_name)
         attr_name ||= :get
-        instance = build(stream_name, session: session, **args)
+
+        instance = build(stream_name, **args)
         receiver.public_send("#{attr_name}=", instance)
       end
 
@@ -41,10 +45,9 @@ module MessageStore
         Session.configure(self, session: session)
       end
 
-      # def self.call(stream_name, position: nil, batch_size: nil, correlation: nil, condition: nil,  session: nil)
-      # def self.build(stream_name, session: nil, **args)
-      def self.call(stream_name, position: nil, batch_size: nil, correlation: nil, condition: nil,  session: nil, **args)
-        instance = build(stream_name, batch_size: batch_size, correlation: correlation, condition: condition, session: session, **args)
+      def self.call(stream_name, **args)
+        position = args.delete(:position)
+        instance = build(stream_name, **args)
         instance.(position)
       end
 
