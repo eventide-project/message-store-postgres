@@ -41,8 +41,10 @@ module MessageStore
         Session.configure(self, session: session)
       end
 
-      def self.call(stream_name, position: nil, batch_size: nil, correlation: nil, condition: nil,  session: nil)
-        instance = build(stream_name, batch_size: batch_size, correlation: correlation, condition: condition, session: session)
+      # def self.call(stream_name, position: nil, batch_size: nil, correlation: nil, condition: nil,  session: nil)
+      # def self.build(stream_name, session: nil, **args)
+      def self.call(stream_name, position: nil, batch_size: nil, correlation: nil, condition: nil,  session: nil, **args)
+        instance = build(stream_name, batch_size: batch_size, correlation: correlation, condition: condition, session: session, **args)
         instance.(position)
       end
 
