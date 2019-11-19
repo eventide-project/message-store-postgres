@@ -12,14 +12,27 @@ context "Get" do
         Controls::Put.(category: category)
       end
 
-      retrieved_count = 0
+      retrieved_message_data = []
       partitions.times do |i|
-        messages = Get.(category, consumer_group_member: i, consumer_group_size: partitions)
-        retrieved_count += messages.count
+        retrieved_message_data += Get.(category, consumer_group_member: i, consumer_group_size: partitions)
       end
 
-      test "Retrieve messages in partitions" do
-        assert(retrieved_count == instances)
+      context "Message Partitions" do
+        context "Distribution" do
+          retrieved_count = retrieved_message_data.count
+
+          test "Across partitions" do
+            assert(retrieved_count == instances)
+          end
+        end
+      end
+
+      context "Messages in all partitions" do
+        test "Are of the same category" do
+          retrieved_message_data.each do |message_data|
+            assert(StreamName.get_category(message_data.stream_name) == category)
+          end
+        end
       end
     end
   end
