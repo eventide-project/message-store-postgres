@@ -37,8 +37,11 @@ module MessageStore
         end
 
         def self.assure(stream_name, args)
-          if args.include?(:consumer_group_member) || args.include?(:consumer_group_size)
-            raise Error, "Consumer groups are only supported for category retrieval (Stream Name: #{stream_name})"
+          consumer_group_member = args.delete(:consumer_group_member)
+          consumer_group_size = args.delete(:consumer_group_size)
+
+          if [consumer_group_member, consumer_group_size].compact.length > 0
+            raise Error, "Consumer groups are supported only for category retrieval (Stream Name: #{stream_name})"
           end
         end
 
