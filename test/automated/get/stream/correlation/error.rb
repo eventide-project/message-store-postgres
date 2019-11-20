@@ -1,7 +1,7 @@
-require_relative '../../automated_init'
+require_relative '../../../automated_init'
 
 context "Get" do
-  context "Category" do
+  context "Stream" do
     context "Correlation" do
       context "Not a Category" do
         correlation = Controls::StreamName.example

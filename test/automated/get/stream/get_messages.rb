@@ -10,11 +10,21 @@ context "Get" do
       stream_name, _ = Controls::Put.(category: category)
       Controls::Put.(category: category)
 
-      messages = Get.(stream_name)
+      message_data = Get.(stream_name)
 
       context "Messages Retrieved" do
         test "Only messages from the specific stream" do
-          assert(messages.length == 1)
+          assert(message_data.length == 1)
+        end
+
+        context "Message stream is the stream written" do
+          message_data.each do |md|
+            message_stream_name = md.stream_name
+
+            test do
+              assert(message_stream_name == stream_name)
+            end
+          end
         end
       end
     end

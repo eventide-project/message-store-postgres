@@ -1,17 +1,24 @@
 module MessageStore
   module Postgres
     module Get
+      Error = Class.new(RuntimeError)
+
       def self.included(cls)
         cls.class_exec do
           include MessageStore::Get
+
+          extend Assure
+
           prepend Call
           prepend BatchSize
 
-          extend Parameters
-
           dependency :session, Session
 
-          initializer :stream_name, na(:batch_size), :correlation, :condition
+          abstract :sql_command
+          abstract :parameters
+          abstract :parameter_values
+          abstract :last_position
+          abstract :log_text
         end
       end
 
@@ -21,17 +28,23 @@ module MessageStore
         end
       end
 
-      def self.build(stream_name, batch_size: nil, correlation: nil, condition: nil, session: nil)
+      def self.build(stream_name, **args)
         cls = specialization(stream_name)
 
-        cls.new(stream_name, batch_size, correlation, condition).tap do |instance|
+        cls.assure(stream_name, args)
+
+        session = args.delete(:session)
+
+        cls.build(stream_name, **args).tap do |instance|
           instance.configure(session: session)
         end
       end
 
-      def self.configure(receiver, stream_name, attr_name: nil, batch_size: nil, correlation: nil, condition: nil, session: nil)
+      def self.configure(receiver, stream_name, **args)
+        attr_name = args.delete(:attr_name)
         attr_name ||= :get
-        instance = build(stream_name, batch_size: batch_size, correlation: correlation, condition: condition, session: session)
+
+        instance = build(stream_name, **args)
         receiver.public_send("#{attr_name}=", instance)
       end
 
@@ -39,8 +52,9 @@ module MessageStore
         Session.configure(self, session: session)
       end
 
-      def self.call(stream_name, position: nil, batch_size: nil, correlation: nil, condition: nil,  session: nil)
-        instance = build(stream_name, batch_size: batch_size, correlation: correlation, condition: condition, session: session)
+      def self.call(stream_name, **args)
+        position = args.delete(:position)
+        instance = build(stream_name, **args)
         instance.(position)
       end
 
@@ -50,13 +64,13 @@ module MessageStore
 
           stream_name ||= self.stream_name
 
-          logger.trace(tag: :get) { "Getting message data (Stream Name: #{stream_name}, Position: #{position.inspect}, Batch Size: #{batch_size.inspect}, Condition: #{condition || '(none)'}, Correlation: #{correlation || '(none)'})" }
+          logger.trace(tag: :get) { "Getting message data (#{log_text(position, stream_name)})" }
 
           result = get_result(stream_name, position)
 
           message_data = convert(result)
 
-          logger.info(tag: :get) { "Finished getting message data (Count: #{message_data.length}, Stream Name: #{stream_name}, Position: #{position.inspect}, Batch Size: #{batch_size.inspect}, Condition: #{condition || '(none)'}, Correlation: #{correlation || '(none)'})" }
+          logger.info(tag: :get) { "Finished getting message data (Count: #{message_data.length}, #{log_text(position, stream_name)})" }
           logger.info(tags: [:data, :message_data]) { message_data.pretty_inspect }
 
           message_data
@@ -64,41 +78,19 @@ module MessageStore
       end
 
       def get_result(stream_name, position)
-        logger.trace(tag: :get) { "Getting result (Stream Name: #{stream_name}, Position: #{position.inspect}, Batch Size: #{batch_size.inspect}, Condition: #{condition || '(none)'}, Correlation: #{correlation || '(none)'})" }
+        logger.trace(tag: :get) { "Getting result (#{log_text(position, stream_name)})" }
 
-        sql_command = self.class.sql_command
-
-        cond = Get.constrain_condition(condition)
-
-        params = [
-          stream_name,
-          position,
-          batch_size,
-          correlation,
-          cond
-        ]
+        parameter_values = parameter_values(stream_name, position)
 
         begin
-          result = session.execute(sql_command, params)
+          result = session.execute(sql_command, parameter_values)
         rescue PG::RaiseException => e
           raise_error(e)
         end
 
-        logger.debug(tag: :get) { "Finished getting result (Count: #{result.ntuples}, Stream Name: #{stream_name}, Position: #{position.inspect}, Batch Size: #{batch_size.inspect}, Condition: #{condition || '(none)'}, Correlation: #{correlation || '(none)'})" }
+        logger.debug(tag: :get) { "Finished getting result (Count: #{result.ntuples}, #{log_text(position, stream_name)})" }
 
         result
-      end
-
-      def self.constrain_condition(condition)
-        return nil if condition.nil?
-
-        "(#{condition})"
-      end
-
-      module Parameters
-        def parameters
-          '$1::varchar, $2::bigint, $3::bigint, $4::varchar, $5::varchar'
-        end
       end
 
       def convert(result)
@@ -118,12 +110,25 @@ module MessageStore
       end
 
       def raise_error(pg_error)
-        error_message = pg_error.message
-        if error_message.include?('Correlation must be a category')
-          error_message.gsub!('ERROR:', '').strip!
-          logger.error { error_message }
-          raise Correlation::Error, error_message
+        error_message = pg_error.message.gsub('ERROR:', '').strip
+
+        error_class = nil
+
+        case
+        when error_message.start_with?('Correlation must be a category')
+          error_class = Correlation::Error
+        when error_message.start_with?('Consumer group size must not be less than 1') ||
+            error_message.start_with?('Consumer group member must be less than the group size') ||
+            error_message.start_with?('Consumer group member must not be less than 0') ||
+            error_message.start_with?('Consumer group member and size must be specified')
+          error_class = Get::Category::ConsumerGroup::Error
         end
+
+        if not error_message.nil?
+          logger.error { error_message }
+          raise error_class, error_message
+        end
+
         raise pg_error
       end
 
@@ -150,6 +155,11 @@ module MessageStore
       module Time
         def self.utc_coerced(local_time)
           Clock::UTC.coerce(local_time)
+        end
+      end
+
+      module Assure
+        def assure(*)
         end
       end
 
