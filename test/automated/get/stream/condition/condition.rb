@@ -1,4 +1,4 @@
-require_relative '../../automated_init'
+require_relative '../../../automated_init'
 
 context "Get" do
   context "Stream" do
@@ -7,7 +7,12 @@ context "Get" do
 
       condition = 'position = 0 OR position = 2'
 
-      messages = Get.(stream_name, batch_size: 3, condition: condition)
+      settings = Postgres::Settings.build
+      session = Session.new
+      settings.set(session)
+      session.options = '-c message_store.sql_condition=on'
+
+      messages = Get.(stream_name, batch_size: 3, condition: condition, session: session)
 
       message_positions = messages.map do |message|
         message.position

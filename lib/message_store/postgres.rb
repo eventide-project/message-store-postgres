@@ -15,6 +15,7 @@ require 'message_store/postgres/put'
 require 'message_store/postgres/write'
 
 require 'message_store/postgres/get'
+require 'message_store/postgres/get/condition'
 require 'message_store/postgres/get/stream'
 require 'message_store/postgres/get/category/consumer_group'
 require 'message_store/postgres/get/category'

@@ -122,6 +122,8 @@ module MessageStore
             error_message.start_with?('Consumer group member must not be less than 0') ||
             error_message.start_with?('Consumer group member and size must be specified')
           error_class = Get::Category::ConsumerGroup::Error
+        when error_message.start_with?('Retrieval with SQL condition is not activated')
+          error_class = Get::Condition::Error
         end
 
         if not error_message.nil?
