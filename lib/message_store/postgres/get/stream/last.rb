@@ -47,7 +47,7 @@ module MessageStore
           def self.sql_command(stream_name)
             parameters = '$1::varchar'
 
-            "SELECT * FROM get_last_message(#{parameters});"
+            "SELECT * FROM get_last_stream_message(#{parameters});"
           end
 
           def convert(record)
