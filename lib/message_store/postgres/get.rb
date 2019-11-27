@@ -14,6 +14,7 @@ module MessageStore
 
           dependency :session, Session
 
+          abstract :stream_name
           abstract :sql_command
           abstract :parameters
           abstract :parameter_values
