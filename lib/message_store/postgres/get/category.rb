@@ -36,7 +36,7 @@ module MessageStore
           batch.last.global_position
         end
 
-        def log_text(position, stream_name)
+        def log_text(stream_name, position)
           "Stream Name: #{stream_name}, Position: #{position.inspect}, Batch Size: #{batch_size.inspect}, Correlation: #{correlation.inspect}, Consumer Group Member: #{consumer_group_member.inspect}, Consumer Group Size: #{consumer_group_size.inspect}, Condition: #{condition.inspect})"
         end
 

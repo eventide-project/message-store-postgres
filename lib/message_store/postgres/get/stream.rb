@@ -32,7 +32,7 @@ module MessageStore
           batch.last.position
         end
 
-        def log_text(position, stream_name)
+        def log_text(stream_name, position)
           "Stream Name: #{stream_name}, Position: #{position.inspect}, Batch Size: #{batch_size.inspect}, Correlation: #{correlation.inspect}, Condition: #{condition.inspect})"
         end
 
