@@ -6,8 +6,25 @@ module MessageStore
 
         initializer :stream_name, na(:batch_size), :correlation, :condition
 
-        def self.build(stream_name, batch_size: nil, correlation: nil, condition: nil)
-          new(stream_name, batch_size, correlation, condition)
+        def self.call(stream_name, position: nil, batch_size: nil, correlation: nil, condition: nil, session: nil)
+          instance = build(stream_name, batch_size: batch_size, correlation: correlation, condition: condition, session: session)
+          instance.(position)
+        end
+
+        def self.build(stream_name, batch_size: nil, correlation: nil, condition: nil, session: nil)
+          instance = new(stream_name, batch_size, correlation, condition)
+          instance.configure(session: session)
+          instance
+        end
+
+        def self.configure(receiver, stream_name, attr_name: nil, batch_size: nil, correlation: nil, condition: nil, session: nil)
+          attr_name ||= :get
+          instance = build(stream_name, batch_size: batch_size, correlation: correlation, condition: condition, session: session)
+          receiver.public_send("#{attr_name}=", instance)
+        end
+
+        def configure(session: nil)
+          Session.configure(self, session: session)
         end
 
         def sql_command
@@ -41,7 +58,7 @@ module MessageStore
           consumer_group_size = args.delete(:consumer_group_size)
 
           if [consumer_group_member, consumer_group_size].compact.length > 0
-            raise Error, "Consumer groups are supported only for category retrieval (Stream Name: #{stream_name})"
+            raise Error, "Consumer groups are supported exclusively for category retrieval (Stream Name: #{stream_name})"
           end
         end
 

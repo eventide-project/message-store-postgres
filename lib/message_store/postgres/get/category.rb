@@ -9,8 +9,25 @@ module MessageStore
         initializer :category, na(:batch_size), :correlation, :consumer_group_member, :consumer_group_size, :condition
         alias :stream_name :category
 
-        def self.build(category, batch_size: nil, correlation: nil, consumer_group_member: nil, consumer_group_size: nil, condition: nil)
-          new(category, batch_size, correlation, consumer_group_member, consumer_group_size, condition)
+        def self.call(category, position: nil, batch_size: nil, correlation: nil, consumer_group_member: nil, consumer_group_size: nil, condition: nil, session: nil)
+          instance = build(category, batch_size: batch_size, correlation: correlation, consumer_group_member: consumer_group_member, consumer_group_size: consumer_group_size, condition: condition, session: session)
+          instance.(position)
+        end
+
+        def self.build(category, batch_size: nil, correlation: nil, consumer_group_member: nil, consumer_group_size: nil, condition: nil, session: nil)
+          instance = new(category, batch_size, correlation, consumer_group_member, consumer_group_size, condition)
+          instance.configure(session: session)
+          instance
+        end
+
+        def self.configure(receiver, category, attr_name: nil, batch_size: nil, correlation: nil, consumer_group_member: nil, consumer_group_size: nil, condition: nil, session: nil)
+          attr_name ||= :get
+          instance = build(category, batch_size: batch_size, correlation: correlation, consumer_group_member: consumer_group_member, consumer_group_size: consumer_group_size, condition: condition, session: session)
+          receiver.public_send("#{attr_name}=", instance)
+        end
+
+        def configure(session: nil)
+          Session.configure(self, session: session)
         end
 
         def sql_command
