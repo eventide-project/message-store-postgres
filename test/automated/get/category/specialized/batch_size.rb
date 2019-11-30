@@ -1,4 +1,4 @@
-require_relative '../../automated_init'
+require_relative '../../../automated_init'
 
 context "Get" do
   context "Category" do
@@ -9,7 +9,7 @@ context "Get" do
       Controls::Put.(category: category)
       Controls::Put.(category: category)
 
-      messages = Get.(category, batch_size: 2)
+      messages = Get::Category.(category, batch_size: 2)
 
       number_of_messages = messages.length
 

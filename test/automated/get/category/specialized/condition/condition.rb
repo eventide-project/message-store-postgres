@@ -1,4 +1,4 @@
-require_relative '../../../automated_init'
+require_relative '../../../../automated_init'
 
 context "Get" do
   context "Category" do
@@ -14,7 +14,7 @@ context "Get" do
       settings.set(session)
       session.options = '-c message_store.sql_condition=on'
 
-      messages = Get.(category, batch_size: 3, condition: condition, session: session)
+      messages = Get::Category.(category, batch_size: 3, condition: condition, session: session)
 
       message_positions = messages.map do |message|
         message.position

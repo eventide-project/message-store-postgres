@@ -1,4 +1,4 @@
-require_relative '../../../automated_init'
+require_relative '../../../../automated_init'
 
 context "Get" do
   context "Category" do
@@ -14,7 +14,7 @@ context "Get" do
 
       retrieved_message_data = []
       partitions.times do |i|
-        retrieved_message_data += Get.(category, consumer_group_member: i, consumer_group_size: partitions)
+        retrieved_message_data += Get::Category.(category, consumer_group_member: i, consumer_group_size: partitions)
       end
 
       context "Message Partitions" do

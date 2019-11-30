@@ -1,4 +1,4 @@
-require_relative '../../automated_init'
+require_relative '../../../automated_init'
 
 context "Get" do
   context "Category" do
@@ -8,7 +8,7 @@ context "Get" do
 
       Controls::Put.(instances: 2, stream_name: stream_name)
 
-      batch = Get.(category, position: 1, batch_size: 1)
+      batch = Get::Category.(category, position: 1, batch_size: 1)
 
       test "Retrieves messages from the starting position" do
         assert(batch.length == 1)

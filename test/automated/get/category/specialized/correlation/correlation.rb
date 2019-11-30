@@ -1,4 +1,4 @@
-require_relative '../../../automated_init'
+require_relative '../../../../automated_init'
 
 context "Get" do
   context "Category" do
@@ -28,7 +28,7 @@ context "Get" do
         Put.(message_data, stream_name)
       end
 
-      message_datas = Get.(category, correlation: correlation_category)
+      message_datas = Get::Category.(category, correlation: correlation_category)
 
       correlation_stream_names = message_datas.map do |message_data|
         message_data.metadata[:correlation_stream_name]

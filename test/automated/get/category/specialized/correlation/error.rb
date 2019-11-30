@@ -1,4 +1,4 @@
-require_relative '../../../automated_init'
+require_relative '../../../../automated_init'
 
 context "Get" do
   context "Category" do
@@ -6,11 +6,11 @@ context "Get" do
       context "Not a Category" do
         correlation = Controls::StreamName.example
 
-        stream_name = Controls::StreamName.example
+        category = Controls::Category.example
 
         test "Is an error" do
-          assert_raises MessageStore::Correlation::Error do
-            Get.(stream_name, correlation: correlation)
+          assert_raises(MessageStore::Correlation::Error) do
+            Get::Category.(category, correlation: correlation)
           end
         end
       end
