@@ -5,8 +5,6 @@ module MessageStore
         cls.class_exec do
           include MessageStore::Get
 
-          extend Assure
-
           prepend Call
           prepend BatchSize
 
@@ -159,11 +157,6 @@ module MessageStore
       module Time
         def self.utc_coerced(local_time)
           Clock::UTC.coerce(local_time)
-        end
-      end
-
-      module Assure
-        def assure(*)
         end
       end
 
