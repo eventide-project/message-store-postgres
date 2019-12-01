@@ -2,7 +2,7 @@ require_relative '../../../automated_init'
 
 context "Get" do
   context "Category" do
-    context "Concrete" do
+    context "Specialized" do
       context "Get Messages" do
         category = Controls::Category.example
 

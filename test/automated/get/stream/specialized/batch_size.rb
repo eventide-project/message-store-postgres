@@ -1,16 +1,12 @@
 require_relative '../../../automated_init'
 
 context "Get" do
-  context "Category" do
+  context "Stream" do
     context "Specialized" do
       context "Batch Size" do
-        category = Controls::Category.example
+        stream_name, _ = Controls::Put.(instances: 3)
 
-        Controls::Put.(category: category)
-        Controls::Put.(category: category)
-        Controls::Put.(category: category)
-
-        messages = Get::Category.(category, batch_size: 2)
+        messages = Get.(stream_name, batch_size: 2)
 
         number_of_messages = messages.length
 

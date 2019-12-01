@@ -2,8 +2,8 @@ require_relative '../../../automated_init'
 
 context "Get" do
   context "Stream" do
-    context "Concrete" do
-      context "Get Message" do
+    context "Specialized" do
+      context "Dependency" do
         write_message = Controls::MessageData::Write.example
 
         category = Controls::Category.example
@@ -11,7 +11,15 @@ context "Get" do
         stream_name, _ = Controls::Put.(category: category)
         Controls::Put.(category: category)
 
-        message_data = Get::Stream.(stream_name)
+        receiver = OpenStruct.new
+
+        Get::Stream.configure(receiver, stream_name)
+
+        get = receiver.get
+
+        message_data = get.()
+
+        # message_data = Get::Stream.(stream_name)
 
         context "Messages Retrieved" do
           test "Only messages from the specific stream" do

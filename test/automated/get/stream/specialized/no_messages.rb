@@ -1,12 +1,12 @@
 require_relative '../../../automated_init'
 
 context "Get" do
-  context "Category" do
+  context "Stream" do
     context "Specialized" do
       context "No Messages" do
-        category = Controls::Category.example
+        stream_name = Controls::StreamName.example
 
-        batch = Get::Category.(category)
+        batch = Get.(stream_name)
 
         test "Retrieves no messages" do
           assert(batch == [])

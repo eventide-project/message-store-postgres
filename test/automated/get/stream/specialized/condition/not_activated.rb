@@ -5,7 +5,7 @@ context "Get" do
     context "Specialized" do
       context "Condition" do
         context "Not Activated" do
-          category = Controls::Category.example
+          stream_name = Controls::StreamName.example
 
           condition = 'some condition'
 
@@ -16,7 +16,7 @@ context "Get" do
 
           test "Is an error" do
             assert_raises(Get::Condition::Error) do
-              Get::Category.(category, batch_size: 3, condition: condition, session: session)
+              Get.(stream_name, batch_size: 3, condition: condition, session: session)
             end
           end
         end
