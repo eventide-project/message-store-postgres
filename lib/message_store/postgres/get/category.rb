@@ -71,6 +71,12 @@ module MessageStore
           "Category: #{category}, Position: #{position.inspect}, Batch Size: #{batch_size.inspect}, Correlation: #{correlation.inspect}, Consumer Group Member: #{consumer_group_member.inspect}, Consumer Group Size: #{consumer_group_size.inspect}, Condition: #{condition.inspect})"
         end
 
+        def assure
+          if not MessageStore::StreamName.category?(category)
+            raise Error, "Must be a category (Stream Name: #{category})"
+          end
+        end
+
         module Defaults
           def self.position
             1

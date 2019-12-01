@@ -2,6 +2,8 @@ module MessageStore
   module Postgres
     module Get
       class Stream
+        Error = Class.new(RuntimeError)
+
         include Get
 
         initializer :stream_name, na(:batch_size), :correlation, :condition
@@ -53,12 +55,9 @@ module MessageStore
           "Stream Name: #{stream_name}, Position: #{position.inspect}, Batch Size: #{batch_size.inspect}, Correlation: #{correlation.inspect}, Condition: #{condition.inspect})"
         end
 
-        def self.assure(stream_name, args)
-          consumer_group_member = args.delete(:consumer_group_member)
-          consumer_group_size = args.delete(:consumer_group_size)
-
-          if [consumer_group_member, consumer_group_size].compact.length > 0
-            raise Error, "Consumer groups are supported exclusively for category retrieval (Stream Name: #{stream_name})"
+        def assure
+          if MessageStore::StreamName.category?(stream_name)
+            raise Error, "Must be a stream name (Category: #{stream_name})"
           end
         end
 

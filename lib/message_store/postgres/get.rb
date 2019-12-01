@@ -1,8 +1,6 @@
 module MessageStore
   module Postgres
     module Get
-      Error = Class.new(RuntimeError)
-
       def self.included(cls)
         cls.class_exec do
           include MessageStore::Get
@@ -23,6 +21,7 @@ module MessageStore
           abstract :log_text
 
           virtual :specialize_error
+          virtual :assure
         end
       end
 
@@ -34,8 +33,6 @@ module MessageStore
 
       def self.build(stream_name, **args)
         cls = specialization(stream_name)
-
-        cls.assure(stream_name, args)
 
         session = args.delete(:session)
 
@@ -67,6 +64,8 @@ module MessageStore
           position ||= self.class::Defaults.position
 
           stream_name ||= self.stream_name
+
+          assure
 
           logger.trace(tag: :get) { "Getting message data (#{log_text(stream_name, position)})" }
 
