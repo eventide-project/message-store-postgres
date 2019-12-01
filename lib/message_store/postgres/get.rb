@@ -21,6 +21,8 @@ module MessageStore
           abstract :parameter_values
           abstract :last_position
           abstract :log_text
+
+          virtual :specialize_error
         end
       end
 
@@ -114,21 +116,20 @@ module MessageStore
       def raise_error(pg_error)
         error_message = pg_error.message.gsub('ERROR:', '').strip
 
-        error_class = nil
+        error_class = specialize_error(error_message)
 
-        case
-        when error_message.start_with?('Correlation must be a category')
-          error_class = Correlation::Error
-        when error_message.start_with?('Consumer group size must not be less than 1') ||
-            error_message.start_with?('Consumer group member must be less than the group size') ||
-            error_message.start_with?('Consumer group member must not be less than 0') ||
-            error_message.start_with?('Consumer group member and size must be specified')
-          error_class = Get::Category::ConsumerGroup::Error
-        when error_message.start_with?('Retrieval with SQL condition is not activated')
-          error_class = Get::Condition::Error
+        if error_class.nil?
+          if error_message.start_with?('Retrieval with SQL condition is not activated')
+            error_class = Get::Condition::Error
+          end
+
+## remove once correlation is removed from stream get
+          if error_message.start_with?('Correlation must be a category')
+            error_class = Correlation::Error
+          end
         end
 
-        if not error_message.nil?
+        if not error_class.nil?
           logger.error { error_message }
           raise error_class, error_message
         end

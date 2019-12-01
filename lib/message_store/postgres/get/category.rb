@@ -54,6 +54,19 @@ module MessageStore
           batch.last.global_position
         end
 
+        def specialize_error(error_message)
+          if error_message.start_with?('Correlation must be a category')
+            return Correlation::Error
+          end
+
+          if error_message.start_with?('Consumer group size must not be less than 1') ||
+              error_message.start_with?('Consumer group member must be less than the group size') ||
+              error_message.start_with?('Consumer group member must not be less than 0') ||
+              error_message.start_with?('Consumer group member and size must be specified')
+            return Get::Category::ConsumerGroup::Error
+          end
+        end
+
         def log_text(category, position)
           "Category: #{category}, Position: #{position.inspect}, Batch Size: #{batch_size.inspect}, Correlation: #{correlation.inspect}, Consumer Group Member: #{consumer_group_member.inspect}, Consumer Group Size: #{consumer_group_size.inspect}, Condition: #{condition.inspect})"
         end
