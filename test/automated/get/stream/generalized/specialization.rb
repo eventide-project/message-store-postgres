@@ -7,13 +7,12 @@ context "Get" do
         stream_name = Controls::StreamName.example
 
         batch_size = 1
-        correlation = 'someCorrelation'
         consumer_group_member = 0
         consumer_group_size = 1
         condition = 'global_position >= 1'
         session = Session.build
 
-        get = Get.build(stream_name, batch_size: batch_size, correlation: correlation, condition: condition, session: session)
+        get = Get.build(stream_name, batch_size: batch_size, condition: condition, session: session)
 
         context "Type" do
           test "Get::Stream" do
@@ -28,10 +27,6 @@ context "Get" do
 
           test "batch_size" do
             assert(get.batch_size == batch_size)
-          end
-
-          test "correlation" do
-            assert(get.correlation == correlation)
           end
 
           test "condition" do
