@@ -6,22 +6,22 @@ module MessageStore
 
         include Get
 
-        initializer :stream_name, na(:batch_size), :correlation, :condition
+        initializer :stream_name, na(:batch_size), :condition
 
-        def self.call(stream_name, position: nil, batch_size: nil, correlation: nil, condition: nil, session: nil)
-          instance = build(stream_name, batch_size: batch_size, correlation: correlation, condition: condition, session: session)
+        def self.call(stream_name, position: nil, batch_size: nil, condition: nil, session: nil)
+          instance = build(stream_name, batch_size: batch_size, condition: condition, session: session)
           instance.(position)
         end
 
-        def self.build(stream_name, batch_size: nil, correlation: nil, condition: nil, session: nil)
-          instance = new(stream_name, batch_size, correlation, condition)
+        def self.build(stream_name, batch_size: nil, condition: nil, session: nil)
+          instance = new(stream_name, batch_size, condition)
           instance.configure(session: session)
           instance
         end
 
-        def self.configure(receiver, stream_name, attr_name: nil, batch_size: nil, correlation: nil, condition: nil, session: nil)
+        def self.configure(receiver, stream_name, attr_name: nil, batch_size: nil, condition: nil, session: nil)
           attr_name ||= :get
-          instance = build(stream_name, batch_size: batch_size, correlation: correlation, condition: condition, session: session)
+          instance = build(stream_name, batch_size: batch_size, condition: condition, session: session)
           receiver.public_send("#{attr_name}=", instance)
         end
 
@@ -34,7 +34,7 @@ module MessageStore
         end
 
         def parameters
-          '$1::varchar, $2::bigint, $3::bigint, $4::varchar, $5::varchar'
+          '$1::varchar, $2::bigint, $3::bigint, $4::varchar'
         end
 
         def parameter_values(stream_name, position)
@@ -42,7 +42,6 @@ module MessageStore
             stream_name,
             position,
             batch_size,
-            correlation,
             condition
           ]
         end
