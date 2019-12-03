@@ -121,9 +121,9 @@ module MessageStore
           end
 
 ## remove once correlation is removed from stream get
-          if error_message.start_with?('Correlation must be a category')
-            error_class = Correlation::Error
-          end
+          # if error_message.start_with?('Correlation must be a category')
+          #   error_class = Correlation::Error
+          # end
         end
 
         if not error_class.nil?
