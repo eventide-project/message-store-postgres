@@ -113,22 +113,15 @@ module MessageStore
       def raise_error(pg_error)
         error_message = pg_error.message.gsub('ERROR:', '').strip
 
-        error_class = specialize_error(error_message)
+        error = Condition.error(error_message)
 
-        if error_class.nil?
-          if error_message.start_with?('Retrieval with SQL condition is not activated')
-            error_class = Get::Condition::Error
-          end
-
-## remove once correlation is removed from stream get
-          if error_message.start_with?('Correlation must be a category')
-            error_class = Correlation::Error
-          end
+        if error.nil?
+          error = specialize_error(error_message)
         end
 
-        if not error_class.nil?
+        if not error.nil?
           logger.error { error_message }
-          raise error_class, error_message
+          raise error
         end
 
         raise pg_error
