@@ -3,6 +3,8 @@ module MessageStore
     module Get
       class Stream
         class Last
+          Error = Class.new(RuntimeError)
+
           include MessageStore::Get::Stream::Last
 
           dependency :session, Session
@@ -31,11 +33,21 @@ module MessageStore
 
             sql_command = self.class.sql_command(stream_name)
 
-            params = [
+            parameter_values = [
               stream_name
             ]
 
-            result = session.execute(sql_command, params)
+
+##            result = session.execute(sql_command, params)
+
+
+            begin
+              result = session.execute(sql_command, parameter_values)
+            rescue PG::RaiseException => e
+              raise_error(e)
+            end
+
+
 
             logger.debug(tag: :get) { "Finished getting result (Count: #{result.ntuples}, Stream: #{stream_name}" }
 
@@ -62,6 +74,17 @@ module MessageStore
             logger.debug(tag: :get) { "Converted record to message data" }
 
             message_data
+          end
+
+          def raise_error(pg_error)
+            error_message = pg_error.message.gsub('ERROR:', '').strip
+
+            if error_message.start_with?('Must be a stream name')
+              logger.error { error_message }
+              raise Error, error_message
+            end
+
+            raise pg_error
           end
 
           module Deserialize
