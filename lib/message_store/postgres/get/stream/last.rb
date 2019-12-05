@@ -37,17 +37,11 @@ module MessageStore
               stream_name
             ]
 
-
-##            result = session.execute(sql_command, params)
-
-
             begin
               result = session.execute(sql_command, parameter_values)
             rescue PG::RaiseException => e
               raise_error(e)
             end
-
-
 
             logger.debug(tag: :get) { "Finished getting result (Count: #{result.ntuples}, Stream: #{stream_name}" }
 
