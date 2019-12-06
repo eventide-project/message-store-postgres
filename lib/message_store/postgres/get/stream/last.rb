@@ -59,11 +59,7 @@ module MessageStore
           def convert(record)
             logger.trace(tag: :get) { "Converting record to message data" }
 
-            record['data'] = Deserialize.data(record['data'])
-            record['metadata'] = Deserialize.metadata(record['metadata'])
-            record['time'] = Time.utc_coerced(record['time'])
-
-            message_data = MessageData::Read.build(record)
+            message_data = Get.message_data(record)
 
             logger.debug(tag: :get) { "Converted record to message data" }
 
@@ -71,7 +67,7 @@ module MessageStore
           end
 
           def raise_error(pg_error)
-            error_message = pg_error.message.gsub('ERROR:', '').strip
+            error_message = Get.error_message(pg_error)
 
             if error_message.start_with?('Must be a stream name')
               logger.error { error_message }
@@ -79,24 +75,6 @@ module MessageStore
             end
 
             raise pg_error
-          end
-
-          module Deserialize
-            def self.data(serialized_data)
-              return nil if serialized_data.nil?
-              Transform::Read.(serialized_data, :json, MessageData::Hash)
-            end
-
-            def self.metadata(serialized_metadata)
-              return nil if serialized_metadata.nil?
-              Transform::Read.(serialized_metadata, :json, MessageData::Hash)
-            end
-          end
-
-          module Time
-            def self.utc_coerced(local_time)
-              Clock::UTC.coerce(local_time)
-            end
           end
         end
       end
