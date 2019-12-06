@@ -98,11 +98,7 @@ module MessageStore
         logger.trace(tag: :get) { "Converting result to message data (Result Count: #{result.ntuples})" }
 
         message_data = result.map do |record|
-          record['data'] = Deserialize.data(record['data'])
-          record['metadata'] = Deserialize.metadata(record['metadata'])
-          record['time'] = Time.utc_coerced(record['time'])
-
-          MessageData::Read.build(record)
+          Get.message_data(record)
         end
 
         logger.debug(tag: :get) { "Converted result to message data (Message Data Count: #{message_data.length})" }
@@ -110,8 +106,16 @@ module MessageStore
         message_data
       end
 
+      def self.message_data(record)
+        record['data'] = Get::Deserialize.data(record['data'])
+        record['metadata'] = Get::Deserialize.metadata(record['metadata'])
+        record['time'] = Get::Time.utc_coerced(record['time'])
+
+        MessageData::Read.build(record)
+      end
+
       def raise_error(pg_error)
-        error_message = pg_error.message.gsub('ERROR:', '').strip
+        error_message = Get.error_message(pg_error)
 
         error = Condition.error(error_message)
 
@@ -125,6 +129,10 @@ module MessageStore
         end
 
         raise pg_error
+      end
+
+      def self.error_message(pg_error)
+        pg_error.message.gsub('ERROR:', '').strip
       end
 
       def self.specialization(stream_name)
