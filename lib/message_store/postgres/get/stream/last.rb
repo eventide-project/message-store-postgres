@@ -3,8 +3,6 @@ module MessageStore
     module Get
       class Stream
         class Last
-          Error = Class.new(RuntimeError)
-
           include MessageStore::Get::Stream::Last
 
           dependency :session, Session
@@ -37,11 +35,7 @@ module MessageStore
               stream_name
             ]
 
-            begin
-              result = session.execute(sql_command, parameter_values)
-            rescue PG::RaiseException => e
-              raise_error(e)
-            end
+            result = session.execute(sql_command, parameter_values)
 
             logger.debug(tag: :get) { "Finished getting result (Count: #{result.ntuples}, Stream: #{stream_name}" }
 
@@ -64,17 +58,6 @@ module MessageStore
             logger.debug(tag: :get) { "Converted record to message data" }
 
             message_data
-          end
-
-          def raise_error(pg_error)
-            error_message = Get.error_message(pg_error)
-
-            if error_message.start_with?('Must be a stream name')
-              logger.error { error_message }
-              raise Error, error_message
-            end
-
-            raise pg_error
           end
         end
       end
