@@ -31,11 +31,11 @@ module MessageStore
 
             sql_command = self.class.sql_command(stream_name)
 
-            params = [
+            parameter_values = [
               stream_name
             ]
 
-            result = session.execute(sql_command, params)
+            result = session.execute(sql_command, parameter_values)
 
             logger.debug(tag: :get) { "Finished getting result (Count: #{result.ntuples}, Stream: #{stream_name}" }
 
@@ -47,39 +47,17 @@ module MessageStore
           def self.sql_command(stream_name)
             parameters = '$1::varchar'
 
-            "SELECT * FROM get_last_message(#{parameters});"
+            "SELECT * FROM get_last_stream_message(#{parameters});"
           end
 
           def convert(record)
             logger.trace(tag: :get) { "Converting record to message data" }
 
-            record['data'] = Deserialize.data(record['data'])
-            record['metadata'] = Deserialize.metadata(record['metadata'])
-            record['time'] = Time.utc_coerced(record['time'])
-
-            message_data = MessageData::Read.build(record)
+            message_data = Get.message_data(record)
 
             logger.debug(tag: :get) { "Converted record to message data" }
 
             message_data
-          end
-
-          module Deserialize
-            def self.data(serialized_data)
-              return nil if serialized_data.nil?
-              Transform::Read.(serialized_data, :json, MessageData::Hash)
-            end
-
-            def self.metadata(serialized_metadata)
-              return nil if serialized_metadata.nil?
-              Transform::Read.(serialized_metadata, :json, MessageData::Hash)
-            end
-          end
-
-          module Time
-            def self.utc_coerced(local_time)
-              Clock::UTC.coerce(local_time)
-            end
           end
         end
       end

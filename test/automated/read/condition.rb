@@ -8,7 +8,12 @@ context "Read" do
 
     message_count = 0
 
-    Read.(stream_name, condition: condition) do
+    settings = Postgres::Settings.build
+    session = Session.new
+    settings.set(session)
+    session.options = '-c message_store.sql_condition=on'
+
+    Read.(stream_name, condition: condition, session: session) do
       message_count += 1
     end
 

@@ -11,12 +11,12 @@ list.each do |entry|
   put.(entry.message_data, stream_name)
 end
 
-get = Get.build
+get = Get.build('something')
 
 result = Diagnostics::Sample.(defaults.cycles, warmup_cycles: defaults.warmup_cycles, gc: defaults.gc) do |i|
   entry = list[i]
   stream_name = defaults.stream_name || entry.stream_name
-  get.(stream_name)
+  get.(0, stream_name: stream_name)
 end
 
 puts

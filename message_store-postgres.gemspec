@@ -19,10 +19,10 @@ Gem::Specification.new do |s|
   s.bindir = 'scripts'
 
   s.add_runtime_dependency 'evt-message_store'
-  s.add_runtime_dependency 'evt-message_store-postgres-database'
   s.add_runtime_dependency 'evt-log'
   s.add_runtime_dependency 'evt-settings'
 
+  s.add_runtime_dependency 'message-db'
   s.add_runtime_dependency 'pg'
 
   s.add_development_dependency 'test_bench'
