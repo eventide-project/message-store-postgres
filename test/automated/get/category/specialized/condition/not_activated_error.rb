@@ -4,7 +4,7 @@ context "Get" do
   context "Category" do
     context "Specialized" do
       context "Condition" do
-        context "Not Activated Error" do
+        context "Condition Is Not Activated" do
           category = Controls::Category.example
 
           condition = 'some condition'
