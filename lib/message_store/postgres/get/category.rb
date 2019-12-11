@@ -26,10 +26,6 @@ module MessageStore
           receiver.public_send("#{attr_name}=", instance)
         end
 
-        def configure(session: nil)
-          Session.configure(self, session: session)
-        end
-
         def sql_command
           "SELECT * FROM get_category_messages(#{parameters});"
         end
