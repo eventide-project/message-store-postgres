@@ -10,7 +10,6 @@ module MessageStore
 
           dependency :session, Session
 
-          abstract :configure
           abstract :stream_name
           abstract :sql_command
           abstract :parameters
@@ -31,12 +30,7 @@ module MessageStore
 
       def self.build(stream_name, **args)
         cls = specialization(stream_name)
-
-        session = args.delete(:session)
-
-        cls.build(stream_name, **args).tap do |instance|
-          instance.configure(session: session)
-        end
+        cls.build(stream_name, **args)
       end
 
       def self.configure(receiver, stream_name, **args)
