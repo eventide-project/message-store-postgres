@@ -34,6 +34,11 @@ get = Get::Stream.build('-')
 puts "» executing and sampling #{total_cycles} cycles"
 result = Diagnostics::Sample.(defaults.cycles, warmup_cycles: defaults.warmup_cycles, gc: defaults.gc) do |i|
   entry = list[i]
+
+  if defaults.verbose
+    puts "Getting: #{entry.category}"
+  end
+
   stream_name = defaults.stream_name || entry.stream_name
   get.(0, stream_name: stream_name)
 end
