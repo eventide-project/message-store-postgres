@@ -6,7 +6,7 @@ module MessageStore
       module MessageData
         module Write
           module List
-            Entry = Struct.new(:stream_name, :message_data)
+            Entry = Struct.new(:stream_name, :category, :message_data)
 
             def self.get(instances: nil)
               instances ||= 1
@@ -16,9 +16,10 @@ module MessageStore
               list = []
               instances.times do
                 stream_name = Controls::StreamName.example
+                category = MessageStore::StreamName.get_category(stream_name)
                 write_message = Controls::MessageData::Write.example
 
-                list << Entry.new(stream_name, write_message)
+                list << Entry.new(stream_name, category, write_message)
               end
 
               list
