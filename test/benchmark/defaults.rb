@@ -1,7 +1,7 @@
 module Test
   module Benchmark
     class Defaults
-      initializer :cycles, :warmup_cycles, :gc, :stream_name
+      initializer :cycles, :warmup_cycles, :gc, :stream_name, :verbose
 
       def total_cycles
         cycles + warmup_cycles
@@ -17,7 +17,7 @@ module Test
       end
 
       def self.build
-        new(cycles, warmup_cycles, gc, stream_name)
+        new(cycles, warmup_cycles, gc, stream_name, verbose)
       end
 
       def self.cycles
@@ -32,8 +32,13 @@ module Test
         ['on', 'true'].include?(ENV['GC']) ? true : false
       end
 
+      def self.verbose
+        ['on', 'true'].include?(ENV['VERBOSE']) ? true : false
+      end
+
       def self.stream_name
-        ENV['STREAM_NAME'] || Controls::StreamName.example
+##        ENV['STREAM_NAME'] || Controls::StreamName.example
+        ENV['STREAM_NAME']
       end
     end
   end

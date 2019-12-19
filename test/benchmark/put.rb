@@ -2,6 +2,10 @@ require_relative 'benchmark_init'
 
 defaults = Test::Benchmark::Defaults.build
 
+puts
+puts "Running benchmark (#{__FILE__})..."
+puts
+
 list = Controls::MessageData::Write::List.get(instances: defaults.total_cycles)
 
 put = Put.build
