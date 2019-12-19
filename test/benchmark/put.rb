@@ -15,8 +15,10 @@ total_cycles = defaults.total_cycles
 puts "» constructing #{total_cycles} entries"
 list = Controls::MessageData::Write::List.get(instances: total_cycles, stream_name: defaults.stream_name)
 
+puts "» constructing Put"
 put = Put.build
 
+puts "» executing and sampling #{total_cycles} cycles"
 result = Diagnostics::Sample.(defaults.cycles, warmup_cycles: defaults.warmup_cycles, gc: defaults.gc) do |i|
   entry = list[i]
 
