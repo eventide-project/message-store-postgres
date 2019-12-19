@@ -19,24 +19,22 @@ put = Put.build
 
 puts "» writing entries"
 list.each do |entry|
-  stream_name = defaults.stream_name || entry.stream_name
-
   if defaults.verbose
-    puts "Stream: #{stream_name}"
+    puts "Stream: #{entry.stream_name}, Category: #{entry.category}"
   end
 
-  put.(entry.message_data, stream_name)
+  put.(entry.message_data, entry.stream_name)
 end
 
 puts "» constructing Get::Stream"
-get = Get::Stream.build('-')
+get = Get::Stream.build('-', batch_size: 1)
 
 puts "» executing and sampling #{total_cycles} cycles"
 result = Diagnostics::Sample.(defaults.cycles, warmup_cycles: defaults.warmup_cycles, gc: defaults.gc) do |i|
   entry = list[i]
 
   if defaults.verbose
-    puts "Getting: #{entry.stream_name}"
+    puts "Getting Stream: #{entry.stream_name}"
   end
 
   stream_name = defaults.stream_name || entry.stream_name
