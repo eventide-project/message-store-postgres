@@ -8,9 +8,9 @@ puts
 
 puts "» defaults"
 puts defaults.to_s
+puts
 
 total_cycles = defaults.total_cycles
-puts
 
 puts "» constructing #{total_cycles} entries"
 list = Controls::MessageData::Write::List.get(instances: total_cycles)
