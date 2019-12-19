@@ -13,7 +13,7 @@ puts
 total_cycles = defaults.total_cycles
 
 puts "» constructing #{total_cycles} entries"
-list = Controls::MessageData::Write::List.get(instances: total_cycles)
+list = Controls::MessageData::Write::List.get(instances: total_cycles, category: defaults.stream_name)
 
 put = Put.build
 

@@ -13,7 +13,7 @@ puts
 total_cycles = defaults.total_cycles
 
 puts "» constructing #{total_cycles} entries"
-list = Controls::MessageData::Write::List.get(instances: total_cycles)
+list = Controls::MessageData::Write::List.get(instances: total_cycles, stream_name: defaults.stream_name)
 
 put = Put.build
 
@@ -36,7 +36,7 @@ result = Diagnostics::Sample.(defaults.cycles, warmup_cycles: defaults.warmup_cy
   entry = list[i]
 
   if defaults.verbose
-    puts "Getting: #{entry.category}"
+    puts "Getting: #{entry.stream_name}"
   end
 
   stream_name = defaults.stream_name || entry.stream_name
