@@ -3,17 +3,28 @@ require_relative 'benchmark_init'
 defaults = Test::Benchmark::Defaults.build
 
 puts
-puts "Running benchmark (#{__FILE__})..."
+puts "Put Benchmark (#{__FILE__})"
 puts
 
-list = Controls::MessageData::Write::List.get(instances: defaults.total_cycles)
+puts "» defaults"
+puts defaults.to_s
+puts
+
+total_cycles = defaults.total_cycles
+
+puts "» constructing #{total_cycles} entries"
+list = Controls::MessageData::Write::List.get(instances: total_cycles, stream_name: defaults.stream_name)
 
 put = Put.build
 
 result = Diagnostics::Sample.(defaults.cycles, warmup_cycles: defaults.warmup_cycles, gc: defaults.gc) do |i|
   entry = list[i]
-  stream_name = defaults.stream_name || entry.stream_name
-  put.(entry.message_data, stream_name)
+
+  if defaults.verbose
+    puts "Putting Stream: #{entry.stream_name}"
+  end
+
+  put.(entry.message_data, entry.stream_name)
 end
 
 puts

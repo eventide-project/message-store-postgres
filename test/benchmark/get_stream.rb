@@ -37,8 +37,7 @@ result = Diagnostics::Sample.(defaults.cycles, warmup_cycles: defaults.warmup_cy
     puts "Getting Stream: #{entry.stream_name}"
   end
 
-  stream_name = defaults.stream_name || entry.stream_name
-  get.(0, stream_name: stream_name)
+  get.(0, stream_name: entry.stream_name)
 end
 
 puts
