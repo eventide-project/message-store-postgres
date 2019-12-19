@@ -15,7 +15,7 @@ list.each do |entry|
   put.(entry.message_data, stream_name)
 end
 
-get = Get.build(defaults.stream_name)
+get = Get.build(Controls::StreamName.example)
 
 result = Diagnostics::Sample.(defaults.cycles, warmup_cycles: defaults.warmup_cycles, gc: defaults.gc) do |i|
   entry = list[i]
