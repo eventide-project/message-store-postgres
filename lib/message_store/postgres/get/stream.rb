@@ -47,7 +47,7 @@ module MessageStore
         end
 
         def log_text(stream_name, position)
-          "Stream Name: #{stream_name}, Position: #{position.inspect}, Batch Size: #{batch_size.inspect}, Correlation: #{correlation.inspect}, Condition: #{condition.inspect})"
+          "Stream Name: #{stream_name}, Position: #{position.inspect}, Batch Size: #{batch_size.inspect}, Condition: #{condition.inspect})"
         end
 
         def assure
