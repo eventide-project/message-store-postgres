@@ -6,7 +6,7 @@ module MessageStore
       end
 
       def self.data_source
-        Defaults.data_source || 'settings/message_store_postgres.json'
+        Defaults.data_source
       end
 
       def self.names
@@ -28,7 +28,7 @@ module MessageStore
 
       class Defaults
         def self.data_source
-          ENV['MESSAGE_STORE_SETTINGS_PATH']
+          ENV['MESSAGE_STORE_SETTINGS_PATH'] || 'settings/message_store_postgres.json'
         end
       end
     end
