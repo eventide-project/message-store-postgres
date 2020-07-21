@@ -5,7 +5,7 @@ module MessageStore
       include Log::Dependency
 
       dependency :session, Session
-      dependency :identifier, Identifier::UUID::RandomIdentifier
+      dependency :identifier, Identifier::UUID::Random
 
       def self.build(session: nil)
         new.tap do |instance|
