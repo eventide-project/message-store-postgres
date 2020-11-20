@@ -1,0 +1,21 @@
+Get Category Benchmark
+- - -
+Cycles: 100000
+Time: 73931.646000ms
+Mean Cycle Time: 0.739316ms (± 0.249903ms)
+Cycles Per Second: 1352.600752
+GC: off
+
+ruby 2.7.1p83 (2020-03-31 revision a0c7c23c9c) [x86_64-darwin19]
+
+Model Name: MacBook
+Model Identifier: MacBook10,1
+Processor Name: Intel Core i7
+Processor Speed:  1.4 GHz
+Number of Processors: 1
+Total Number of Cores:  2
+L2 Cache (per Core):  256 KB
+L3 Cache: 4 MB
+Memory: 16 GB
+Boot ROM Version: MB101.0163.B00
+SMC Version (system): 2.42f10
