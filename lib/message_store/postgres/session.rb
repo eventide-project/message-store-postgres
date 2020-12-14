@@ -128,6 +128,14 @@ module MessageStore
         connection.transaction(&blk)
       end
 
+      def escape(data)
+        connection = connect
+
+        escaped_data = connection.escape(data)
+
+        escaped_data
+      end
+
       def self.logger
         @logger ||= Log.get self
       end
