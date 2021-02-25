@@ -22,7 +22,12 @@ module MessageStore
           :sslmode,
           :krbsrvname,
           :gsslib,
-          :service
+          :service,
+          :keepalives,
+          :keepalives_idle,
+          :keepalives_interval,
+          :keepalives_count,
+          :tcp_user_timeout
         ]
       end
 
