@@ -10,5 +10,10 @@
   "sslmode": null,
   "krbsrvname": null,
   "gsslib": null,
-  "service": null
+  "service": null,
+  "keepalives": null,
+  "keepalives_idle": null,
+  "keepalives_interval": null,
+  "keepalives_count": null,
+  "tcp_user_timeout": null
 }
