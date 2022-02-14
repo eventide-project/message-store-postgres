@@ -8,7 +8,7 @@ context "Session" do
 
     test "Connects" do
       refute_raises do
-        session.execute('SELECT 1;')
+        session.execute(';')
       end
     end
   end
