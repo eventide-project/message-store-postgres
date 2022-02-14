@@ -3,9 +3,12 @@ module MessageStore
     class Session
       Error = Class.new(RuntimeError)
 
+      include Dependency
       include Settings::Setting
 
       include Log::Dependency
+
+      dependency :clock, Clock::UTC
 
       def self.settings
         Settings.names
@@ -16,12 +19,17 @@ module MessageStore
       end
 
       attr_accessor :connection
+      attr_accessor :executed_time
 
       def self.build(settings: nil)
-        new.tap do |instance|
-          settings ||= Settings.instance
-          settings.set(instance)
-        end
+        instance = new
+
+        settings ||= Settings.instance
+        settings.set(instance)
+
+        Clock::UTC.configure(instance)
+
+        instance
       end
 
       def self.configure(receiver, session: nil, settings: nil, attr_name: nil)
@@ -91,15 +99,6 @@ module MessageStore
         connection.reset
       end
 
-      def settings
-        settings = {}
-        self.class.settings.each do |s|
-          val = public_send(s)
-          settings[s] = val unless val.nil?
-        end
-        settings
-      end
-
       def execute(sql_command, params=nil)
         logger.trace(tag: :session) { "Executing SQL command" }
         logger.trace(tag: :sql) { sql_command }
@@ -109,15 +108,25 @@ module MessageStore
           connect
         end
 
+        executed_time = nil
+
         if params.nil?
           connection.exec(sql_command).tap do
+            self.executed_time = clock.now
             logger.debug(tag: :session) { "Executed SQL command (no params)" }
           end
         else
           connection.exec_params(sql_command, params).tap do
+            self.executed_time = clock.now
             logger.debug(tag: :session) { "Executed SQL command with params" }
           end
         end
+      end
+
+      def executed_time_elapsed_milliseconds
+        return nil if executed_time.nil?
+
+        (clock.now - executed_time) * 1000
       end
 
       def transaction(&blk)
@@ -134,6 +143,15 @@ module MessageStore
         escaped_data = connection.escape(data)
 
         escaped_data
+      end
+
+      def settings
+        settings = {}
+        self.class.settings.each do |s|
+          val = public_send(s)
+          settings[s] = val unless val.nil?
+        end
+        settings
       end
 
       def self.logger
