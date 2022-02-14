@@ -11,10 +11,10 @@ module MessageStore
             Session.configure(self, session: session)
           end
 
-          def call(stream_name)
+          def call(stream_name, type: nil)
             logger.trace(tag: :get) { "Getting last message data (Stream Name: #{stream_name})" }
 
-            result = get_result(stream_name)
+            result = get_result(stream_name, type)
 
             return nil if result.nil?
 
@@ -26,14 +26,10 @@ module MessageStore
             message_data
           end
 
-          def get_result(stream_name)
+          def get_result(stream_name, type)
             logger.trace(tag: :get) { "Getting last record (Stream: #{stream_name})" }
 
-            sql_command = self.class.sql_command(stream_name)
-
-            parameter_values = [
-              stream_name
-            ]
+            parameter_values = parameter_values(stream_name, type)
 
             result = session.execute(sql_command, parameter_values)
 
@@ -44,10 +40,19 @@ module MessageStore
             result
           end
 
-          def self.sql_command(stream_name)
-            parameters = '$1::varchar'
-
+          def sql_command
             "SELECT * FROM get_last_stream_message(#{parameters});"
+          end
+
+          def parameters
+            "$1::varchar, $2::varchar"
+          end
+
+          def parameter_values(stream_name, type)
+            [
+              stream_name,
+              type
+            ]
           end
 
           def convert(record)
