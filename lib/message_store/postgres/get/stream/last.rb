@@ -30,6 +30,7 @@ module MessageStore
             logger.trace(tag: :get) { "Getting last record (Stream: #{stream_name})" }
 
             parameter_values = parameter_values(stream_name, type)
+            sql_command = sql_command(type)
 
             result = session.execute(sql_command, parameter_values)
 
@@ -40,19 +41,36 @@ module MessageStore
             result
           end
 
-          def sql_command
+          def sql_command(type)
+            parameters = parameters(type)
+
             "SELECT * FROM get_last_stream_message(#{parameters});"
           end
 
-          def parameters
-            "$1::varchar, $2::varchar"
+          def parameters(type)
+            parameters = "$1::varchar"
+
+            # Backwards compatibility with versions of message-db that do not
+            # support the type parameter - Aaron, Scott, Tue Jul 12 2022
+            if not type.nil?
+              parameters << ", $2::varchar"
+            end
+
+            parameters
           end
 
           def parameter_values(stream_name, type)
-            [
-              stream_name,
-              type
+            parameter_values = [
+              stream_name
             ]
+
+            # Backwards compatibility with versions of message-db that do not
+            # support the type parameter - Aaron, Scott, Tue Jul 12 2022
+            if not type.nil?
+              parameter_values << type
+            end
+
+            parameter_values
           end
 
           def convert(record)
