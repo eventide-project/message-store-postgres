@@ -108,8 +108,6 @@ module MessageStore
           connect
         end
 
-        executed_time = nil
-
         if params.nil?
           connection.exec(sql_command).tap do
             self.executed_time = clock.now
