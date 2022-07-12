@@ -91,6 +91,10 @@ module MessageStore
       alias :open? :connected?
 
       def close
+        if connection.nil?
+          return
+        end
+
         connection.close
         self.connection = nil
       end
