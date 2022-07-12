@@ -92,7 +92,7 @@ module MessageStore
 
       def close
         connection.close
-        connection = nil
+        self.connection = nil
       end
 
       def reset
