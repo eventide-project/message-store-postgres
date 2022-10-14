@@ -11,7 +11,7 @@ module MessageStore
             Session.configure(self, session: session)
           end
 
-          def call(stream_name, type: nil)
+          def call(stream_name, type=nil)
             logger.trace(tag: :get) { "Getting last message data (Stream Name: #{stream_name})" }
 
             result = get_result(stream_name, type)

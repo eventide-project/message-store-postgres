@@ -15,7 +15,7 @@ context "Get" do
 
         Controls::Put.(instances: 2, stream_name: stream_name, type: other_type)
 
-        last_message = Get::Stream::Last.(stream_name, type: control_type)
+        last_message = Get::Stream::Last.(stream_name, control_type)
 
         test "Gets the last message in the stream" do
           assert(last_message.data == write_message.data)
