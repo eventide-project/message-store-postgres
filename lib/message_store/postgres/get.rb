@@ -10,11 +10,11 @@ module MessageStore
 
           dependency :session, Session
 
-          abstract :stream_name
+          protocol :stream_name
           abstract :sql_command
           abstract :parameters
           abstract :parameter_values
-          abstract :last_position
+          protocol :last_position
           abstract :log_text
 
           virtual :specialize_error
