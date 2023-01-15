@@ -11,11 +11,15 @@ module MessageStore
 
     initializer :stream_name, :position, :batch_size
 
-    def self.build(stream_name, position: nil, batch_size: nil, session: nil, **arguments)
-      new(stream_name, position, batch_size).tap do |instance|
-        Iterator.configure(instance, position)
-        instance.configure(session: session, **arguments)
-      end
+    def self.build(stream_name, position: nil, batch_size: nil, session: nil, condition: nil, **arguments)
+      instance = new(stream_name, position, batch_size)
+
+      Iterator.configure(instance, position)
+
+      iterator = instance.iterator
+      Get.configure(iterator, stream_name, batch_size: batch_size, condition: condition, session: session)
+
+      instance
     end
 
     def self.call(stream_name, position: nil, batch_size: nil, session: nil, **arguments, &action)
@@ -27,10 +31,6 @@ module MessageStore
       attr_name ||= :read
       instance = build(stream_name, position: position, batch_size: batch_size, session: session, **arguments)
       receiver.public_send "#{attr_name}=", instance
-    end
-
-    def configure(session: nil, condition: nil)
-      Get.configure(self.iterator, self.stream_name, batch_size: batch_size, condition: condition, session: session)
     end
 
     def call(&action)

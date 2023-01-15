@@ -7,14 +7,10 @@ module MessageStore
     dependency :identifier, Identifier::UUID::Random
 
     def self.build(session: nil)
-      new.tap do |instance|
-        instance.configure(session: session)
-      end
-    end
-
-    def configure(session: nil)
-      Session.configure(self, session: session)
-      Identifier::UUID::Random.configure(self)
+      instance = new
+      Session.configure(instance, session: session)
+      Identifier::UUID::Random.configure(instance)
+      instance
     end
 
     def self.configure(receiver, session: nil, attr_name: nil)

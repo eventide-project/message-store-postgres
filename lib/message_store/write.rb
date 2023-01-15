@@ -10,7 +10,7 @@ module MessageStore
     def self.build(session: nil)
       instance = new
       Identifier::UUID::Random.configure(instance)
-      instance.configure(session: session)
+      Put.configure(instance, session: session)
       instance
     end
 
@@ -23,10 +23,6 @@ module MessageStore
     def self.call(message_data, stream_name, expected_version: nil, session: nil)
       instance = build(session: session)
       instance.(message_data, stream_name, expected_version: expected_version)
-    end
-
-    def configure(session: nil)
-      Put.configure(self, session: session)
     end
 
     def call(message_data, stream_name, expected_version: nil)

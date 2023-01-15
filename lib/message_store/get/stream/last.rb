@@ -10,7 +10,7 @@ module MessageStore
 
         def self.build(session: nil)
           instance = new
-          instance.configure(session: session)
+          Session.configure(instance, session: session)
           instance
         end
 
@@ -25,10 +25,6 @@ module MessageStore
           instance = build(session: session)
           receiver.public_send("#{attr_name}=", instance)
           instance
-        end
-
-        def configure(session: nil)
-          Session.configure(self, session: session)
         end
 
         def call(stream_name, type=nil)

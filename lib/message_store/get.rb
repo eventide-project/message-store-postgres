@@ -44,6 +44,7 @@ module MessageStore
       receiver.public_send("#{attr_name}=", instance)
     end
 
+    ## Is there a path to removing this? - Aaron, Sun Jan 15 2023
     def configure(session: nil)
       Session.configure(self, session: session)
     end

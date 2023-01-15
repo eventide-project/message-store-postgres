@@ -26,10 +26,10 @@ module MessageStore
       end
 
       def self.build(position=nil)
-        new.tap do |instance|
-          instance.starting_position = position
-          Log.get(self).debug { "Built Iterator (Starting Position: #{position.inspect})" }
-        end
+        instance = new
+        instance.starting_position = position
+        Log.get(self).debug { "Built Iterator (Starting Position: #{position.inspect})" }
+        instance
       end
 
       def self.configure(receiver, position=nil, attr_name: nil)
