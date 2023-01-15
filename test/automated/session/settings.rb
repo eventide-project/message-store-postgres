@@ -4,10 +4,10 @@ context "Session" do
   context "Settings" do
     session = Session.build
 
-    settings = Postgres::Settings.build
+    settings = MessageStore::Settings.build
     settings_hash = settings.get.to_h
 
-    names = Postgres::Settings.names
+    names = MessageStore::Settings.names
 
     names.each do |name|
       test "#{name}" do

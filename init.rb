@@ -1,3 +1,3 @@
 require_relative 'load_path'
 
-require 'message_store/postgres'
+require 'message_store'

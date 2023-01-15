@@ -20,11 +20,11 @@ module Test
         end
 
         handle :write_message do
-          message_data_1 = MessageStore::Postgres::Controls::MessageData::Write.example(data: { actor: object_id })
-          message_data_2 = MessageStore::Postgres::Controls::MessageData::Write.example(data: { actor: object_id })
+          message_data_1 = MessageStore::Controls::MessageData::Write.example(data: { actor: object_id })
+          message_data_2 = MessageStore::Controls::MessageData::Write.example(data: { actor: object_id })
           batch = [message_data_1, message_data_2]
 
-          position = MessageStore::Postgres::Write.(batch, stream_name)
+          position = MessageStore::Write.(batch, stream_name)
 
           logger.info(tag: :actor) { "Wrote message data (Object ID: #{object_id}, Position: #{position}, Message Type: #{message_data_1.type.inspect}, Stream Name: #{stream_name.inspect})" }
 

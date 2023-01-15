@@ -10,7 +10,7 @@ context "Get" do
 
         condition = 'position = 0 OR position = 2'
 
-        settings = Postgres::Settings.build
+        settings = MessageStore::Settings.build
         session = Session.new
         settings.set(session)
         session.options = '-c message_store.sql_condition=on'

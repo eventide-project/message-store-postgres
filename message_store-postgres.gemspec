@@ -18,9 +18,14 @@ Gem::Specification.new do |s|
   s.executables = Dir.glob('scripts/evt-*').map(&File.method(:basename))
   s.bindir = 'scripts'
 
-  s.add_runtime_dependency 'evt-message_store'
   s.add_runtime_dependency 'evt-log'
   s.add_runtime_dependency 'evt-settings'
+  s.add_runtime_dependency 'evt-initializer'
+  s.add_runtime_dependency 'evt-identifier-uuid'
+  s.add_runtime_dependency 'evt-transform'
+  s.add_runtime_dependency 'evt-virtual'
+  s.add_runtime_dependency 'evt-casing'
+  s.add_runtime_dependency 'evt-async_invocation'
 
   s.add_runtime_dependency 'message-db'
   s.add_runtime_dependency 'pg'

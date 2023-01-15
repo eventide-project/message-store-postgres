@@ -10,7 +10,7 @@ context "Get" do
           category = Controls::Category.example
 
           test "Is an error" do
-            assert_raises(MessageStore::Postgres::Get::Category::Correlation::Error) do
+            assert_raises(MessageStore::Get::Category::Correlation::Error) do
               Get::Category.(category, correlation: correlation)
             end
           end

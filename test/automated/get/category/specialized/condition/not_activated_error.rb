@@ -9,7 +9,7 @@ context "Get" do
 
           condition = 'some condition'
 
-          settings = Postgres::Settings.build
+          settings = MessageStore::Settings.build
           session = Session.new
           settings.set(session)
           session.options = nil

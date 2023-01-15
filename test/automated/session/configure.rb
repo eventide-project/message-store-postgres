@@ -23,7 +23,7 @@ context "Session" do
         user: user
       }
 
-      settings = MessageStore::Postgres::Settings.build(settings_data)
+      settings = MessageStore::Settings.build(settings_data)
 
       Session.configure(receiver, settings: settings)
 

@@ -1,12 +1,12 @@
 require_relative 'automated_init'
 
 context "Settings" do
-  settings = Postgres::Settings.build
+  settings = MessageStore::Settings.build
 
   context "Names" do
     settings_hash = settings.get.to_h
 
-    names = Postgres::Settings.names
+    names = MessageStore::Settings.names
 
     names.each do |name|
       test "#{name}" do

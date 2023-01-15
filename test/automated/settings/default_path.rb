@@ -7,7 +7,7 @@ context "Settings" do
     overridden_path = 'some_path'
     ENV['MESSAGE_STORE_SETTINGS_PATH'] = overridden_path
 
-    settings_path = Postgres::Settings.data_source
+    settings_path = MessageStore::Settings.data_source
 
     test "Overridden by MESSAGE_STORE_SETTINGS_PATH environment variable" do
       assert(settings_path == overridden_path)

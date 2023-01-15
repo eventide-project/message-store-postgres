@@ -8,7 +8,7 @@ context "Read" do
 
     message_count = 0
 
-    settings = Postgres::Settings.build
+    settings = MessageStore::Settings.build
     session = Session.new
     settings.set(session)
     session.options = '-c message_store.sql_condition=on'

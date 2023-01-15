@@ -7,10 +7,9 @@ puts RUBY_DESCRIPTION
 
 require_relative '../init'
 
-require 'message_store/postgres/controls'
+require 'message_store/controls'
 
 include MessageStore
-include MessageStore::Postgres
 
 instances = Integer(ENV['INSTANCES'] || 1)
 stream_name = ENV['STREAM_NAME']

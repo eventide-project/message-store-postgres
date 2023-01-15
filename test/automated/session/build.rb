@@ -3,7 +3,7 @@ require_relative '../automated_init'
 context "Session" do
   context "Build" do
     context "Settings is specified" do
-      settings = MessageStore::Postgres::Settings.build
+      settings = MessageStore::Settings.build
 
       session = Session.build(settings: settings)
 
@@ -13,7 +13,7 @@ context "Session" do
     end
 
     context "Settings is not specified" do
-      settings = MessageStore::Postgres::Settings.build
+      settings = MessageStore::Settings.build
 
       session = Session.build
 
