@@ -12,7 +12,7 @@ context "Get" do
         message_data = Get::Category.(category)
 
         context "Messages Retrieved" do
-          test "Messages from the all streams in the category" do
+          test "Messages from all the streams in the category" do
             assert(message_data.length == 2)
           end
 
