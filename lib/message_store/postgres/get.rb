@@ -10,15 +10,15 @@ module MessageStore
 
           dependency :session, Session
 
-          protocol :stream_name
-          abstract :sql_command
-          abstract :parameters
-          abstract :parameter_values
-          protocol :last_position
-          abstract :log_text
+          template_method! :stream_name
+          template_method! :sql_command
+          template_method! :parameters
+          template_method! :parameter_values
+          template_method! :last_position
+          template_method! :log_text
 
-          virtual :specialize_error
-          virtual :assure
+          template_method :specialize_error
+          template_method :assure
         end
       end
 
